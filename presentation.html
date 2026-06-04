@@ -7,65 +7,229 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0f;--card:#14141f;--accent:#f59e0b;--accent2:#ef4444;--green:#22c55e;--blue:#3b82f6;--purple:#8b5cf6;--text:#e2e8f0;--muted:#64748b;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08)}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw}
+:root{
+  --bg: radial-gradient(100% 100% at 100% 0%, #fef5e8 0%, rgba(255, 255, 255, 0) 100%), 
+        radial-gradient(100% 100% at 0% 100%, #f4ebff 0%, rgba(255, 255, 255, 0) 100%), 
+        #fff;
+  --card: rgba(253, 251, 247, 0.7);
+  --accent: #df9e28;
+  --accent2: #dc2626;
+  --green: #10b981;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --text: #111827;
+  --muted: #64748b;
+  --glass: rgba(253, 251, 247, 0.5);
+  --border: #f2ebe1;
+  --shadow: 0 10px 30px -10px rgba(220,210,195,0.3);
+}
+body{
+  font-family:'Inter',sans-serif;
+  background: var(--bg);
+  background-attachment: fixed;
+  color:var(--text);
+  overflow:hidden;
+  height:100vh;
+  width:100vw;
+}
 .deck{position:relative;width:100%;height:100%}
-.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 80px;opacity:0;transform:translateX(60px);transition:all .5s cubic-bezier(.4,0,.2,1);pointer-events:none;text-align:center}
+.slide{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:60px 80px;
+  opacity:0;
+  transform:translateX(60px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+  text-align:center;
+}
 .slide.active{opacity:1;transform:translateX(0);pointer-events:all}
 .slide.prev{opacity:0;transform:translateX(-60px)}
 
+/* Brand logo */
+.slide-logo{
+  position: absolute;
+  top: 28px;
+  left: 44px;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  z-index: 100;
+}
+.slide-logo span{
+  color: var(--accent);
+}
+
 /* Nav */
-.nav{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100;background:var(--glass);backdrop-filter:blur(20px);padding:10px 20px;border-radius:50px;border:1px solid var(--border)}
-.nav .dot{width:10px;height:10px;border-radius:50%;background:var(--muted);cursor:pointer;transition:all .3s}
+.nav{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+  z-index:100;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter:blur(20px);
+  padding:10px 20px;
+  border-radius:50px;
+  border:1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(220, 210, 195, 0.15);
+}
+.nav .dot{width:10px;height:10px;border-radius:50%;background:#d1d5db;cursor:pointer;transition:all .3s}
 .nav .dot.active{background:var(--accent);width:30px;border-radius:5px}
+
 .controls{position:fixed;bottom:30px;right:40px;display:flex;gap:10px;z-index:100}
-.controls button{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--border);color:var(--text);width:44px;height:44px;border-radius:12px;cursor:pointer;font-size:18px;transition:all .2s}
-.controls button:hover{background:var(--accent);color:#000;border-color:var(--accent)}
-.slide-num{position:fixed;top:30px;right:40px;font-size:14px;color:var(--muted);z-index:100;font-weight:500}
+.controls button{
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--border);
+  color:var(--text);
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:18px;
+  transition:all .2s;
+  box-shadow: 0 4px 12px rgba(220,210,195,0.15);
+}
+.controls button:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.slide-num{position:fixed;top:30px;right:40px;font-size:14px;color:var(--muted);z-index:100;font-weight:600}
 
 /* Typography */
-h1{font-family:'Playfair Display',serif;font-size:clamp(48px,5vw,72px);line-height:1.1;margin-bottom:20px}
-h2{font-size:clamp(32px,3.5vw,52px);font-weight:800;margin-bottom:16px;line-height:1.2}
-h3{font-size:clamp(20px,2vw,28px);font-weight:600;margin-bottom:12px}
-p,.desc{font-size:clamp(16px,1.4vw,22px);color:var(--muted);line-height:1.6;max-width:800px}
-.tag{display:inline-block;background:linear-gradient(135deg,var(--accent),#d97706);color:#000;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px}
+h1{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(48px,5vw,72px);
+  font-weight:900;
+  line-height:1.1;
+  margin-bottom:20px;
+  letter-spacing: -2px;
+}
+h2{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(32px,3.5vw,52px);
+  font-weight:900;
+  margin-bottom:16px;
+  line-height:1.2;
+  letter-spacing: -1.5px;
+}
+h3{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(20px,2vw,28px);
+  font-weight:800;
+  margin-bottom:12px;
+  letter-spacing: -0.5px;
+}
+p,.desc{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(16px,1.4vw,22px);
+  color:var(--muted);
+  line-height:1.6;
+  max-width:800px;
+  font-weight: 500;
+}
+.tag{
+  display:inline-block;
+  background:#f5a623;
+  color:#111827;
+  padding:6px 18px;
+  border-radius:30px;
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:20px;
+}
 .highlight{color:var(--accent)}
 .highlight-red{color:var(--accent2)}
 .highlight-green{color:var(--green)}
 .highlight-blue{color:var(--blue)}
 
 /* Cards grid */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;width:100%;max-width:1100px;margin-top:30px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:left;transition:all .3s}
-.card:hover{border-color:var(--accent);transform:translateY(-4px)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;width:100%;max-width:1100px;margin-top:30px}
+.card{
+  background:var(--card);
+  backdrop-filter: blur(12px);
+  border:1.5px solid var(--border);
+  border-radius:16px;
+  padding:28px;
+  text-align:left;
+  box-shadow: var(--shadow);
+  transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover{
+  border-color:var(--accent);
+  transform:translateY(-5px);
+  box-shadow: 0 20px 40px -15px rgba(220, 210, 195, 0.5);
+}
 .card .icon{font-size:36px;margin-bottom:12px}
-.card h4{font-size:18px;font-weight:700;margin-bottom:8px}
+.card h4{
+  font-family:'Inter',sans-serif;
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:8px;
+  color: var(--text);
+}
 .card p{font-size:14px;color:var(--muted);line-height:1.5}
 
 /* Pyramid */
 .pyramid{display:flex;flex-direction:column;align-items:center;gap:0;margin:30px 0}
-.pyramid-level{padding:18px 30px;text-align:center;font-weight:600;font-size:15px;position:relative;color:#fff}
-.pyramid-level:nth-child(1){background:linear-gradient(135deg,#f59e0b,#d97706);width:240px;clip-path:polygon(20% 0,80% 0,100% 100%,0 100%);border-radius:8px 8px 0 0}
-.pyramid-level:nth-child(2){background:linear-gradient(135deg,#ef4444,#dc2626);width:340px}
-.pyramid-level:nth-child(3){background:linear-gradient(135deg,#8b5cf6,#7c3aed);width:440px;border-radius:0 0 12px 12px}
+.pyramid-level{padding:18px 30px;text-align:center;font-weight:700;font-size:15px;position:relative;color:#fff}
+.pyramid-level:nth-child(1){background:linear-gradient(135deg,#c084fc,#8b5cf6);width:240px;clip-path:polygon(20% 0,80% 0,100% 100%,0 100%);border-radius:8px 8px 0 0}
+.pyramid-level:nth-child(2){background:linear-gradient(135deg,#fca5a5,#ef4444);width:340px}
+.pyramid-level:nth-child(3){background:linear-gradient(135deg,#ffd494,#df9e28);width:440px;border-radius:0 0 12px 12px}
 
 /* Stats */
 .stats{display:flex;gap:40px;margin-top:30px;flex-wrap:wrap;justify-content:center}
 .stat{text-align:center}
-.stat .num{font-size:clamp(36px,4vw,56px);font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat .label{font-size:14px;color:var(--muted);margin-top:4px}
+.stat .num{font-size:clamp(36px,4vw,56px);font-weight:900;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .label{font-size:14px;color:var(--muted);margin-top:4px;font-weight: 600}
 
 /* Table */
-.tbl{width:100%;max-width:900px;margin-top:24px;border-collapse:collapse}
-.tbl th,.tbl td{padding:14px 20px;text-align:left;border-bottom:1px solid var(--border);font-size:15px}
-.tbl th{color:var(--accent);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:1px}
-.tbl td{color:var(--text)}
-.tbl tr:hover td{background:var(--glass)}
+.tbl{
+  width:100%;
+  max-width:900px;
+  margin-top:24px;
+  border-collapse:collapse;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.tbl th,.tbl td{padding:16px 24px;text-align:left;border-bottom:1px solid var(--border);font-size:15px}
+.tbl th{
+  background: rgba(245, 166, 35, 0.05);
+  color:var(--accent);
+  font-weight:800;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.tbl td{color:var(--text);font-weight: 500;}
+.tbl tr:last-child td{border-bottom: none;}
+.tbl tr:hover td{background:rgba(242, 235, 225, 0.3)}
 
 /* Comparison */
 .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;max-width:900px;margin-top:24px}
-.vs-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center}
-.vs-box.ours{border-color:var(--accent);background:rgba(245,158,11,0.05)}
+.vs-box{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px;
+  text-align:center;
+  box-shadow: var(--shadow);
+}
+.vs-box.ours{border-color:var(--accent);background:rgba(245,158,11,0.03)}
 .vs-mid{font-size:28px;font-weight:900;color:var(--muted)}
 
 /* List */
@@ -74,13 +238,31 @@ p,.desc{font-size:clamp(16px,1.4vw,22px);color:var(--muted);line-height:1.6;max-
 .check-list li::before{content:'✅';font-size:18px}
 
 /* Bg effects */
-.glow{position:absolute;width:400px;height:400px;border-radius:50%;filter:blur(120px);opacity:.15;pointer-events:none}
-.glow-amber{background:var(--accent);top:-100px;right:-100px}
-.glow-red{background:var(--accent2);bottom:-100px;left:-100px}
-.glow-purple{background:var(--purple);top:50%;left:-100px}
+.glow{
+  position:absolute;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  filter:blur(140px);
+  opacity:.4;
+  pointer-events:none;
+  z-index: 0;
+}
+.glow-amber{background:#fef5e8;top:-100px;right:-100px}
+.glow-red{background:#fee2e2;bottom:-100px;left:-100px}
+.glow-purple{background:#f5f3ff;top:50%;left:-100px}
 
 /* Quote */
-.quote{font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,44px);font-style:italic;line-height:1.4;max-width:800px;margin:20px 0}
+.quote{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,3vw,44px);
+  font-weight: 700;
+  font-style:italic;
+  line-height:1.4;
+  max-width:800px;
+  margin:20px 0;
+  color: var(--text);
+}
 .quote-author{font-size:16px;color:var(--muted);margin-top:12px;font-family:'Inter',sans-serif;font-style:normal}
 
 @media(max-width:768px){
@@ -93,6 +275,8 @@ p,.desc{font-size:clamp(16px,1.4vw,22px);color:var(--muted);line-height:1.6;max-
 </style>
 </head>
 <body>
+
+<div class="slide-logo">🍺 Flavor<span>Tree</span></div>
 
 <div class="slide-num"><span id="curr">1</span> / <span id="total">10</span></div>
 
@@ -126,17 +310,17 @@ p,.desc{font-size:clamp(16px,1.4vw,22px);color:var(--muted);line-height:1.6;max-
     <span class="tag">Проблема</span>
     <h2>Люди <span class="highlight-red">пьют</span> пиво,<br>но не <span class="highlight">понимают</span> его</h2>
     <div class="cards" style="margin-top:30px">
-      <div class="card">
+      <div class="card" style="border-color:var(--accent2)">
         <div class="icon">🎯</div>
         <h4>72% выбирают по цене</h4>
         <p>Потребители не умеют объяснить, почему им нравится конкретное пиво. Выбор — привычка, не вкус.</p>
       </div>
-      <div class="card">
+      <div class="card" style="border-color:var(--accent)">
         <div class="icon">🍺</div>
         <h4>15 брендов — 0 различий</h4>
         <p>Efes KZ имеет 15 уникальных брендов, но потребитель не видит разницы между ними.</p>
       </div>
-      <div class="card">
+      <div class="card" style="border-color:var(--muted)">
         <div class="icon">📭</div>
         <h4>Нет платформ в СНГ</h4>
         <p>Untappd — это просто оценки и чекины. В СНГ нет ни одной платформы для сенсорного образования.</p>
@@ -202,17 +386,17 @@ p,.desc{font-size:clamp(16px,1.4vw,22px);color:var(--muted);line-height:1.6;max-
     <span class="tag">Уникальные фичи</span>
     <h2>Что делает нас <span class="highlight">особенными</span></h2>
     <div class="cards">
-      <div class="card">
+      <div class="card" style="border-color:var(--purple)">
         <div class="icon">🧬</div>
         <h4>Flavor DNA</h4>
         <p>Персональный вкусовой профиль — как Spotify Wrapped. «Ты 70% цитрусовый». Виральный шеринг.</p>
       </div>
-      <div class="card">
+      <div class="card" style="border-color:var(--accent)">
         <div class="icon">🍖</div>
         <h4>Казахская кухня + Пиво</h4>
         <p>Бешбармак → Karagandinskoe Тёмное. Шашлык → Efes Pilsener. Уникальная локализация.</p>
       </div>
-      <div class="card">
+      <div class="card" style="border-color:var(--blue)">
         <div class="icon">📸</div>
         <h4>Scan этикетки</h4>
         <p>Наводишь камеру → мгновенная вкусовая пирамида + рекомендация к еде.</p>
@@ -257,17 +441,17 @@ p,.desc{font-size:clamp(16px,1.4vw,22px);color:var(--muted);line-height:1.6;max-
     <h2>📈 Как Flavor Tree <span class="highlight">растит прибыль</span> Efes</h2>
     <p>Образование потребителя напрямую увеличивает доходность бизнеса</p>
     <div class="cards" style="margin-top:30px">
-      <div class="card">
+      <div class="card" style="border-color:var(--accent)">
         <div class="icon">🚀</div>
         <h4>Premiumization</h4>
         <p>Маржа премиум-брендов в 2-3 раза выше. Сдвиг всего 2% потребителей в премиум увеличивает чистую прибыль Efes KZ на <strong>+$1.5M - $3M</strong> в год.</p>
       </div>
-      <div class="card">
+      <div class="card" style="border-color:var(--green)">
         <div class="icon">🎯</div>
         <h4>Рынок TAM/SAM/SOM</h4>
         <p>TAM (весь рынок пива РК) — $1.8B. SAM (сегмент вкусового пива) — $720M. SOM (цель на 3 года) — <strong>$7.2M</strong> (1% SAM).</p>
       </div>
-      <div class="card">
+      <div class="card" style="border-color:var(--purple)">
         <div class="icon">🏢</div>
         <h4>B2B HoReCa ROI</h4>
         <p>Обученный персонал HoReCa повышает средний чек на пиво на 15%. Подписка окупается для ресторана за 2 недели.</p>
