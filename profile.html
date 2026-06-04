@@ -1,250 +1,846 @@
+:
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flavor Tree — Профиль пользователя</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8f9fc;--card:#ffffff;--accent:#d97706;--accent-light:#fef3c7;--accent-bg:rgba(217,119,6,0.06);--gold:linear-gradient(135deg,#f59e0b,#d97706,#b45309);--text:#1e293b;--muted:#64748b;--border:rgba(0,0,0,0.07);--green:#16a34a;--blue:#2563eb;--purple:#7c3aed;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.03)}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flavor Tree — Профиль пользователя</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-.topnav{padding:14px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
-.logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text)}
-.logo span{background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.topnav nav a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;margin-left:28px;transition:color .2s}
-.topnav nav a:hover,.topnav nav a.active{color:var(--accent)}
+    :root {
+      --bg: #f8f9fc;
+      --card: #ffffff;
+      --accent: #d97706;
+      --accent-light: #fef3c7;
+      --accent-bg: rgba(217, 119, 6, 0.06);
+      --gold: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: rgba(0, 0, 0, 0.07);
+      --green: #16a34a;
+      --blue: #2563eb;
+      --purple: #7c3aed;
+      --red: #dc2626;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03)
+    }
 
-.profile-layout{max-width:1200px;margin:0 auto;padding:36px 24px;display:grid;grid-template-columns:340px 1fr;gap:28px}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh
+    }
 
-.sidebar{display:flex;flex-direction:column;gap:20px}
+    .topnav {
+      padding: 14px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03)
+    }
 
-.profile-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
-.profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:90px;background:linear-gradient(135deg,#fef3c7,#fde68a,#fcd34d);opacity:.5;pointer-events:none}
-.avatar-wrap{position:relative;width:110px;height:110px;margin:8px auto 14px;z-index:2}
-.avatar-wrap img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 4px 20px rgba(217,119,6,0.2)}
-.avatar-badge{position:absolute;bottom:2px;right:2px;background:var(--gold);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid #fff}
-.profile-card h2{font-family:'Playfair Display',serif;font-size:22px;position:relative;z-index:2;color:var(--text)}
-.profile-card .username{color:var(--accent);font-size:12px;font-weight:600;margin-bottom:10px}
-.profile-card .bio{color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:16px}
-.profile-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding-top:14px;border-top:1px solid var(--border)}
-.profile-stats .ps{text-align:center}
-.profile-stats .ps .v{font-size:18px;font-weight:800;background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.profile-stats .ps .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text)
+    }
 
-.dna-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.card-header h3{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--text)}
-.card-header .tag{font-size:9px;background:var(--accent-bg);color:var(--accent);padding:3px 9px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.dna-bars{display:flex;flex-direction:column;gap:10px}
-.dna-row{display:flex;align-items:center;gap:10px}
-.dna-row .label{width:68px;font-size:11px;color:var(--muted);font-weight:500;text-align:right}
-.dna-row .bar-bg{flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden}
-.dna-row .bar-fill{height:100%;border-radius:4px}
-.dna-row .pct{width:34px;font-size:11px;font-weight:700;color:var(--text)}
-.dna-share{margin-top:14px;text-align:center;font-size:11px;color:var(--muted);padding-top:12px;border-top:1px solid var(--border)}
-.dna-share strong{color:var(--accent)}
+    .logo span {
+      background: var(--gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
 
-.achievements{display:flex;gap:8px;flex-wrap:wrap;margin-top:0}
-.ach{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;border:1px solid var(--border);font-size:10px;font-weight:600;background:#fff;transition:all .3s;color:var(--text)}
-.ach:hover{border-color:var(--accent);background:var(--accent-light)}
-.ach .ach-icon{font-size:14px}
+    .topnav nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      margin-left: 28px;
+      transition: color .2s
+    }
 
-.content{display:flex;flex-direction:column;gap:20px}
+    .topnav nav a:hover,
+    .topnav nav a.active {
+      color: var(--accent)
+    }
 
-.school-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
-.school-levels{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px}
-.level-item{text-align:center;padding:14px 8px;border-radius:14px;border:1px solid var(--border);transition:all .3s;background:#fff}
-.level-item.completed{border-color:var(--green);background:rgba(22,163,74,0.04)}
-.level-item.current{border-color:var(--accent);background:var(--accent-bg);box-shadow:0 0 0 3px rgba(217,119,6,0.08)}
-.level-item.locked{opacity:.4}
-.level-icon{font-size:26px;margin-bottom:6px;display:block}
-.level-name{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
-.level-desc{font-size:9px;color:var(--muted);line-height:1.4}
-.level-status{margin-top:6px;font-size:9px;font-weight:700;padding:3px 8px;border-radius:8px;display:inline-block}
-.level-item.completed .level-status{background:rgba(22,163,74,0.1);color:var(--green)}
-.level-item.current .level-status{background:var(--accent-light);color:var(--accent)}
-.level-item.locked .level-status{background:#f1f5f9;color:var(--muted)}
-.xp-bar-wrap{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
-.xp-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.xp-info .xp-text{font-size:12px;font-weight:600;color:var(--text)}
-.xp-info .xp-text span{color:var(--accent)}
-.xp-info .streak{font-size:11px;color:var(--muted)}
-.xp-bar-outer{height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden}
-.xp-bar-inner{height:100%;border-radius:4px;background:var(--gold)}
+    .profile-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 36px 24px;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 28px
+    }
 
-.recs-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
-.recs-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.rec-item{display:flex;gap:12px;padding:14px;border-radius:12px;border:1px solid var(--border);transition:all .3s;cursor:default;background:#fff}
-.rec-item:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 12px rgba(217,119,6,0.06)}
-.rec-emoji{font-size:28px;display:flex;align-items:center}
-.rec-info h4{font-size:13px;font-weight:700;color:var(--text)}
-.rec-info p{font-size:10px;color:var(--muted);line-height:1.4}
-.rec-match{font-size:10px;font-weight:700;color:var(--accent);margin-top:3px}
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px
+    }
 
-.notes-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
-.notes-list{display:flex;flex-direction:column;gap:12px}
-.note-entry{display:flex;gap:14px;padding:14px;border-radius:12px;border:1px solid var(--border);transition:all .3s;background:#fff}
-.note-entry:hover{border-color:rgba(217,119,6,0.3)}
-.note-beer-img{width:40px;height:40px;border-radius:10px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.note-content{flex:1}
-.note-content h4{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;color:var(--text)}
-.note-content .date{font-size:10px;color:var(--muted);font-weight:400}
-.note-content p{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}
-.note-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
-.note-tags span{font-size:9px;padding:2px 7px;border-radius:6px;font-weight:600}
-.note-rating{display:flex;align-items:center;font-size:12px;color:var(--accent);font-weight:700;flex-shrink:0;align-self:center}
+    .profile-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow)
+    }
 
-.footer-badge{text-align:center;padding:28px;color:var(--muted);font-size:11px}
-.footer-badge strong{color:var(--accent)}
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 90px;
+      background: linear-gradient(135deg, #fef3c7, #fde68a, #fcd34d);
+      opacity: .5;
+      pointer-events: none
+    }
 
-@media(max-width:900px){
-  .profile-layout{grid-template-columns:1fr}
-  .school-levels{grid-template-columns:1fr 1fr}
-  .recs-list{grid-template-columns:1fr}
-}
-</style>
+    .avatar-wrap {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin: 8px auto 14px;
+      z-index: 2
+    }
+
+    .avatar-wrap img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 20px rgba(217, 119, 6, 0.2)
+    }
+
+    .avatar-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: var(--gold);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      border: 2px solid #fff
+    }
+
+    .profile-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      position: relative;
+      z-index: 2;
+      color: var(--text)
+    }
+
+    .profile-card .username {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px
+    }
+
+    .profile-card .bio {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 16px
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border)
+    }
+
+    .profile-stats .ps {
+      text-align: center
+    }
+
+    .profile-stats .ps .v {
+      font-size: 18px;
+      font-weight: 800;
+      background: var(--gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
+
+    .profile-stats .ps .l {
+      font-size: 9px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-top: 2px
+    }
+
+    .dna-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--shadow)
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px
+    }
+
+    .card-header h3 {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text)
+    }
+
+    .card-header .tag {
+      font-size: 9px;
+      background: var(--accent-bg);
+      color: var(--accent);
+      padding: 3px 9px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .dna-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .dna-row {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .dna-row .label {
+      width: 68px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: right
+    }
+
+    .dna-row .bar-bg {
+      flex: 1;
+      height: 7px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      overflow: hidden
+    }
+
+    .dna-row .bar-fill {
+      height: 100%;
+      border-radius: 4px
+    }
+
+    .dna-row .pct {
+      width: 34px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .dna-share {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      padding-top: 12px;
+      border-top: 1px solid var(--border)
+    }
+
+    .dna-share strong {
+      color: var(--accent)
+    }
+
+    .achievements {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 0
+    }
+
+    .ach {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 600;
+      background: #fff;
+      transition: all .3s;
+      color: var(--text)
+    }
+
+    .ach:hover {
+      border-color: var(--accent);
+      background: var(--accent-light)
+    }
+
+    .ach .ach-icon {
+      font-size: 14px
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px
+    }
+
+    .school-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow)
+    }
+
+    .school-levels {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 4px
+    }
+
+    .level-item {
+      text-align: center;
+      padding: 14px 8px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      transition: all .3s;
+      background: #fff
+    }
+
+    .level-item.completed {
+      border-color: var(--green);
+      background: rgba(22, 163, 74, 0.04)
+    }
+
+    .level-item.current {
+      border-color: var(--accent);
+      background: var(--accent-bg);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.08)
+    }
+
+    .level-item.locked {
+      opacity: .4
+    }
+
+    .level-icon {
+      font-size: 26px;
+      margin-bottom: 6px;
+      display: block
+    }
+
+    .level-name {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      color: var(--text)
+    }
+
+    .level-desc {
+      font-size: 9px;
+      color: var(--muted);
+      line-height: 1.4
+    }
+
+    .level-status {
+      margin-top: 6px;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 8px;
+      display: inline-block
+    }
+
+    .level-item.completed .level-status {
+      background: rgba(22, 163, 74, 0.1);
+      color: var(--green)
+    }
+
+    .level-item.current .level-status {
+      background: var(--accent-light);
+      color: var(--accent)
+    }
+
+    .level-item.locked .level-status {
+      background: #f1f5f9;
+      color: var(--muted)
+    }
+
+    .xp-bar-wrap {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border)
+    }
+
+    .xp-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px
+    }
+
+    .xp-info .xp-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    .xp-info .xp-text span {
+      color: var(--accent)
+    }
+
+    .xp-info .streak {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .xp-bar-outer {
+      height: 8px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      overflow: hidden
+    }
+
+    .xp-bar-inner {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--gold)
+    }
+
+    .recs-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow)
+    }
+
+    .recs-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .rec-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      transition: all .3s;
+      cursor: default;
+      background: #fff
+    }
+
+    .rec-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.06)
+    }
+
+    .rec-emoji {
+      font-size: 28px;
+      display: flex;
+      align-items: center
+    }
+
+    .rec-info h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .rec-info p {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.4
+    }
+
+    .rec-match {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 3px
+    }
+
+    .notes-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow)
+    }
+
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .note-entry {
+      display: flex;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      transition: all .3s;
+      background: #fff
+    }
+
+    .note-entry:hover {
+      border-color: rgba(217, 119, 6, 0.3)
+    }
+
+    .note-beer-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0
+    }
+
+    .note-content {
+      flex: 1
+    }
+
+    .note-content h4 {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text)
+    }
+
+    .note-content .date {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 400
+    }
+
+    .note-content p {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 3px
+    }
+
+    .note-tags {
+      display: flex;
+      gap: 5px;
+      margin-top: 6px;
+      flex-wrap: wrap
+    }
+
+    .note-tags span {
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 600
+    }
+
+    .note-rating {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      align-self: center
+    }
+
+    .footer-badge {
+      text-align: center;
+      padding: 28px;
+      color: var(--muted);
+      font-size: 11px
+    }
+
+    .footer-badge strong {
+      color: var(--accent)
+    }
+
+    @media(max-width:900px) {
+      .profile-layout {
+        grid-template-columns: 1fr
+      }
+
+      .school-levels {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .recs-list {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="topnav">
-  <div class="logo">🍺 Flavor <span>Tree</span></div>
-  <nav>
-    <a href="#">Каталог</a>
-    <a href="#">Ноты</a>
-    <a href="#">Школа</a>
-    <a href="#" class="active">Профиль</a>
-  </nav>
-</div>
+  <div class="topnav">
+    <div class="logo">🍺 Flavor <span>Tree</span></div>
+    <nav>
+      <a href="#">Каталог</a>
+      <a href="#">Ноты</a>
+      <a href="#">Школа</a>
+      <a href="#" class="active">Профиль</a>
+    </nav>
+  </div>
 
-<div class="profile-layout">
-  <div class="sidebar">
-    <div class="profile-card">
-      <div class="avatar-wrap">
-        <img src="avatar.png" alt="Avatar">
-        <div class="avatar-badge">🟡</div>
+  <div class="profile-layout">
+    <div class="sidebar">
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <img src="avatar.png" alt="Avatar">
+          <div class="avatar-badge">🟡</div>
+        </div>
+        <h2>Caterinw</h2>
+        <div class="username">@caterinw · Уровень Исследователь</div>
+        <p class="bio">Начинающий пивной сомелье. Люблю цитрусовые ноты и лёгкие лагеры. Исследую мир вкусов через
+          Flavor Tree 🌿</p>
+        <div class="profile-stats">
+          <div class="ps">
+            <div class="v">12</div>
+            <div class="l">Дегустаций</div>
+          </div>
+          <div class="ps">
+            <div class="v">847</div>
+            <div class="l">XP</div>
+          </div>
+          <div class="ps">
+            <div class="v">5🔥</div>
+            <div class="l">Стрик</div>
+          </div>
+        </div>
       </div>
-      <h2>Caterinw</h2>
-      <div class="username">@caterinw · Уровень Исследователь</div>
-      <p class="bio">Начинающий пивной сомелье. Люблю цитрусовые ноты и лёгкие лагеры. Исследую мир вкусов через Flavor Tree 🌿</p>
-      <div class="profile-stats">
-        <div class="ps"><div class="v">12</div><div class="l">Дегустаций</div></div>
-        <div class="ps"><div class="v">847</div><div class="l">XP</div></div>
-        <div class="ps"><div class="v">5🔥</div><div class="l">Стрик</div></div>
+
+      <div class="dna-card">
+        <div class="card-header">
+          <h3>🧬 Flavor DNA</h3>
+          <span class="tag">Обновлено</span>
+        </div>
+        <div class="dna-bars">
+          <div class="dna-row"><span class="label">Цитрус</span>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width:42%;background:linear-gradient(90deg,#fbbf24,#f59e0b)"></div>
+            </div><span class="pct">42%</span>
+          </div>
+          <div class="dna-row"><span class="label">Хлеб</span>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width:28%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div>
+            </div><span class="pct">28%</span>
+          </div>
+          <div class="dna-row"><span class="label">Горечь</span>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width:15%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div>
+            </div><span class="pct">15%</span>
+          </div>
+          <div class="dna-row"><span class="label">Трава</span>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width:9%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div>
+            </div><span class="pct">9%</span>
+          </div>
+          <div class="dna-row"><span class="label">Цветочный</span>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width:6%;background:linear-gradient(90deg,#ec4899,#f472b6)"></div>
+            </div><span class="pct">6%</span>
+          </div>
+        </div>
+        <div class="dna-share">🧬 «Ты на 42% цитрусовый» — <strong>Поделиться DNA</strong></div>
+      </div>
+
+      <div class="dna-card">
+        <div class="card-header">
+          <h3>🏆 Достижения</h3>
+          <span class="tag">4 / 12</span>
+        </div>
+        <div class="achievements">
+          <div class="ach"><span class="ach-icon">🍺</span> Первый глоток</div>
+          <div class="ach"><span class="ach-icon">🔥</span> 5 дней подряд</div>
+          <div class="ach"><span class="ach-icon">🍋</span> Цитрусовый фанат</div>
+          <div class="ach"><span class="ach-icon">📝</span> 10 заметок</div>
+          <div class="ach" style="opacity:.35"><span class="ach-icon">🔒</span> Слепая дегустация</div>
+          <div class="ach" style="opacity:.35"><span class="ach-icon">🔒</span> Food Pairing Pro</div>
+        </div>
       </div>
     </div>
 
-    <div class="dna-card">
-      <div class="card-header">
-        <h3>🧬 Flavor DNA</h3>
-        <span class="tag">Обновлено</span>
+    <div class="content">
+      <div class="school-card">
+        <div class="card-header">
+          <h3>🎓 Школа Пивных Сомелье</h3>
+          <span class="tag">В процессе</span>
+        </div>
+        <div class="school-levels">
+          <div class="level-item completed"><span class="level-icon">🟢</span>
+            <div class="level-name">Новичок</div>
+            <div class="level-desc">Базовые вкусы, как правильно пробовать</div>
+            <div class="level-status">✓ Пройден</div>
+          </div>
+          <div class="level-item current"><span class="level-icon">🔵</span>
+            <div class="level-name">Исследователь</div>
+            <div class="level-desc">Ароматические ноты, стили пива</div>
+            <div class="level-status">◉ В процессе</div>
+          </div>
+          <div class="level-item locked"><span class="level-icon">🟣</span>
+            <div class="level-name">Знаток</div>
+            <div class="level-desc">Food pairing, влияние ингредиентов</div>
+            <div class="level-status">🔒 Закрыт</div>
+          </div>
+          <div class="level-item locked"><span class="level-icon">🟡</span>
+            <div class="level-name">Сомелье</div>
+            <div class="level-desc">Слепая дегустация, сертификат</div>
+            <div class="level-status">🔒 Закрыт</div>
+          </div>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-info">
+            <div class="xp-text"><span>847</span> / 1200 XP до уровня Знаток</div>
+            <div class="streak">🔥 5 дней стрик</div>
+          </div>
+          <div class="xp-bar-outer">
+            <div class="xp-bar-inner" style="width:70%"></div>
+          </div>
+        </div>
       </div>
-      <div class="dna-bars">
-        <div class="dna-row"><span class="label">Цитрус</span><div class="bar-bg"><div class="bar-fill" style="width:42%;background:linear-gradient(90deg,#fbbf24,#f59e0b)"></div></div><span class="pct">42%</span></div>
-        <div class="dna-row"><span class="label">Хлеб</span><div class="bar-bg"><div class="bar-fill" style="width:28%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div><span class="pct">28%</span></div>
-        <div class="dna-row"><span class="label">Горечь</span><div class="bar-bg"><div class="bar-fill" style="width:15%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div><span class="pct">15%</span></div>
-        <div class="dna-row"><span class="label">Трава</span><div class="bar-bg"><div class="bar-fill" style="width:9%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div></div><span class="pct">9%</span></div>
-        <div class="dna-row"><span class="label">Цветочный</span><div class="bar-bg"><div class="bar-fill" style="width:6%;background:linear-gradient(90deg,#ec4899,#f472b6)"></div></div><span class="pct">6%</span></div>
-      </div>
-      <div class="dna-share">🧬 «Ты на 42% цитрусовый» — <strong>Поделиться DNA</strong></div>
-    </div>
 
-    <div class="dna-card">
-      <div class="card-header">
-        <h3>🏆 Достижения</h3>
-        <span class="tag">4 / 12</span>
+      <div class="recs-card">
+        <div class="card-header">
+          <h3>🤖 Рекомендации для тебя</h3>
+          <span class="tag">AI Sommelier</span>
+        </div>
+        <div class="recs-list">
+          <div class="rec-item">
+            <div class="rec-emoji">🍺</div>
+            <div class="rec-info">
+              <h4>Efes Pilsener</h4>
+              <p>Твоя идеальная пара. Цитрус + хлеб — прямо по твоему DNA.</p>
+              <div class="rec-match">92% match</div>
+            </div>
+          </div>
+          <div class="rec-item">
+            <div class="rec-emoji">🌾</div>
+            <div class="rec-info">
+              <h4>Белое Золото Пшеничное</h4>
+              <p>Пшеничные ноты усилят твою хлебную сторону.</p>
+              <div class="rec-match">87% match</div>
+            </div>
+          </div>
+          <div class="rec-item">
+            <div class="rec-emoji">🦁</div>
+            <div class="rec-info">
+              <h4>Karagandinskoe Светлое</h4>
+              <p>Мягкий лагер с травяными нотами — новое для тебя.</p>
+              <div class="rec-match">81% match</div>
+            </div>
+          </div>
+          <div class="rec-item">
+            <div class="rec-emoji">🍯</div>
+            <div class="rec-info">
+              <h4>Kozel Тёмное</h4>
+              <p>Попробуй тёмную сторону — карамель и шоколад.</p>
+              <div class="rec-match">74% match</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="achievements">
-        <div class="ach"><span class="ach-icon">🍺</span> Первый глоток</div>
-        <div class="ach"><span class="ach-icon">🔥</span> 5 дней подряд</div>
-        <div class="ach"><span class="ach-icon">🍋</span> Цитрусовый фанат</div>
-        <div class="ach"><span class="ach-icon">📝</span> 10 заметок</div>
-        <div class="ach" style="opacity:.35"><span class="ach-icon">🔒</span> Слепая дегустация</div>
-        <div class="ach" style="opacity:.35"><span class="ach-icon">🔒</span> Food Pairing Pro</div>
+
+      <div class="notes-card">
+        <div class="card-header">
+          <h3>📝 Мои дегустационные заметки</h3>
+          <span class="tag">Последние</span>
+        </div>
+        <div class="notes-list">
+          <div class="note-entry">
+            <div class="note-beer-img">🍺</div>
+            <div class="note-content">
+              <h4>Efes Pilsener <span class="date">· 2 дня назад</span></h4>
+              <p>Первый глоток — яркий цитрус. Потом раскрывается хлебная нота, очень мягкая. Послевкусие чистое, сухое.
+              </p>
+              <div class="note-tags">
+                <span style="background:#fef3c7;color:#d97706">🍋 Цитрус</span>
+                <span style="background:#fed7aa;color:#c2410c">🍞 Хлеб</span>
+                <span style="background:#dcfce7;color:#16a34a">🌿 Свежесть</span>
+              </div>
+            </div>
+            <div class="note-rating">★ 4.8</div>
+          </div>
+          <div class="note-entry">
+            <div class="note-beer-img">🥃</div>
+            <div class="note-content">
+              <h4>Karagandinskoe Тёмное <span class="date">· 5 дней назад</span></h4>
+              <p>Неожиданно сложный вкус. Карамель, лёгкая копчёность. Попробовал с казы — сочетание бомба!</p>
+              <div class="note-tags">
+                <span style="background:#ede9fe;color:#7c3aed">🍯 Карамель</span>
+                <span style="background:#fee2e2;color:#dc2626">🔥 Копчёность</span>
+              </div>
+            </div>
+            <div class="note-rating">★ 4.5</div>
+          </div>
+          <div class="note-entry">
+            <div class="note-beer-img">🌾</div>
+            <div class="note-content">
+              <h4>Белое Золото Пшеничное <span class="date">· 1 неделю назад</span></h4>
+              <p>Мягкое, обволакивающее. Банановые нотки и гвоздика. С баурсаками — просто космос.</p>
+              <div class="note-tags">
+                <span style="background:#fef3c7;color:#d97706">🍌 Банан</span>
+                <span style="background:#fce7f3;color:#db2777">🌸 Гвоздика</span>
+              </div>
+            </div>
+            <div class="note-rating">★ 4.2</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="content">
-    <div class="school-card">
-      <div class="card-header">
-        <h3>🎓 Школа Пивных Сомелье</h3>
-        <span class="tag">В процессе</span>
-      </div>
-      <div class="school-levels">
-        <div class="level-item completed"><span class="level-icon">🟢</span><div class="level-name">Новичок</div><div class="level-desc">Базовые вкусы, как правильно пробовать</div><div class="level-status">✓ Пройден</div></div>
-        <div class="level-item current"><span class="level-icon">🔵</span><div class="level-name">Исследователь</div><div class="level-desc">Ароматические ноты, стили пива</div><div class="level-status">◉ В процессе</div></div>
-        <div class="level-item locked"><span class="level-icon">🟣</span><div class="level-name">Знаток</div><div class="level-desc">Food pairing, влияние ингредиентов</div><div class="level-status">🔒 Закрыт</div></div>
-        <div class="level-item locked"><span class="level-icon">🟡</span><div class="level-name">Сомелье</div><div class="level-desc">Слепая дегустация, сертификат</div><div class="level-status">🔒 Закрыт</div></div>
-      </div>
-      <div class="xp-bar-wrap">
-        <div class="xp-info"><div class="xp-text"><span>847</span> / 1200 XP до уровня Знаток</div><div class="streak">🔥 5 дней стрик</div></div>
-        <div class="xp-bar-outer"><div class="xp-bar-inner" style="width:70%"></div></div>
-      </div>
-    </div>
-
-    <div class="recs-card">
-      <div class="card-header">
-        <h3>🤖 Рекомендации для тебя</h3>
-        <span class="tag">AI Sommelier</span>
-      </div>
-      <div class="recs-list">
-        <div class="rec-item"><div class="rec-emoji">🍺</div><div class="rec-info"><h4>Efes Pilsener</h4><p>Твоя идеальная пара. Цитрус + хлеб — прямо по твоему DNA.</p><div class="rec-match">92% match</div></div></div>
-        <div class="rec-item"><div class="rec-emoji">🌾</div><div class="rec-info"><h4>Белое Золото Пшеничное</h4><p>Пшеничные ноты усилят твою хлебную сторону.</p><div class="rec-match">87% match</div></div></div>
-        <div class="rec-item"><div class="rec-emoji">🦁</div><div class="rec-info"><h4>Karagandinskoe Светлое</h4><p>Мягкий лагер с травяными нотами — новое для тебя.</p><div class="rec-match">81% match</div></div></div>
-        <div class="rec-item"><div class="rec-emoji">🍯</div><div class="rec-info"><h4>Kozel Тёмное</h4><p>Попробуй тёмную сторону — карамель и шоколад.</p><div class="rec-match">74% match</div></div></div>
-      </div>
-    </div>
-
-    <div class="notes-card">
-      <div class="card-header">
-        <h3>📝 Мои дегустационные заметки</h3>
-        <span class="tag">Последние</span>
-      </div>
-      <div class="notes-list">
-        <div class="note-entry">
-          <div class="note-beer-img">🍺</div>
-          <div class="note-content">
-            <h4>Efes Pilsener <span class="date">· 2 дня назад</span></h4>
-            <p>Первый глоток — яркий цитрус. Потом раскрывается хлебная нота, очень мягкая. Послевкусие чистое, сухое.</p>
-            <div class="note-tags">
-              <span style="background:#fef3c7;color:#d97706">🍋 Цитрус</span>
-              <span style="background:#fed7aa;color:#c2410c">🍞 Хлеб</span>
-              <span style="background:#dcfce7;color:#16a34a">🌿 Свежесть</span>
-            </div>
-          </div>
-          <div class="note-rating">★ 4.8</div>
-        </div>
-        <div class="note-entry">
-          <div class="note-beer-img">🥃</div>
-          <div class="note-content">
-            <h4>Karagandinskoe Тёмное <span class="date">· 5 дней назад</span></h4>
-            <p>Неожиданно сложный вкус. Карамель, лёгкая копчёность. Попробовал с казы — сочетание бомба!</p>
-            <div class="note-tags">
-              <span style="background:#ede9fe;color:#7c3aed">🍯 Карамель</span>
-              <span style="background:#fee2e2;color:#dc2626">🔥 Копчёность</span>
-            </div>
-          </div>
-          <div class="note-rating">★ 4.5</div>
-        </div>
-        <div class="note-entry">
-          <div class="note-beer-img">🌾</div>
-          <div class="note-content">
-            <h4>Белое Золото Пшеничное <span class="date">· 1 неделю назад</span></h4>
-            <p>Мягкое, обволакивающее. Банановые нотки и гвоздика. С баурсаками — просто космос.</p>
-            <div class="note-tags">
-              <span style="background:#fef3c7;color:#d97706">🍌 Банан</span>
-              <span style="background:#fce7f3;color:#db2777">🌸 Гвоздика</span>
-            </div>
-          </div>
-          <div class="note-rating">★ 4.2</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="footer-badge">🍺 <strong>Flavor Tree</strong> — OneIdea Championship 2026 · Efes Kazakhstan</div>
+  <div class="footer-badge">🍺 <strong>Flavor Tree</strong> — OneIdea Championship 2026 · Efes Kazakhstan</div>
 </body>
+
 </html>
