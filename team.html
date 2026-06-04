@@ -4,79 +4,303 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flavor Tree — Команда</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8f9fc;--card:#fff;--accent:#d97706;--accent-light:#fef3c7;--gold:linear-gradient(135deg,#f59e0b,#d97706);--text:#1e293b;--muted:#64748b;--border:rgba(0,0,0,0.06);--green:#16a34a;--purple:#7c3aed;--shadow:0 2px 8px rgba(0,0,0,0.04)}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;width:100vw;overflow:hidden;display:flex;align-items:center;justify-content:center}
+:root{
+  --bg: radial-gradient(100% 100% at 100% 0%, #fef5e8 0%, rgba(255, 255, 255, 0) 100%), 
+        radial-gradient(100% 100% at 0% 100%, #f4ebff 0%, rgba(255, 255, 255, 0) 100%), 
+        #fff;
+  --card: rgba(255, 255, 255, 0.75);
+  --accent:#df9e28;
+  --accent-dark:#3d290b;
+  --text:#1e293b;
+  --muted:#64748b;
+  --green:#22c55e;
+  --purple:#8b5cf6;
+  --shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+}
+body{
+  font-family:'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.slide{width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:50px 80px;position:relative}
+.slide{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 80px;
+  position: relative;
+}
 
-.slide-logo{position:absolute;top:28px;left:44px;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text)}
-.slide-logo span{background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.slide-logo{
+  position: absolute;
+  top: 28px;
+  left: 44px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+.slide-logo span{
+  color: #df9e28;
+}
 
-.header{text-align:center;margin-bottom:44px}
-.tag{display:inline-block;background:var(--accent-light);color:var(--accent);padding:5px 16px;border-radius:16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
-.header h2{font-family:'Playfair Display',serif;font-size:44px;color:var(--text)}
-.header h2 .hl{background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+/* Watermark */
+.watermark {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 240px;
+  opacity: 0.03;
+  pointer-events: none;
+  font-weight: 900;
+  user-select: none;
+}
 
-/* Team */
-.team{display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:960px;width:100%}
+.header{
+  text-align: center;
+  margin-bottom: 40px;
+}
+.tag{
+  display: inline-block;
+  background: #df9e28;
+  color: #fff;
+  padding: 6px 18px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 10px rgba(223, 158, 40, 0.2);
+}
+.header h2{
+  font-size: 46px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -1px;
+}
+.header h2 span{
+  color: #df9e28;
+}
 
-.member{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;display:flex;gap:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.member::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.member:first-child::before{background:var(--gold)}
-.member:last-child::before{background:linear-gradient(135deg,var(--purple),#a78bfa)}
+/* Team Grid */
+.team{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 1000px;
+  width: 100%;
+}
 
-.photo{width:120px;height:150px;border-radius:14px;background:#f1f5f9;border:2px dashed rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;color:var(--muted)}
+.member{
+  background: var(--card);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  gap: 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: transform 0.25s ease;
+}
+.member:hover {
+  transform: translateY(-2px);
+}
 
-.info .role{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:8px}
-.member:first-child .role{background:var(--accent-light);color:var(--accent)}
-.member:last-child .role{background:#ede9fe;color:var(--purple)}
-.info h3{font-size:20px;font-weight:800;margin-bottom:10px}
+/* Colored borders matching Impact slide */
+.member.eraly {
+  border: 1.5px solid #fcd34d; /* Warm orange/yellow border */
+}
+.member.adelia {
+  border: 1.5px solid #c084fc; /* Purple border */
+}
 
-.creds{list-style:none;display:flex;flex-direction:column;gap:5px}
-.creds li{font-size:12px;color:var(--muted);line-height:1.4}
-.creds li strong{color:var(--text)}
+.photo-box{
+  width: 110px;
+  height: 140px;
+  border-radius: 12px;
+  background: #faf8f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.member.eraly .photo-box {
+  border: 1px solid #fde68a;
+}
+.member.adelia .photo-box {
+  border: 1px solid #e9d5ff;
+}
+.photo-box span {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
 
-.skills{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
-.skill{font-size:9px;font-weight:600;padding:3px 8px;border-radius:6px;background:#f1f5f9;color:var(--text)}
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.info .role {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.member.eraly .role {
+  color: #d97706;
+}
+.member.adelia .role {
+  color: #7c3aed;
+}
 
-/* Bottom */
-.bottom{display:flex;gap:12px;max-width:960px;width:100%;margin-top:32px}
-.bx{flex:1;text-align:center;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
-.bx .ico{font-size:18px}
-.bx p{font-size:10px;font-weight:600;color:var(--text);margin-top:2px}
-.bx .ch{font-size:9px;color:var(--green);font-weight:700;margin-top:2px}
+.info h3{
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
 
-.foot{position:absolute;bottom:24px;font-size:10px;color:var(--muted)}
-.foot strong{color:var(--accent)}
+.creds{
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.creds li{
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.creds li::before {
+  content: "•";
+  font-weight: bold;
+}
+.member.eraly .creds li::before { color: #f59e0b; }
+.member.adelia .creds li::before { color: #8b5cf6; }
+
+.creds li strong{
+  color: #1e293b;
+}
+
+.skills{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+.skill{
+  font-size: 9px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* Bottom Coverage */
+.bottom{
+  display: flex;
+  gap: 16px;
+  max-width: 1000px;
+  width: 100%;
+  margin-top: 36px;
+}
+.bx{
+  flex: 1;
+  text-align: center;
+  padding: 14px;
+  background: var(--card);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.bx .ico{
+  font-size: 20px;
+}
+.bx p{
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+}
+.bx .ch{
+  font-size: 10px;
+  color: var(--green);
+  font-weight: 800;
+}
+
+.foot{
+  position: absolute;
+  bottom: 24px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.foot strong{
+  color: #df9e28;
+}
 </style>
 </head>
 <body>
+
+<div class="watermark">🍺</div>
+
 <div class="slide">
-  <div class="slide-logo">🍺 Flavor <span>Tree</span></div>
+  <div class="slide-logo">🍺 Flavor<span>Tree</span></div>
 
   <div class="header">
     <div class="tag">Команда</div>
-    <h2>Два человека — <span class="hl">полный цикл</span></h2>
+    <h2>Два человека — <span>полный цикл</span></h2>
   </div>
 
   <div class="team">
 
-    <div class="member">
-      <div class="photo">📷</div>
+    <!-- Ералы -->
+    <div class="member eraly">
+      <div class="photo-box">
+        📷
+        <span>Фото</span>
+      </div>
       <div class="info">
-        <div class="role">Backend & Product</div>
-        <h3>Ералы Абуталифулы</h3>
-        <ul class="creds">
-          <li>Backend-разработчик: <strong>Django, PostgreSQL</strong></li>
-          <li>Разработка <strong>Telegram-ботов</strong> и веб-приложений</li>
-          <li>Опыт запуска стартап-проектов (<strong>SteppeAI</strong>)</li>
-          <li>Питчинг перед инвесторами и экспертами</li>
-          <li>Публичные выступления и дебаты</li>
-          <li>Работа на стыке <strong>бизнеса и разработки</strong></li>
-        </ul>
+        <div>
+          <div class="role">Backend & Product</div>
+          <h3>Ералы Абуталифулы</h3>
+          <ul class="creds">
+            <li>Backend-разработчик: <strong>Django, PostgreSQL</strong></li>
+            <li>Разработка <strong>Telegram-ботов</strong> и веб-приложений</li>
+            <li>Опыт запуска стартап-проектов (<strong>SteppeAI</strong>)</li>
+            <li>Питчинг перед инвесторами и экспертами</li>
+            <li>Публичные выступления и дебаты</li>
+            <li>Работа на стыке <strong>бизнеса и разработки</strong></li>
+          </ul>
+        </div>
         <div class="skills">
           <span class="skill">Python</span>
           <span class="skill">Django</span>
@@ -86,19 +310,25 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
       </div>
     </div>
 
-    <div class="member">
-      <div class="photo">📷</div>
+    <!-- Аделия -->
+    <div class="member adelia">
+      <div class="photo-box">
+        📷
+        <span>Фото</span>
+      </div>
       <div class="info">
-        <div class="role">Frontend & Design</div>
-        <h3>Аджибаева Аделия</h3>
-        <ul class="creds">
-          <li>Frontend-разработчик: <strong>Angular, TypeScript</strong></li>
-          <li>Полный цикл разработки — <strong>PetCare системы</strong></li>
-          <li><strong>UX/UI</strong> дизайн и прототипирование в Figma</li>
-          <li>Адаптивная и мобильная вёрстка</li>
-          <li>Доводит проекты до <strong>продакшна</strong></li>
-          <li>Хастлер — берёт и делает</li>
-        </ul>
+        <div>
+          <div class="role">Frontend & Design</div>
+          <h3>Аджибаева Аделия</h3>
+          <ul class="creds">
+            <li>Frontend-разработчик: <strong>Angular, TypeScript</strong></li>
+            <li>Полный цикл разработки — <strong>PetCare системы</strong></li>
+            <li><strong>UX/UI</strong> дизайн и прототипирование в Figma</li>
+            <li>Адаптивная и мобильная вёрстка</li>
+            <li>Доводит проекты до <strong>продакшна</strong></li>
+            <li>Хастлер — берёт и делает</li>
+          </ul>
+        </div>
         <div class="skills">
           <span class="skill">Angular</span>
           <span class="skill">TypeScript</span>
@@ -120,5 +350,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 
   <div class="foot">🍺 <strong>Flavor Tree</strong> — OneIdea Championship 2026</div>
 </div>
+
 </body>
 </html>
