@@ -4,21 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flavor Tree - Команда</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
   --bg: radial-gradient(100% 100% at 100% 0%, #fef5e8 0%, rgba(255, 255, 255, 0) 100%), 
         radial-gradient(100% 100% at 0% 100%, #f4ebff 0%, rgba(255, 255, 255, 0) 100%), 
         #fff;
-  --card: rgba(255, 255, 255, 0.75);
-  --accent:#df9e28;
-  --accent-dark:#3d290b;
-  --text:#1e293b;
-  --muted:#64748b;
-  --green:#22c55e;
-  --purple:#8b5cf6;
-  --shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+  --card: #fdfbf7;
+  --accent: #df9e28;
+  --accent-dark: #3d290b;
+  --text: #111827;
+  --muted: #64748b;
+  --green: #22c55e;
+  --purple: #8b5cf6;
+  --border: #f2ebe1;
+  --shadow: 0 4px 20px -2px rgba(220,210,195,0.15);
 }
 body{
   font-family:'Inter', sans-serif;
@@ -47,10 +47,10 @@ body{
   position: absolute;
   top: 28px;
   left: 44px;
-  font-family: 'Playfair Display', serif;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text);
+  letter-spacing: -0.5px;
 }
 .slide-logo span{
   color: #df9e28;
@@ -75,8 +75,8 @@ body{
 }
 .tag{
   display: inline-block;
-  background: #df9e28;
-  color: #fff;
+  background: #f5a623;
+  color: #111827;
   padding: 6px 18px;
   border-radius: 30px;
   font-size: 11px;
@@ -84,17 +84,17 @@ body{
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 14px;
-  box-shadow: 0 4px 10px rgba(223, 158, 40, 0.2);
 }
 .header h2{
-  font-family: 'Playfair Display', serif;
-  font-size: 46px;
-  font-weight: 700;
+  font-size: 44px;
+  font-weight: 900;
   color: var(--text);
-  letter-spacing: -0.5px;
+  letter-spacing: -1.5px;
 }
-.header h2 span{
-  font-style: italic;
+.header h2 .red{
+  color: #dc2626;
+}
+.header h2 .gold{
   color: #df9e28;
 }
 
@@ -109,8 +109,8 @@ body{
 
 .member{
   background: var(--card);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
   padding: 32px;
   display: flex;
   gap: 24px;
@@ -122,19 +122,14 @@ body{
   transform: translateY(-2px);
 }
 
-/* Colored borders matching Impact slide */
-.member.eraly {
-  border: 1.5px solid #fcd34d; /* Warm orange/yellow border */
-}
-.member.adelia {
-  border: 1.5px solid #c084fc; /* Purple border */
-}
+/* Removed custom colored borders to match problem slide cards */
 
 .photo-box{
   width: 110px;
   height: 140px;
   border-radius: 12px;
   background: #faf8f5;
+  border: 1px solid #f2ebe1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -142,12 +137,6 @@ body{
   font-size: 24px;
   flex-shrink: 0;
   color: var(--muted);
-}
-.member.eraly .photo-box {
-  border: 1px solid #fde68a;
-}
-.member.adelia .photo-box {
-  border: 1px solid #e9d5ff;
 }
 .photo-box span {
   font-size: 10px;
@@ -177,11 +166,10 @@ body{
 }
 
 .info h3{
-  font-family: 'Playfair Display', serif;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 12px;
-  color: #0f172a;
+  color: var(--text);
 }
 
 .creds{
@@ -225,7 +213,7 @@ body{
   border-radius: 6px;
   background: #f8fafc;
   color: #475569;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 /* Bottom Coverage */
@@ -241,7 +229,7 @@ body{
   text-align: center;
   padding: 14px;
   background: var(--card);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: var(--shadow);
   display: flex;
@@ -284,7 +272,7 @@ body{
 
   <div class="header">
     <div class="tag">Команда</div>
-    <h2>Два человека - <span>полный цикл</span></h2>
+    <h2>Два <span class="red">человека</span> - <span class="gold">полный</span> цикл</h2>
   </div>
 
   <div class="team">
