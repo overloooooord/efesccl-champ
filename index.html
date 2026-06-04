@@ -4,223 +4,326 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flavor Tree — Efes Pilsener</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8f9fc;--card:#ffffff;--accent:#d97706;--accent-light:#fef3c7;--accent-bg:rgba(217,119,6,0.06);--gold:linear-gradient(135deg,#f59e0b,#d97706,#b45309);--text:#1e293b;--muted:#64748b;--border:rgba(0,0,0,0.07);--green:#16a34a;--purple:#7c3aed;--red:#dc2626;--pink:#db2777;--shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.03)}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+:root{
+  --bg:#faf8f5;
+  --card:#fff;
+  --cream:#f5f0e8;
+  --accent:#9b6b3d;
+  --accent2:#7a5230;
+  --accent-light:#f0e6d6;
+  --gold:#b8860b;
+  --text:#2c2417;
+  --muted:#7a7062;
+  --border:#e8e0d4;
+  --shadow:0 1px 4px rgba(44,36,23,0.06);
+  --heading:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --body:'Nunito Sans','Helvetica Neue',Arial,sans-serif;
+}
+body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:1.55;font-size:14px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
 
-.topnav{padding:14px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
-.logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text)}
-.logo span{background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.topnav nav a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;margin-left:28px;transition:color .2s}
-.topnav nav a:hover,.topnav nav a.active{color:var(--accent)}
+/* Nav */
+.nav{padding:12px 0;border-bottom:1px solid var(--border);background:#fff}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--heading);font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.5px}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;gap:20px}
+.nav-links a{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;text-decoration:none}
+.nav-links a:hover{color:var(--accent)}
 
-.container{max-width:1200px;margin:0 auto;padding:36px 24px}
+.container{max-width:1060px;margin:0 auto;padding:24px 20px}
 
-.hero{display:grid;grid-template-columns:380px 1fr;gap:40px;align-items:start;margin-bottom:44px}
-.hero-img-wrap{position:relative;border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow)}
-.hero-img-wrap img{width:100%;display:block;border-radius:20px}
-.hero-info h1{font-family:'Playfair Display',serif;font-size:clamp(34px,4vw,50px);line-height:1.1;margin-bottom:6px;color:var(--text)}
-.hero-info h1 .g{background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--accent-light);border:1px solid rgba(217,119,6,0.15);padding:5px 14px;border-radius:50px;font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px}
-.hero-tag .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.hero-desc{color:var(--muted);font-size:15px;line-height:1.7;margin:14px 0 20px;font-style:italic;font-family:'Playfair Display',serif}
-.stats-row{display:flex;gap:14px;margin:20px 0;flex-wrap:wrap}
-.stat{text-align:center;padding:12px 18px;background:#fff;border:1px solid var(--border);border-radius:12px;min-width:80px;box-shadow:var(--shadow)}
-.stat .v{font-size:20px;font-weight:800;background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
-.rating-box{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#fff;border:1px solid var(--border);border-radius:14px;margin-top:16px;box-shadow:var(--shadow)}
-.rating-big{font-size:38px;font-weight:900;background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
-.rating-details .stars{color:var(--accent);font-size:16px;letter-spacing:2px}
-.rating-details .count{font-size:11px;color:var(--muted);margin-top:2px}
+/* Breadcrumb */
+.breadcrumb{font-size:11px;color:var(--muted);margin-bottom:16px}
+.breadcrumb a{color:var(--muted)}
+.breadcrumb span{margin:0 4px;color:#ccc}
 
-.sec-tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:10px;background:var(--accent-bg);padding:4px 12px;border-radius:12px}
-.sec-title{font-family:'Playfair Display',serif;font-size:clamp(24px,3vw,34px);margin-bottom:6px;color:var(--text)}
-.sec-desc{color:var(--muted);font-size:14px;margin-bottom:24px;max-width:600px}
-.section{margin-bottom:44px}
+/* Hero */
+.hero{display:grid;grid-template-columns:320px 1fr;gap:32px;margin-bottom:28px}
+.hero-img{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#fff;padding:16px;text-align:center}
+.hero-img img{max-width:100%;height:auto;max-height:360px;object-fit:contain}
 
-.pyramid-wrap{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
-.pyramid{display:flex;flex-direction:column;align-items:center;gap:3px}
-.pyr-lvl{display:flex;align-items:center;justify-content:center;text-align:center;padding:18px 12px;font-weight:600;font-size:13px;color:#fff;transition:all .3s;cursor:default}
-.pyr-lvl:hover{transform:scale(1.03)}
-.pyr-lvl:nth-child(1){background:linear-gradient(135deg,#f59e0b,#d97706);width:170px;clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);padding-top:26px;border-radius:6px 6px 0 0}
-.pyr-lvl:nth-child(2){background:linear-gradient(135deg,#ef4444,#dc2626);width:260px}
-.pyr-lvl:nth-child(3){background:linear-gradient(135deg,#8b5cf6,#6d28d9);width:360px;border-radius:0 0 10px 10px}
-.pyr-lvl small{display:block;font-weight:400;opacity:.85;font-size:10px;margin-top:2px}
-.pyr-cards{display:flex;flex-direction:column;gap:12px}
-.pyr-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;transition:all .3s;box-shadow:var(--shadow)}
-.pyr-card:hover{border-color:var(--accent);transform:translateX(4px)}
-.pyr-card h4{font-size:13px;margin-bottom:3px;display:flex;align-items:center;gap:8px;color:var(--text)}
-.pyr-card p{font-size:12px;color:var(--muted);line-height:1.6}
-.badge{font-size:9px;padding:3px 8px;border-radius:8px;font-weight:700}
-.badge-top{background:#fef3c7;color:#d97706}
-.badge-heart{background:#fee2e2;color:#dc2626}
-.badge-base{background:#ede9fe;color:#7c3aed}
+.hero-info{}
+.beer-style{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:700;margin-bottom:6px}
+.hero-info h1{font-family:var(--heading);font-size:38px;font-weight:600;line-height:1.15;margin-bottom:4px;color:var(--text);letter-spacing:-0.5px}
+.hero-info h1 em{font-style:italic;color:var(--accent2)}
+.brand-line{font-family:var(--heading);font-size:16px;color:var(--muted);font-style:italic;margin-bottom:14px}
+.hero-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;max-width:520px}
 
-.notes-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
-.note-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 12px;text-align:center;transition:all .3s;cursor:default;box-shadow:var(--shadow)}
-.note-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 8px 24px rgba(217,119,6,0.08)}
-.note-card .emoji{font-size:28px;margin-bottom:6px;display:block}
-.note-card h4{font-size:12px;font-weight:700;margin-bottom:2px;color:var(--text)}
-.note-card p{font-size:9px;color:var(--muted)}
-.note-bar{height:4px;border-radius:2px;margin-top:8px;background:#f1f5f9;overflow:hidden}
-.note-bar-fill{height:100%;border-radius:2px}
+/* Stats inline */
+.specs{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border);border-radius:6px;overflow:hidden;width:fit-content}
+.spec{padding:10px 18px;text-align:center;border-right:1px solid var(--border);background:#fff}
+.spec:last-child{border-right:none}
+.spec .val{font-family:var(--heading);font-size:20px;font-weight:700;color:var(--text)}
+.spec .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-top:1px}
 
-.pairing{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
-.pairing img{width:100%;height:100%;min-height:280px;object-fit:cover}
-.pairing-info{padding:28px;display:flex;flex-direction:column;justify-content:center}
-.pairing-info h3{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px;color:var(--text)}
-.match-badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:12px}
-.match-bar{width:80px;height:5px;border-radius:3px;background:#f1f5f9;overflow:hidden}
-.match-bar span{display:block;height:100%;width:94%;background:var(--gold);border-radius:3px}
-.pairing-info>p{color:var(--muted);font-size:13px;line-height:1.7}
-.pairing-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.pairing-tags span{background:var(--accent-light);border:1px solid rgba(217,119,6,0.12);color:var(--accent);padding:4px 10px;border-radius:14px;font-size:10px;font-weight:600}
+/* Rating */
+.rating-row{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:6px;width:fit-content}
+.rating-num{font-family:var(--heading);font-size:36px;font-weight:700;color:var(--accent2);line-height:1}
+.rating-stars{color:var(--gold);font-size:16px;letter-spacing:1px}
+.rating-count{font-size:11px;color:var(--muted);margin-top:2px}
 
-.reviews-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.review{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;transition:all .3s;box-shadow:var(--shadow)}
-.review:hover{border-color:rgba(217,119,6,0.3)}
-.review-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.review-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:16px}
-.review-meta h4{font-size:13px;font-weight:700;color:var(--text)}
-.review-meta .role{font-size:10px;color:var(--accent);font-weight:600}
-.review p{font-size:12px;color:var(--muted);line-height:1.6;font-style:italic}
-.review .rev-rating{margin-top:8px;color:var(--accent);font-size:13px;letter-spacing:2px}
+/* Section divider */
+.section{margin-bottom:28px}
+.sec-head{font-family:var(--heading);font-size:22px;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:-0.3px}
+.sec-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.divider{height:1px;background:var(--border);margin:28px 0}
 
-.similar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.similar-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;transition:all .3s;cursor:default;box-shadow:var(--shadow)}
-.similar-card:hover{border-color:var(--accent);transform:translateY(-4px)}
-.similar-card .sim-emoji{font-size:36px;margin-bottom:8px;display:block}
-.similar-card h4{font-size:14px;font-weight:700;color:var(--text)}
-.similar-card .sim-style{font-size:10px;color:var(--muted);margin-bottom:6px}
-.similar-card .sim-match{font-size:11px;font-weight:700;color:var(--accent)}
+/* Accords / Notes bars (Fragrantica style) */
+.accords{display:flex;flex-direction:column;gap:5px;max-width:480px}
+.accord-row{display:flex;align-items:center;gap:10px}
+.accord-label{width:80px;font-size:12px;color:var(--text);font-weight:600;text-align:right;flex-shrink:0}
+.accord-bar{height:22px;border-radius:3px;display:flex;align-items:center;padding-left:10px;font-size:10px;color:#fff;font-weight:600;letter-spacing:.3px}
 
-.footer{text-align:center;padding:32px;color:var(--muted);font-size:11px;border-top:1px solid var(--border)}
+/* Two-col layout */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+
+/* Pyramid */
+.pyramid-section{background:#fff;border:1px solid var(--border);border-radius:8px;padding:22px}
+.pyr-layers{display:flex;flex-direction:column;gap:10px}
+.pyr-layer{padding:14px 16px;border-radius:6px;border-left:4px solid}
+.pyr-layer.top{background:#fef9ef;border-color:var(--gold)}
+.pyr-layer.heart{background:#fef2f2;border-color:#c0392b}
+.pyr-layer.base{background:#f3f0ff;border-color:#6c3483}
+.pyr-layer h4{font-family:var(--heading);font-size:15px;font-weight:600;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.pyr-layer h4 .tag{font-size:9px;text-transform:uppercase;letter-spacing:1px;padding:2px 6px;border-radius:3px;font-weight:700;font-family:var(--body)}
+.pyr-layer.top .tag{background:rgba(184,134,11,0.12);color:var(--gold)}
+.pyr-layer.heart .tag{background:rgba(192,57,43,0.1);color:#c0392b}
+.pyr-layer.base .tag{background:rgba(108,52,131,0.1);color:#6c3483}
+.pyr-layer p{font-size:12px;color:var(--muted);line-height:1.55}
+
+/* Notes voting (Fragrantica style) */
+.notes-voting{background:#fff;border:1px solid var(--border);border-radius:8px;padding:22px}
+.note-vote{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f0e8}
+.note-vote:last-child{border-bottom:none}
+.note-emoji{font-size:20px;width:28px;text-align:center}
+.note-name{font-size:13px;font-weight:600;color:var(--text);width:80px}
+.note-bar-bg{flex:1;height:14px;background:#f5f0e8;border-radius:3px;overflow:hidden}
+.note-bar-fill{height:100%;border-radius:3px}
+.note-pct{font-size:11px;font-weight:700;color:var(--muted);width:36px;text-align:right}
+
+/* Food pairing */
+.pairing{display:grid;grid-template-columns:280px 1fr;gap:0;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.pairing img{width:100%;height:100%;min-height:240px;object-fit:cover}
+.pairing-body{padding:22px}
+.pairing-body h3{font-family:var(--heading);font-size:20px;font-weight:600;margin-bottom:4px}
+.match-line{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.match-pill{background:var(--accent-light);padding:2px 8px;border-radius:10px;font-size:10px}
+.pairing-body>p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.pair-tags{display:flex;flex-wrap:wrap;gap:5px}
+.pair-tags span{font-size:10px;padding:3px 9px;border-radius:4px;background:var(--cream);color:var(--accent2);font-weight:600;border:1px solid var(--border)}
+
+/* Reviews */
+.reviews{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.review{background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px}
+.rev-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rev-ava{width:32px;height:32px;border-radius:50%;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:14px}
+.rev-name{font-size:13px;font-weight:700;color:var(--text)}
+.rev-role{font-size:10px;color:var(--accent)}
+.review p{font-size:12px;color:var(--muted);line-height:1.55;font-style:italic}
+.review .stars{margin-top:6px;color:var(--gold);font-size:12px;letter-spacing:1px}
+
+/* Similar */
+.similar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.sim-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center;transition:border-color .2s}
+.sim-card:hover{border-color:var(--accent)}
+.sim-card .sim-icon{font-size:32px;margin-bottom:6px}
+.sim-card h4{font-family:var(--heading);font-size:16px;font-weight:600;margin-bottom:2px}
+.sim-card .sim-sub{font-size:10px;color:var(--muted);margin-bottom:6px}
+.sim-card .sim-match{font-size:11px;font-weight:700;color:var(--accent)}
+
+/* Quote */
+.quote-block{background:#fff;border:1px solid var(--border);border-radius:8px;padding:22px 28px;position:relative}
+.quote-block::before{content:'\201C';font-family:var(--heading);font-size:64px;color:var(--border);position:absolute;top:4px;left:16px;line-height:1}
+.quote-block blockquote{font-family:var(--heading);font-size:18px;font-style:italic;color:var(--text);line-height:1.5;padding-left:36px}
+.quote-block footer{font-size:11px;color:var(--muted);margin-top:8px;padding-left:36px}
+
+.footer{text-align:center;padding:24px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:12px}
 .footer strong{color:var(--accent)}
 
-@media(max-width:900px){
-  .hero,.pyramid-wrap,.pairing,.reviews-grid{grid-template-columns:1fr}
-  .notes-grid{grid-template-columns:repeat(3,1fr)}
-  .similar-grid{grid-template-columns:1fr}
+@media(max-width:768px){
+  .hero,.two-col,.pairing,.reviews,.similar{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<div class="topnav">
-  <div class="logo">🍺 Flavor <span>Tree</span></div>
-  <nav>
-    <a href="#" class="active">Каталог</a>
-    <a href="#pyramid">Пирамида</a>
-    <a href="#notes">Ноты</a>
-    <a href="#pairing">Pairing</a>
-    <a href="#reviews">Отзывы</a>
-  </nav>
+<div class="nav">
+  <div class="nav-inner">
+    <div class="logo">🍺 Flavor<em>Tree</em></div>
+    <div class="nav-links">
+      <a href="#">Каталог</a>
+      <a href="#">Ноты</a>
+      <a href="#">Школа</a>
+      <a href="#">Food Pairing</a>
+    </div>
+  </div>
 </div>
 
 <div class="container">
 
+  <div class="breadcrumb">
+    <a href="#">Каталог</a> <span>›</span>
+    <a href="#">Lager</a> <span>›</span>
+    <a href="#">Pilsener</a> <span>›</span>
+    Efes Pilsener
+  </div>
+
+  <!-- HERO -->
   <div class="hero">
-    <div class="hero-img-wrap">
+    <div class="hero-img">
       <img src="efes_hero.png" alt="Efes Pilsener">
     </div>
     <div class="hero-info">
-      <div class="hero-tag"><span class="dot"></span> Pilsener · Lager · Efes Kazakhstan</div>
-      <h1>Efes <span class="g">Pilsener</span></h1>
-      <p class="hero-desc">«Глоток свободы в каждом пузырьке — лёгкое золото турецкого солнца»</p>
-      <p style="color:var(--muted);font-size:13px;line-height:1.7">Классический европейский пильзнер с мягким хмелевым характером. Чистое золотистое тело, тонкая горечь и аромат свежего хлеба с цитрусовыми нотами. Пиво, которое не нужно объяснять — его нужно <strong style="color:var(--text)">почувствовать</strong>.</p>
-      <div class="stats-row">
-        <div class="stat"><div class="v">5.0%</div><div class="l">Алкоголь</div></div>
-        <div class="stat"><div class="v">22</div><div class="l">IBU</div></div>
-        <div class="stat"><div class="v">4–6°C</div><div class="l">Подача</div></div>
-        <div class="stat"><div class="v">12°P</div><div class="l">Плотность</div></div>
+      <div class="beer-style">Pilsener · Lager · Efes Kazakhstan</div>
+      <h1>Efes <em>Pilsener</em></h1>
+      <div class="brand-line">by Anadolu Efes · Brewed in Turkey since 1969</div>
+      <p class="hero-desc">Классический европейский пильзнер с мягким хмелевым характером. Чистое золотистое тело, тонкая горечь и аромат свежего хлеба с цитрусовыми нотами. Пиво, которое не нужно объяснять — его нужно почувствовать.</p>
+      <div class="specs">
+        <div class="spec"><div class="val">5.0%</div><div class="lbl">Алкоголь</div></div>
+        <div class="spec"><div class="val">22</div><div class="lbl">IBU</div></div>
+        <div class="spec"><div class="val">4–6°C</div><div class="lbl">Подача</div></div>
+        <div class="spec"><div class="val">12°P</div><div class="lbl">Плотность</div></div>
       </div>
-      <div class="rating-box">
-        <div class="rating-big">4.7</div>
-        <div class="rating-details">
-          <div class="stars">★★★★★</div>
-          <div class="count">2,847 оценок · 412 заметок</div>
+      <div class="rating-row">
+        <div class="rating-num">4.7</div>
+        <div>
+          <div class="rating-stars">★★★★★</div>
+          <div class="rating-count">2,847 оценок · 412 заметок</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="section" id="pyramid">
-    <span class="sec-tag">Вкусовая пирамида</span>
-    <h2 class="sec-title">Три слоя вкуса</h2>
-    <p class="sec-desc">Как парфюмер раскладывает аромат на ноты, мы раскладываем вкус пива.</p>
-    <div class="pyramid-wrap">
-      <div class="pyramid">
-        <div class="pyr-lvl">🔺 TOP<small>Эмоции</small></div>
-        <div class="pyr-lvl">❤️ HEART<small>Ароматические ноты</small></div>
-        <div class="pyr-lvl">⬇️ BASE<small>Базовые вкусы</small></div>
-      </div>
-      <div class="pyr-cards">
-        <div class="pyr-card"><h4><span class="badge badge-top">TOP</span> Эмоции и ассоциации</h4><p>Летний вечер на крыше. Лёгкий ветер. Чувство свободы и беззаботности. Как первый тёплый день после долгой зимы.</p></div>
-        <div class="pyr-card"><h4><span class="badge badge-heart">HEART</span> Ароматические ноты</h4><p>Цедра лимона переплетается с запахом свежего хлеба из пекарни. Лёгкий цветочный хмель. Намёк на луговые травы и мёд.</p></div>
-        <div class="pyr-card"><h4><span class="badge badge-base">BASE</span> Базовые вкусы</h4><p>Мягкая, обволакивающая горечь — не агрессивная. Лёгкая сладость солода. Чистое, сухое послевкусие.</p></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="notes">
-    <span class="sec-tag">Что ты почувствуешь</span>
-    <h2 class="sec-title">Ноты вкуса</h2>
-    <p class="sec-desc">Каждая нота — как инструмент в оркестре. Вместе они создают мелодию.</p>
-    <div class="notes-grid">
-      <div class="note-card"><span class="emoji">🍋</span><h4>Цитрус</h4><p>Лимонная цедра</p><div class="note-bar"><div class="note-bar-fill" style="width:85%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div></div>
-      <div class="note-card"><span class="emoji">🍞</span><h4>Хлеб</h4><p>Свежая корочка</p><div class="note-bar"><div class="note-bar-fill" style="width:72%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div></div>
-      <div class="note-card"><span class="emoji">🌿</span><h4>Трава</h4><p>Луговые травы</p><div class="note-bar"><div class="note-bar-fill" style="width:60%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div></div></div>
-      <div class="note-card"><span class="emoji">🍯</span><h4>Мёд</h4><p>Солодовая сладость</p><div class="note-bar"><div class="note-bar-fill" style="width:48%;background:linear-gradient(90deg,#f59e0b,#fcd34d)"></div></div></div>
-      <div class="note-card"><span class="emoji">🌸</span><h4>Цветочный</h4><p>Хмелевой аромат</p><div class="note-bar"><div class="note-bar-fill" style="width:40%;background:linear-gradient(90deg,#ec4899,#f472b6)"></div></div></div>
-      <div class="note-card"><span class="emoji">⚡</span><h4>Горечь</h4><p>Мягкая, чистая</p><div class="note-bar"><div class="note-bar-fill" style="width:55%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div></div>
-    </div>
-  </div>
-
-  <div class="section" id="pairing">
-    <span class="sec-tag">Идеальное сочетание</span>
-    <h2 class="sec-title">С чем пить</h2>
-    <p class="sec-desc">Правильная пара усиливает вкус в разы.</p>
-    <div class="pairing">
-      <img src="shashlik.png" alt="Шашлык из баранины">
-      <div class="pairing-info">
-        <h3>Шашлык из баранины</h3>
-        <div class="match-badge">94% совпадение <div class="match-bar"><span></span></div></div>
-        <p>Дымная корочка шашлыка встречает лёгкую цитрусовую горечь Efes Pilsener — и происходит магия. Пиво освежает нёбо после каждого куска.</p>
-        <div class="pairing-tags">
-          <span>🔥 Горечь × Дым</span><span>🍋 Цитрус освежает</span><span>🍞 Солод × Угли</span><span>💨 Чистое послевкусие</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="reviews">
-    <span class="sec-tag">Отзывы экспертов</span>
-    <h2 class="sec-title">Что говорят сомелье</h2>
-    <p class="sec-desc">Мнения сертифицированных пивных сомелье и экспертов индустрии.</p>
-    <div class="reviews-grid">
-      <div class="review"><div class="review-header"><div class="review-avatar">🎓</div><div class="review-meta"><h4>Алексей Воронов</h4><span class="role">Cicerone® Certified · Beer Judge</span></div></div><p>«Безупречный баланс для массового пильзнера. Хмелевая горечь деликатная, не перебивает солодовую основу. Один из лучших в регионе.»</p><div class="rev-rating">★★★★★</div></div>
-      <div class="review"><div class="review-header"><div class="review-avatar">🍺</div><div class="review-meta"><h4>Айгуль Сатпаева</h4><span class="role">Head Brewer · Efes KZ</span></div></div><p>«Мы используем Saaz хмель для цветочных нот и Hallertau для горечи. Баланс — результат 50+ лет пивоварения.»</p><div class="rev-rating">★★★★★</div></div>
-      <div class="review"><div class="review-header"><div class="review-avatar">📝</div><div class="review-meta"><h4>Марат Касымов</h4><span class="role">Пивной блогер · 45K подписчиков</span></div></div><p>«Для летних вечеров в Алматы — вне конкуренции. Цитрусовая свежесть + хлебные ноты. Идеален для шашлыка.»</p><div class="rev-rating">★★★★☆</div></div>
-      <div class="review"><div class="review-header"><div class="review-avatar">🤖</div><div class="review-meta"><h4>Flavor Tree AI</h4><span class="role">AI Sommelier · Flavor Tree</span></div></div><p>«Efes Pilsener — это тот вкус, который возвращает тебя в лучший момент лета. Первый глоток — и ты уже на крыше с друзьями.»</p><div class="rev-rating">★★★★★</div></div>
-    </div>
-  </div>
-
+  <!-- ACCORDS -->
   <div class="section">
-    <span class="sec-tag">Похожие по вкусу</span>
-    <h2 class="sec-title">Тебе также понравится</h2>
-    <p class="sec-desc">На основе вкусовой пирамиды Efes Pilsener.</p>
-    <div class="similar-grid">
-      <div class="similar-card"><span class="sim-emoji">🌾</span><h4>Белое Золото Светлое</h4><div class="sim-style">Lager · 4.7% ABV</div><div class="sim-match">87% match</div></div>
-      <div class="similar-card"><span class="sim-emoji">🦁</span><h4>Karagandinskoe Светлое</h4><div class="sim-style">Lager · 4.8% ABV</div><div class="sim-match">82% match</div></div>
-      <div class="similar-card"><span class="sim-emoji">🏔️</span><h4>Pilsner Urquell</h4><div class="sim-style">Czech Pilsner · 4.4% ABV</div><div class="sim-match">79% match</div></div>
+    <h2 class="sec-head">Главные аккорды</h2>
+    <p class="sec-sub">Основные вкусовые направления этого пива</p>
+    <div class="accords">
+      <div class="accord-row"><span class="accord-label">Цитрус</span><div class="accord-bar" style="width:85%;background:linear-gradient(90deg,#e8a435,#d4911a)">цитрусовый</div></div>
+      <div class="accord-row"><span class="accord-label">Хлеб</span><div class="accord-bar" style="width:72%;background:linear-gradient(90deg,#c49a5c,#a87d3e)">хлебный</div></div>
+      <div class="accord-row"><span class="accord-label">Трава</span><div class="accord-bar" style="width:60%;background:linear-gradient(90deg,#7daa5c,#5e8c3e)">травяной</div></div>
+      <div class="accord-row"><span class="accord-label">Горечь</span><div class="accord-bar" style="width:55%;background:linear-gradient(90deg,#8b7ec0,#6a5aab)">горьковатый</div></div>
+      <div class="accord-row"><span class="accord-label">Мёд</span><div class="accord-bar" style="width:48%;background:linear-gradient(90deg,#d4a745,#c29530)">медовый</div></div>
+      <div class="accord-row"><span class="accord-label">Цветочный</span><div class="accord-bar" style="width:40%;background:linear-gradient(90deg,#c77dab,#a85d8e)">цветочный</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PYRAMID + NOTES -->
+  <div class="two-col section">
+    <div class="pyramid-section">
+      <h2 class="sec-head">Вкусовая пирамида</h2>
+      <p class="sec-sub">Три слоя, как в парфюмерии</p>
+      <div class="pyr-layers">
+        <div class="pyr-layer top">
+          <h4><span class="tag">Top</span> Эмоции</h4>
+          <p>Летний вечер на крыше. Лёгкий ветер. Чувство свободы. Как первый тёплый день после долгой зимы.</p>
+        </div>
+        <div class="pyr-layer heart">
+          <h4><span class="tag">Heart</span> Ароматические ноты</h4>
+          <p>Цедра лимона и запах свежего хлеба из пекарни. Лёгкий цветочный хмель. Намёк на луговые травы.</p>
+        </div>
+        <div class="pyr-layer base">
+          <h4><span class="tag">Base</span> Базовые вкусы</h4>
+          <p>Мягкая обволакивающая горечь. Лёгкая сладость солода. Чистое, сухое послевкусие.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes-voting">
+      <h2 class="sec-head">Ноты вкуса</h2>
+      <p class="sec-sub">Что чувствуют пользователи</p>
+      <div class="note-vote"><span class="note-emoji">🍋</span><span class="note-name">Цитрус</span><div class="note-bar-bg"><div class="note-bar-fill" style="width:85%;background:#d4911a"></div></div><span class="note-pct">85%</span></div>
+      <div class="note-vote"><span class="note-emoji">🍞</span><span class="note-name">Хлеб</span><div class="note-bar-bg"><div class="note-bar-fill" style="width:72%;background:#a87d3e"></div></div><span class="note-pct">72%</span></div>
+      <div class="note-vote"><span class="note-emoji">🌿</span><span class="note-name">Трава</span><div class="note-bar-bg"><div class="note-bar-fill" style="width:60%;background:#5e8c3e"></div></div><span class="note-pct">60%</span></div>
+      <div class="note-vote"><span class="note-emoji">🍯</span><span class="note-name">Мёд</span><div class="note-bar-bg"><div class="note-bar-fill" style="width:48%;background:#c29530"></div></div><span class="note-pct">48%</span></div>
+      <div class="note-vote"><span class="note-emoji">🌸</span><span class="note-name">Цветочный</span><div class="note-bar-bg"><div class="note-bar-fill" style="width:40%;background:#a85d8e"></div></div><span class="note-pct">40%</span></div>
+      <div class="note-vote"><span class="note-emoji">⚡</span><span class="note-name">Горечь</span><div class="note-bar-bg"><div class="note-bar-fill" style="width:55%;background:#6a5aab"></div></div><span class="note-pct">55%</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- QUOTE -->
+  <div class="quote-block section">
+    <blockquote>Efes Pilsener — это тот самый вкус, который возвращает тебя в лучший момент лета. Первый глоток — и ты уже на крыше с друзьями, смотришь на закат.</blockquote>
+    <footer>— Flavor Tree AI Sommelier</footer>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FOOD PAIRING -->
+  <div class="section">
+    <h2 class="sec-head">Идеальное сочетание</h2>
+    <p class="sec-sub">Food pairing, подобранный по вкусовому профилю</p>
+    <div class="pairing">
+      <img src="shashlik.png" alt="Шашлык">
+      <div class="pairing-body">
+        <h3>Шашлык из баранины</h3>
+        <div class="match-line"><span class="match-pill">94% match</span> Идеальное совпадение</div>
+        <p>Дымная корочка шашлыка встречает лёгкую цитрусовую горечь Efes Pilsener. Пиво освежает нёбо, а хлебные ноты солода перекликаются с ароматом углей.</p>
+        <div class="pair-tags">
+          <span>🔥 Горечь × Дым</span>
+          <span>🍋 Цитрус освежает</span>
+          <span>🍞 Солод × Угли</span>
+          <span>💨 Чистое послевкусие</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- EXPERT REVIEWS -->
+  <div class="section">
+    <h2 class="sec-head">Отзывы экспертов</h2>
+    <p class="sec-sub">Мнения сертифицированных сомелье и экспертов</p>
+    <div class="reviews">
+      <div class="review">
+        <div class="rev-head"><div class="rev-ava">🎓</div><div><div class="rev-name">Алексей Воронов</div><div class="rev-role">Cicerone® Certified</div></div></div>
+        <p>«Безупречный баланс для пильзнера. Хмелевая горечь деликатная, не перебивает солодовую основу. Один из лучших в регионе.»</p>
+        <div class="stars">★★★★★</div>
+      </div>
+      <div class="review">
+        <div class="rev-head"><div class="rev-ava">🍺</div><div><div class="rev-name">Айгуль Сатпаева</div><div class="rev-role">Head Brewer · Efes KZ</div></div></div>
+        <p>«Saaz хмель для цветочных нот, Hallertau для горечи. Баланс — результат 50+ лет пивоварения.»</p>
+        <div class="stars">★★★★★</div>
+      </div>
+      <div class="review">
+        <div class="rev-head"><div class="rev-ava">📝</div><div><div class="rev-name">Марат Касымов</div><div class="rev-role">Пивной блогер · 45K</div></div></div>
+        <p>«Для летних вечеров в Алматы — вне конкуренции. Цитрусовая свежесть + хлебные ноты. Идеален с шашлыком.»</p>
+        <div class="stars">★★★★☆</div>
+      </div>
+      <div class="review">
+        <div class="rev-head"><div class="rev-ava">🤖</div><div><div class="rev-name">Flavor Tree AI</div><div class="rev-role">AI Sommelier</div></div></div>
+        <p>«Это не просто пиво. Это вкус, который возвращает в лучший момент лета. Глоток — и ты на крыше с друзьями.»</p>
+        <div class="stars">★★★★★</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SIMILAR -->
+  <div class="section">
+    <h2 class="sec-head">Похожие по вкусу</h2>
+    <p class="sec-sub">На основе вкусовой пирамиды</p>
+    <div class="similar">
+      <div class="sim-card"><div class="sim-icon">🌾</div><h4>Белое Золото</h4><div class="sim-sub">Lager · 4.7% ABV</div><div class="sim-match">87% match</div></div>
+      <div class="sim-card"><div class="sim-icon">🦁</div><h4>Karagandinskoe</h4><div class="sim-sub">Lager · 4.8% ABV</div><div class="sim-match">82% match</div></div>
+      <div class="sim-card"><div class="sim-icon">🏔️</div><h4>Pilsner Urquell</h4><div class="sim-sub">Czech Pilsner · 4.4%</div><div class="sim-match">79% match</div></div>
     </div>
   </div>
 
 </div>
 
-<div class="footer">🍺 <strong>Flavor Tree</strong> — OneIdea Championship 2026 · Efes Kazakhstan · «Не пей — слушай вкус»</div>
+<div class="footer">🍺 <strong>FlavorTree</strong> — OneIdea Championship 2026 · Efes Kazakhstan · «Не пей — слушай вкус»</div>
+
 </body>
 </html>
