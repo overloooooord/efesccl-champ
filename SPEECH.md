@@ -81,7 +81,7 @@
 
 > Efes Kazakhstan has **15 unique brands**. But the average consumer can't tell you the difference between any two of them. They don't understand the flavor profile. They don't have the vocabulary.
 
-> And here's the kicker — **there is not a single platform for beer sensory education in the entire CIS region.** RateBeer shut down in 2025. Untappd is just ratings and check-ins. Zero education.
+> And here's the kicker — **there is not a single platform for beer sensory education in the entire CIS region.** Untappd is just ratings and check-ins. Zero education.
 
 > In other words: **people drink beer, but they don't understand it.** And brands spend millions on advertising instead of teaching consumers to feel the difference.
 
@@ -97,7 +97,7 @@
 
 > У Efes Kazakhstan **15 уникальных брендов**. Но средний потребитель не может объяснить, чем одно отличается от другого. У него нет словаря для описания вкуса.
 
-> И самое главное — **ни одной платформы** для сенсорного образования в пиве во всём СНГ. RateBeer закрылся в 2025. Untappd — это просто рейтинги. Ноль образования.
+> И самое главное — **ни одной платформы** для сенсорного образования в пиве во всём СНГ. Untappd — это просто рейтинги и чекины. Ноль образования.
 
 > Проще говоря: **люди пьют пиво, но не понимают его.** А бренды тратят миллионы на рекламу вместо того, чтобы учить потребителя чувствовать разницу.
 
@@ -470,9 +470,9 @@
 > Формула ответа: **Подтверди → Ответь → Развей.**
 > Пример: *«Great question. The answer is… And beyond that…»*
 
-### 1. «Чем отличаетесь от Untappd / RateBeer?»
+### 1. «Чем отличаетесь от Untappd?»
 
-> Untappd is a social network — users check in and rate beers 1-5. We're a **sensory education platform**. We don't ask «did you like it?» — we ask «what did you feel?» That's a fundamentally different product category. Also, RateBeer shut down in 2025 — the space is wide open.
+> Untappd is a social network — users check in and rate beers 1-5. We're a **sensory education platform**. We don't ask «did you like it?» — we ask «what did you feel?» That's a fundamentally different product category. The education space is completely wide open.
 
 ### 2. «Как привлечёте пользователей?»
 
