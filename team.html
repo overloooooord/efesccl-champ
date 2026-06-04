@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flavor Tree — Команда</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8f9fc;--card:#fff;--accent:#d97706;--accent-light:#fef3c7;--gold:linear-gradient(135deg,#f59e0b,#d97706);--text:#1e293b;--muted:#64748b;--border:rgba(0,0,0,0.06);--green:#16a34a;--purple:#7c3aed;--shadow:0 2px 8px rgba(0,0,0,0.04)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;width:100vw;overflow:hidden;display:flex;align-items:center;justify-content:center}
+
+.slide{width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:50px 80px;position:relative}
+
+.slide-logo{position:absolute;top:28px;left:44px;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text)}
+.slide-logo span{background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.header{text-align:center;margin-bottom:44px}
+.tag{display:inline-block;background:var(--accent-light);color:var(--accent);padding:5px 16px;border-radius:16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+.header h2{font-family:'Playfair Display',serif;font-size:44px;color:var(--text)}
+.header h2 .hl{background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Team */
+.team{display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:960px;width:100%}
+
+.member{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;display:flex;gap:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.member::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.member:first-child::before{background:var(--gold)}
+.member:last-child::before{background:linear-gradient(135deg,var(--purple),#a78bfa)}
+
+.photo{width:120px;height:150px;border-radius:14px;background:#f1f5f9;border:2px dashed rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;color:var(--muted)}
+
+.info .role{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:8px}
+.member:first-child .role{background:var(--accent-light);color:var(--accent)}
+.member:last-child .role{background:#ede9fe;color:var(--purple)}
+.info h3{font-size:20px;font-weight:800;margin-bottom:10px}
+
+.creds{list-style:none;display:flex;flex-direction:column;gap:5px}
+.creds li{font-size:12px;color:var(--muted);line-height:1.4}
+.creds li strong{color:var(--text)}
+
+.skills{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+.skill{font-size:9px;font-weight:600;padding:3px 8px;border-radius:6px;background:#f1f5f9;color:var(--text)}
+
+/* Bottom */
+.bottom{display:flex;gap:12px;max-width:960px;width:100%;margin-top:32px}
+.bx{flex:1;text-align:center;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
+.bx .ico{font-size:18px}
+.bx p{font-size:10px;font-weight:600;color:var(--text);margin-top:2px}
+.bx .ch{font-size:9px;color:var(--green);font-weight:700;margin-top:2px}
+
+.foot{position:absolute;bottom:24px;font-size:10px;color:var(--muted)}
+.foot strong{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="slide-logo">🍺 Flavor <span>Tree</span></div>
+
+  <div class="header">
+    <div class="tag">Команда</div>
+    <h2>Два человека — <span class="hl">полный цикл</span></h2>
+  </div>
+
+  <div class="team">
+
+    <div class="member">
+      <div class="photo">📷</div>
+      <div class="info">
+        <div class="role">Backend & Product</div>
+        <h3>Ералы Абуталифулы</h3>
+        <ul class="creds">
+          <li>Backend-разработчик: <strong>Django, PostgreSQL</strong></li>
+          <li>Разработка <strong>Telegram-ботов</strong> и веб-приложений</li>
+          <li>Опыт запуска стартап-проектов (<strong>SteppeAI</strong>)</li>
+          <li>Питчинг перед инвесторами и экспертами</li>
+          <li>Публичные выступления и дебаты</li>
+          <li>Работа на стыке <strong>бизнеса и разработки</strong></li>
+        </ul>
+        <div class="skills">
+          <span class="skill">Python</span>
+          <span class="skill">Django</span>
+          <span class="skill">PostgreSQL</span>
+          <span class="skill">Product</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="member">
+      <div class="photo">📷</div>
+      <div class="info">
+        <div class="role">Frontend & Design</div>
+        <h3>Аджибаева Аделия</h3>
+        <ul class="creds">
+          <li>Frontend-разработчик: <strong>Angular, TypeScript</strong></li>
+          <li>Полный цикл разработки — <strong>PetCare системы</strong></li>
+          <li><strong>UX/UI</strong> дизайн и прототипирование в Figma</li>
+          <li>Адаптивная и мобильная вёрстка</li>
+          <li>Доводит проекты до <strong>продакшна</strong></li>
+          <li>Хастлер — берёт и делает</li>
+        </ul>
+        <div class="skills">
+          <span class="skill">Angular</span>
+          <span class="skill">TypeScript</span>
+          <span class="skill">Figma</span>
+          <span class="skill">UX/UI</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom">
+    <div class="bx"><div class="ico">⚙️</div><p>Backend</p><div class="ch">✓</div></div>
+    <div class="bx"><div class="ico">🎨</div><p>Frontend</p><div class="ch">✓</div></div>
+    <div class="bx"><div class="ico">🧠</div><p>Product</p><div class="ch">✓</div></div>
+    <div class="bx"><div class="ico">🎯</div><p>UX/UI</p><div class="ch">✓</div></div>
+    <div class="bx"><div class="ico">🚀</div><p>Execution</p><div class="ch">✓</div></div>
+  </div>
+
+  <div class="foot">🍺 <strong>Flavor Tree</strong> — OneIdea Championship 2026</div>
+</div>
+</body>
+</html>
