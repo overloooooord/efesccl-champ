@@ -626,7 +626,7 @@
   <div class="topnav">
     <div class="logo">🍺 Flavor <span>Tree</span></div>
     <nav>
-      <a href="#">Каталог</a>
+      <a href="index.html">Каталог</a>
       <a href="#">Ноты</a>
       <a href="#">Школа</a>
       <a href="#" class="active">Профиль</a>
@@ -756,10 +756,10 @@
           <span class="tag">AI Sommelier</span>
         </div>
         <div class="recs-list">
-          <div class="rec-item">
+          <div class="rec-item" id="rec-efes" onclick="toggleBeerDetail()" style="cursor:pointer;transition:all .2s" title="Открыть профиль пива">
             <div class="rec-emoji">🍺</div>
             <div class="rec-info">
-              <h4>Efes Pilsener</h4>
+              <h4>Efes Pilsener <span style="font-size:10px;color:var(--accent);font-weight:600">↗ открыть профиль</span></h4>
               <p>Твоя идеальная пара. Цитрус + хлеб — прямо по твоему DNA.</p>
               <div class="rec-match">92% match</div>
             </div>
@@ -787,6 +787,75 @@
               <p>Попробуй тёмную сторону — карамель и шоколад.</p>
               <div class="rec-match">74% match</div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEER DETAIL INLINE -->
+      <div id="beer-detail" style="display:none;margin-top:4px;animation:fadeIn .3s ease">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)">
+
+          <!-- Hero -->
+          <div style="display:grid;grid-template-columns:240px 1fr;gap:0;align-items:stretch">
+            <div style="background:#f8f9fc;display:flex;align-items:center;justify-content:center;padding:20px;border-right:1px solid var(--border)">
+              <img src="efes_hero.png" alt="Efes Pilsener" style="width:100%;border-radius:10px;display:block">
+            </div>
+            <div style="padding:24px">
+              <div style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);border:1px solid rgba(217,119,6,0.15);padding:3px 10px;border-radius:50px;font-size:9px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">
+                <span style="width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;display:inline-block"></span>
+                Pilsener · Lager · Efes Kazakhstan
+              </div>
+              <h2 style="font-family:'Playfair Display',serif;font-size:28px;line-height:1.1;margin-bottom:6px">Efes <span style="background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Pilsener</span></h2>
+              <p style="color:var(--muted);font-size:12px;font-style:italic;font-family:'Playfair Display',serif;margin-bottom:12px">«Глоток свободы в каждом пузырьке — лёгкое золото турецкого солнца»</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+                <div style="text-align:center;padding:8px 14px;background:#f8f9fc;border:1px solid var(--border);border-radius:10px"><div style="font-size:16px;font-weight:800;background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent">5.0%</div><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:1px">Алкоголь</div></div>
+                <div style="text-align:center;padding:8px 14px;background:#f8f9fc;border:1px solid var(--border);border-radius:10px"><div style="font-size:16px;font-weight:800;background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent">22</div><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:1px">IBU</div></div>
+                <div style="text-align:center;padding:8px 14px;background:#f8f9fc;border:1px solid var(--border);border-radius:10px"><div style="font-size:16px;font-weight:800;background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent">4–6°C</div><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:1px">Подача</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f8f9fc;border:1px solid var(--border);border-radius:12px">
+                <div style="font-size:28px;font-weight:900;background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1">4.7</div>
+                <div>
+                  <div style="color:var(--accent);font-size:13px;letter-spacing:2px">★★★★★</div>
+                  <div style="font-size:9px;color:var(--muted);margin-top:1px">2,847 оценок · 412 заметок</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pyramid -->
+          <div style="padding:24px;border-top:1px solid var(--border)">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-bg);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:8px">Вкусовая пирамида</div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:14px">Три слоя вкуса</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+                <div style="background:linear-gradient(135deg,#c084fc,#8b5cf6);width:130px;clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);padding:14px 10px;text-align:center;font-weight:700;font-size:11px;color:#fff;border-radius:5px 5px 0 0">🔺 TOP<br><small style="font-weight:400;opacity:.85;font-size:9px">Эмоции</small></div>
+                <div style="background:linear-gradient(135deg,#fca5a5,#ef4444);width:210px;padding:14px 10px;text-align:center;font-weight:700;font-size:11px;color:#fff">❤️ HEART<br><small style="font-weight:400;opacity:.85;font-size:9px">Ароматические ноты</small></div>
+                <div style="background:linear-gradient(135deg,#ffd494,#df9e28);width:290px;padding:14px 10px;text-align:center;font-weight:700;font-size:11px;color:#fff;border-radius:0 0 8px 8px">⬇️ BASE<br><small style="font-weight:400;opacity:.85;font-size:9px">Базовые вкусы</small></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:12px"><div style="font-size:11px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:5px"><span style="font-size:8px;padding:2px 6px;border-radius:6px;font-weight:700;background:#ede9fe;color:#7c3aed">TOP</span>Эмоции</div><p style="font-size:10px;color:var(--muted)">Летний вечер. Свобода. Беззаботность.</p></div>
+                <div style="background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:12px"><div style="font-size:11px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:5px"><span style="font-size:8px;padding:2px 6px;border-radius:6px;font-weight:700;background:#fee2e2;color:#dc2626">HEART</span>Цитрус, хлеб, мёд</div><p style="font-size:10px;color:var(--muted)">Цедра лимона, свежий хлеб, цветочный хмель.</p></div>
+                <div style="background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:12px"><div style="font-size:11px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:5px"><span style="font-size:8px;padding:2px 6px;border-radius:6px;font-weight:700;background:#fef3c7;color:#d97706">BASE</span>Мягкая горечь</div><p style="font-size:10px;color:var(--muted)">Не агрессивная. Лёгкая сладость. Чистое послевкусие.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pairing -->
+          <div style="padding:24px;border-top:1px solid var(--border)">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-bg);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:8px">Food Pairing</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden">
+              <img src="shashlik.png" alt="Шашлык" style="width:100%;height:180px;object-fit:cover">
+              <div style="padding:18px;display:flex;flex-direction:column;justify-content:center">
+                <h3 style="font-family:'Playfair Display',serif;font-size:16px;margin-bottom:4px">Шашлык из баранины</h3>
+                <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px">94% совпадение</div>
+                <p style="color:var(--muted);font-size:11px;line-height:1.5">Дымная корочка встречает цитрусовую горечь — магия в каждом куске.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Close -->
+          <div style="padding:14px 24px;border-top:1px solid var(--border);text-align:center">
+            <button onclick="toggleBeerDetail()" style="background:var(--accent-bg);border:1px solid rgba(217,119,6,0.2);color:var(--accent);padding:7px 20px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer">Скрыть профиль пива ↑</button>
           </div>
         </div>
       </div>
@@ -841,6 +910,21 @@
   </div>
 
   <div class="footer-badge">🍺 <strong>Flavor Tree</strong> — OneIdea Championship 2026 · Efes Kazakhstan</div>
+
+<style>
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+<script>
+function toggleBeerDetail() {
+  const el = document.getElementById('beer-detail');
+  const rec = document.getElementById('rec-efes');
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : 'block';
+  rec.style.background = isOpen ? '' : 'var(--accent-light)';
+  rec.style.borderColor = isOpen ? '' : 'rgba(217,119,6,0.3)';
+  if (!isOpen) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
 </body>
 
 </html>
