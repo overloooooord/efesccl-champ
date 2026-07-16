@@ -13,7 +13,7 @@ function fadeIn(){app.style.opacity='0';app.style.transition='opacity .25s ease'
 function isLoggedIn(){return!!localStorage.getItem('ft_profile')&&JSON.parse(localStorage.getItem('ft_profile')).registered}
 function navigate(p){currentPage=p;track('navigate',p);document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.dataset.page===p));
 fadeIn();
-if(p==='home')renderHome();else if(p==='catalog')renderCatalog();else if(p==='ai')renderAI();else if(p==='lexicon')renderLexicon();else if(p==='tools')renderTools();else if(p==='admin')renderAdmin();else if(p==='learn')renderLearn();else if(p==='profile')renderProfile();else if(p==='register')renderRegister();}
+if(p==='home')renderHome();else if(p==='catalog')renderCatalog();else if(p==='ai')renderAI();else if(p==='lexicon')renderLexicon();else if(p==='tools')renderTools();else if(p==='admin')renderAdmin();else if(p==='learn')renderLearn();else if(p==='profile')renderProfile();else if(p==='register')renderRegister();else if(p==='tinder')renderTinder();}
 function goHome(){navigate('home')}
 window.navigate=navigate;window.goHome=goHome;
 
@@ -429,6 +429,7 @@ function renderTools(){app.innerHTML=`<div class="container"><div class="tools-s
 <div class="tool-card" onclick="navigate('lexicon')"><div class="tool-icon">📖</div><h3>FlavorActiV Лексикон</h3><p>122 дескриптора вкуса пива (ASBC/EBC)</p></div>
 <div class="tool-card" onclick="navigate('ai')"><div class="tool-icon">🤖</div><h3>AI Сомелье</h3><p>Подбор пива по текстовому описанию</p></div>
 <div class="tool-card" onclick="navigate('catalog')"><div class="tool-icon">📊</div><h3>Вкусовые профили</h3><p>Разбор нот каждого из 5 брендов</p></div>
+<div class="tool-card" onclick="navigate('tinder')"><div class="tool-icon">🔥</div><h3>Tinder Tasting</h3><p>Свайп-тест для быстрого разбора вкусов</p></div>
 <div class="tool-card" onclick="showApi()"><div class="tool-icon">🔑</div><h3>API Ключ</h3><p>OpenRouter для AI-сомелье</p></div>
 <div class="tool-card" onclick="navigate('admin')"><div class="tool-icon">📊</div><h3>Админка</h3><p>Аналитика и трекинг пользователей</p></div>
 </div></div></div>`}
@@ -664,5 +665,290 @@ window.submitReview=function(beerId){
   document.getElementById('review-text').value='';
   document.querySelectorAll('#star-input .star').forEach(s=>s.style.color='var(--border)');
 };
+
+// ═══ TINDER TASTING ═══
+const TINDER_DATA = {
+  efes: {
+    name: 'Efes Pilsener',
+    q: [
+      {e:'🍋', n:'Цитрус', q:'Чувствуешь лимонную цедру?', h:'Легкая цитрусовая кислинка в самом первом глотке'},
+      {e:'🍞', n:'Хлеб', q:'Слышишь аромат свежей хлебной корки?', h:'Плотная, сытная база от трех видов ячменного солода'},
+      {e:'🌿', n:'Трава', q:'Ощущаешь травянистые тона хмеля?', h:'Тонкий благородный профиль немецкого хмеля Hallertau'},
+      {e:'⚡', n:'Горечь', q:'Присутствует чистая, сухая горчинка в конце?', h:'Фирменное послевкусие пильзнера с уровнем горечи IBU 22'}
+    ]
+  },
+  kozel: {
+    name: 'Kozel Тёмное',
+    q: [
+      {e:'🍞', n:'Хлеб', q:'Чувствуешь аромат корочки ржаного хлеба?', h:'Характерный тон темного обжаренного солода'},
+      {e:'🍯', n:'Карамель', q:'Ощущаешь мягкую карамельную сладость?', h:'Бархатистые сладкие оттенки без приторности'},
+      {e:'☕', n:'Шоколад', q:'Слышишь тонкие нотки кофе или какао?', h:'Сложный глубокий аромат жженого ячменя'},
+      {e:'🍦', n:'Сладость', q:'Есть мягкое, обволакивающее послевкусие?', h:'Питкое тело с деликатным сладковатым финишем'}
+    ]
+  },
+  wukong: {
+    name: 'Wùkōng Jū',
+    q: [
+      {e:'🌾', n:'Рис', q:'Чувствуешь легкие тона рисовой крупы?', h:'Чистый нейтральный профиль рисового лагера'},
+      {e:'🌸', n:'Цветочный', q:'Ощущаешь цветочный аромат жасмина?', h:'Тонкие жасминовые оттенки китайского хмеля'},
+      {e:'🍋', n:'Фрукты', q:'Слышишь едва уловимые нотки фруктов?', h:'Свежие фруктовые эфиры на заднем плане'},
+      {e:'🧊', n:'Мягкость', q:'Послевкусие чистое, без капли горечи?', h:'Максимально питкий лагер с минимальной горечью IBU 12'}
+    ]
+  },
+  kruzhka: {
+    name: 'Кружка Свежего',
+    q: [
+      {e:'🌾', n:'Солод', q:'Слышишь мягкий, чистый солодовый вкус?', h:'Классическая ячменная основа светлого лагера'},
+      {e:'🍯', n:'Мёд', q:'Ощущаешь легкую медовую сладость?', h:'Сладковатый мягкий солодовый тон'},
+      {e:'🌿', n:'Трава', q:'Чувствуешь легкие травянистые нотки хмеля?', h:'Едва заметный ароматный хмелевой шлейф'},
+      {e:'🌊', n:'Свежесть', q:'Освежающее, супер-питкое послевкусие?', h:'Легкая летняя фильтрация для максимальной питкости'}
+    ]
+  },
+  melnik: {
+    name: 'Старый Мельник',
+    q: [
+      {e:'🍞', n:'Хлеб', q:'Ощущаешь плотный хлебный вкус?', h:'Богатый тон традиционной варки'},
+      {e:'🌿', n:'Хмель', q:'Слышишь тройной хмелевой аромат?', h:'Три сорта хмеля, заданные по бочковой технологии'},
+      {e:'🍯', n:'Мёд', q:'Есть мягкий медовый полутон во рту?', h:'Слегка сладковатый хмелевой оттенок'},
+      {e:'🍺', n:'Мягкость', q:'Чувствуешь бархатистое, округлое тело?', h:'Мягкость, достигнутая бочковым брожением'}
+    ]
+  }
+};
+
+let currentTinderBeer = null;
+let tinderIdx = 0;
+let tinderAnswers = [];
+
+window.renderTinder = function() {
+  if (!currentTinderBeer) {
+    app.innerHTML = `<div class="container" style="padding:28px 20px 80px">
+      <button class="step-back" onclick="navigate('tools')">← Назад</button>
+      <div class="section-tag">Дегустация</div>
+      <h2 class="section-title">Tinder <span class="gold">Tasting</span></h2>
+      <p class="section-desc">Выбери пиво, чтобы раскрыть его вкусовую ДНК с помощью интерактивных свайпов</p>
+      
+      <div class="beer-circles" style="margin-top:32px">
+        ${BEERS.map(b => `
+          <div class="beer-circle" onclick="startTinder('${b.id}')">
+            <div class="beer-icon" style="background:${b.color}15;padding:0;overflow:hidden">
+              <img src="${b.img}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+            </div>
+            <div class="beer-name">${b.name}</div>
+            <div class="beer-style-tag">${b.style}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  } else {
+    const data = TINDER_DATA[currentTinderBeer];
+    const qList = data.q;
+    
+    if (tinderIdx >= qList.length) {
+      const correctCount = tinderAnswers.filter(a => a.value).length;
+      const prof = JSON.parse(localStorage.getItem('ft_profile') || '{}');
+      const xpEarned = 25;
+      prof.xp = (prof.xp || 0) + xpEarned;
+      if (!prof.badges) prof.badges = [];
+      const badgeName = `Дегустатор ${data.name}`;
+      if (!prof.badges.includes(badgeName)) {
+        prof.badges.push(badgeName);
+      }
+      localStorage.setItem('ft_profile', JSON.stringify(prof));
+      
+      app.innerHTML = `<div class="container" style="padding:40px 20px 80px;text-align:center;max-width:480px">
+        <div style="font-size:72px;margin-bottom:16px">🏆</div>
+        <div class="section-tag">Дегустация завершена</div>
+        <h2 class="section-title" style="font-size:28px">Вкусовая ДНК раскрыта!</h2>
+        <p class="section-desc">Ты успешно прошел интерактивный разбор <strong>${data.name}</strong>.</p>
+        
+        <div class="result-card" style="margin:24px 0;padding:24px;text-align:left;background:rgba(22,163,74,0.05);border-color:#16a34a">
+          <div style="font-size:18px;font-weight:700;color:#16a34a;margin-bottom:8px">🎉 Результаты дегустации:</div>
+          <div style="font-size:14px;color:var(--text);line-height:1.6">
+            Распознано нот: <strong>${correctCount} из ${qList.length}</strong><br>
+            Получено очков: <strong>+${xpEarned} XP</strong><br>
+            Новый статус: <strong>${badgeName} 🏅</strong>
+          </div>
+        </div>
+        
+        <div style="display:flex;gap:12px;margin-top:24px">
+          <button class="btn-primary" style="flex:1" onclick="resetTinder()">Еще разок</button>
+          <button class="btn-secondary" style="flex:1" onclick="navigate('profile')">В профиль</button>
+        </div>
+      </div>`;
+      
+      setTimeout(() => {
+        createCarbonationBubbles();
+      }, 100);
+      return;
+    }
+    
+    const curQ = qList[tinderIdx];
+    const nextQ = qList[tinderIdx + 1];
+    
+    app.innerHTML = `<div class="container" style="padding:28px 20px 80px;max-width:480px;text-align:center">
+      <button class="step-back" onclick="resetTinder()" style="margin-bottom:16px">← Выбор пива</button>
+      <div class="section-tag">${data.name} · Нота ${tinderIdx + 1}/${qList.length}</div>
+      
+      <div class="tinder-container">
+        <div class="tinder-card-wrapper" id="tinder-card-wrapper">
+          ${nextQ ? `
+            <div class="tinder-card card-back">
+              <span class="tinder-emoji">${nextQ.e}</span>
+              <h3 class="tinder-question">${nextQ.q}</h3>
+              <p class="tinder-hint">${nextQ.h}</p>
+            </div>
+          ` : ''}
+          
+          <div class="tinder-card" id="active-tinder-card">
+            <div class="tinder-flash-like" id="flash-like"></div>
+            <div class="tinder-flash-dislike" id="flash-dislike"></div>
+            <span class="tinder-emoji">${curQ.e}</span>
+            <div>
+              <h3 class="tinder-question">${curQ.q}</h3>
+              <p class="tinder-hint">${curQ.h}</p>
+            </div>
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Свайпни или нажми кнопку</div>
+          </div>
+        </div>
+        
+        <div class="tinder-buttons">
+          <button class="tinder-btn dislike" onclick="tinderAction(false)">✗</button>
+          <button class="tinder-btn like" onclick="tinderAction(true)">✓</button>
+        </div>
+      </div>
+    </div>`;
+    
+    setupTinderGestures();
+  }
+};
+
+window.startTinder = function(beerId) {
+  currentTinderBeer = beerId;
+  tinderIdx = 0;
+  tinderAnswers = [];
+  track('start_tinder', beerId);
+  renderTinder();
+};
+
+window.resetTinder = function() {
+  currentTinderBeer = null;
+  tinderIdx = 0;
+  tinderAnswers = [];
+  renderTinder();
+};
+
+window.tinderAction = function(val) {
+  const card = document.getElementById('active-tinder-card');
+  const flash = document.getElementById(val ? 'flash-like' : 'flash-dislike');
+  if (flash) flash.style.opacity = '1';
+  
+  if (card) {
+    card.style.transform = `translateX(${val ? 400 : -400}px) rotate(${val ? 30 : -30}deg)`;
+    card.style.opacity = '0';
+  }
+  
+  tinderAnswers.push({ note: TINDER_DATA[currentTinderBeer].q[tinderIdx].n, value: val });
+  tinderIdx++;
+  
+  setTimeout(() => {
+    renderTinder();
+  }, 300);
+};
+
+function setupTinderGestures() {
+  const card = document.getElementById('active-tinder-card');
+  if (!card) return;
+  
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let currentY = 0;
+  let isDragging = false;
+  
+  const flashLike = document.getElementById('flash-like');
+  const flashDislike = document.getElementById('flash-dislike');
+  
+  function dragStart(e) {
+    isDragging = true;
+    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+    card.style.transition = 'none';
+  }
+  
+  function dragMove(e) {
+    if (!isDragging) return;
+    currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+    
+    const diffX = currentX - startX;
+    const diffY = currentY - startY;
+    
+    const rotate = diffX / 10;
+    card.style.transform = `translate(${diffX}px, ${diffY}px) rotate(${rotate}deg)`;
+    
+    if (diffX > 0) {
+      if (flashLike) flashLike.style.opacity = Math.min(0.8, diffX / 150);
+      if (flashDislike) flashDislike.style.opacity = 0;
+    } else {
+      if (flashDislike) flashDislike.style.opacity = Math.min(0.8, -diffX / 150);
+      if (flashLike) flashLike.style.opacity = 0;
+    }
+  }
+  
+  function dragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+    
+    const diffX = currentX - startX;
+    if (diffX > 120) {
+      tinderAction(true);
+    } else if (diffX < -120) {
+      tinderAction(false);
+    } else {
+      card.style.transform = 'translate(0, 0) rotate(0deg)';
+      if (flashLike) flashLike.style.opacity = 0;
+      if (flashDislike) flashDislike.style.opacity = 0;
+    }
+  }
+  
+  card.addEventListener('mousedown', dragStart);
+  card.addEventListener('mousemove', dragMove);
+  window.addEventListener('mouseup', dragEnd);
+  
+  card.addEventListener('touchstart', dragStart, {passive: true});
+  card.addEventListener('touchmove', dragMove, {passive: true});
+  card.addEventListener('touchend', dragEnd);
+}
+
+function createCarbonationBubbles() {
+  const container = document.body;
+  for (let i = 0; i < 30; i++) {
+    const bubble = document.createElement('div');
+    const size = Math.random() * 8 + 4;
+    bubble.style.position = 'fixed';
+    bubble.style.bottom = '-20px';
+    bubble.style.left = Math.random() * 100 + 'vw';
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.background = 'rgba(255, 191, 0, 0.4)';
+    bubble.style.borderRadius = '50%';
+    bubble.style.pointerEvents = 'none';
+    bubble.style.zIndex = '9999';
+    bubble.style.animation = `bubbleUp ${Math.random() * 2 + 1.5}s ease-in forwards`;
+    container.appendChild(bubble);
+    setTimeout(() => bubble.remove(), 3500);
+  }
+}
+
+// Inject bubble animation stylesheet
+const styleSheet = document.createElement("style");
+styleSheet.innerText = `
+@keyframes bubbleUp {
+  0% { transform: translateY(0) scale(1); opacity: 0.8; }
+  100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
+}
+`;
+document.head.appendChild(styleSheet);
 
 renderHome();

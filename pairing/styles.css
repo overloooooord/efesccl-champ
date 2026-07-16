@@ -258,3 +258,127 @@ body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:
   .step-title{font-size:28px}
   .beer-desc-block{flex-direction:column!important;align-items:center!important;text-align:center}
 }
+
+/* TINDER TASTING STYLES */
+.tinder-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 480px;
+  position: relative;
+  margin-top: 20px;
+}
+.tinder-card-wrapper {
+  position: relative;
+  width: 320px;
+  height: 400px;
+  perspective: 1000px;
+}
+.tinder-card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px;
+  box-sizing: border-box;
+  transform-origin: 50% 99%;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  user-select: none;
+  cursor: grab;
+  z-index: 2;
+}
+.tinder-card:active {
+  cursor: grabbing;
+}
+.tinder-card.card-back {
+  transform: scale(0.95) translateY(15px);
+  opacity: 0.7;
+  z-index: 1;
+  pointer-events: none;
+}
+.tinder-card .tinder-emoji {
+  font-size: 80px;
+  margin-top: 20px;
+  animation: floatEmoji 3s ease-in-out infinite;
+  display: block;
+}
+.tinder-card .tinder-question {
+  font-family: var(--heading);
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+  line-height: 1.4;
+  margin: 14px 0 6px;
+}
+.tinder-card .tinder-hint {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+.tinder-buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 24px;
+}
+.tinder-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: var(--shadow-sm);
+}
+.tinder-btn:hover {
+  transform: scale(1.15);
+}
+.tinder-btn.dislike {
+  background: #fdf2f2;
+  color: #c0392b;
+  border: 1px solid #fde8e8;
+}
+.tinder-btn.like {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+.tinder-flash-like {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(34, 197, 94, 0.15);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+  border-radius: var(--radius);
+}
+.tinder-flash-dislike {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(231, 76, 60, 0.15);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+  border-radius: var(--radius);
+}
+@keyframes floatEmoji {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
