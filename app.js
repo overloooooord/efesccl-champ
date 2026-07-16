@@ -102,7 +102,6 @@ window.quickPairing = function(v) {
 </div>
 ${resultCard(bestBeer, {name: v, desc: 'Идеальное сочетание для твоего выбора'}, true, Math.min(99, 85 + maxScore*2))}
 </div></div>`;
-  setTimeout(initAll3D, 50);
   const aiPrompt = `Я ем блюдо: "${v}". Почему пиво ${bestBeer.name} (стиль ${bestBeer.style}, вкусовые ноты: ${bestBeer.notes.map(n=>n.n).join(', ')}) идеально подходит к этой еде? Объясни конкретно сочетание их вкусовых нот и мосты вкуса в 1-2 предложениях. Отвечай как профессиональный пивной сомелье Макс. Без общих фраз и лишних приветствий.`;
   aiExplain('ai-explain-content', aiPrompt, getLocalExplanation(bestBeer.id, bestBeer.name, v, '', '', ''));
 };
@@ -271,7 +270,6 @@ app.innerHTML=`<div class="container"><div class="results-section">
 </div>
 ${scored.map((s,i)=>resultCard(s.beer,s.food,i===0,Math.min(99,Math.round(50+s.score*.5)))).join('')}
 </div></div>`;
-setTimeout(initAll3D, 50);
 aiExplain('ai-explain-content', aiPrompt, fallbackText);}
 
 // ═══ BEER FLOW ═══
@@ -362,7 +360,7 @@ function resultCard(beer,food,best,pct){
 return `<div class="result-card">
 <div class="result-header">
   <div class="result-left">
-    ${best ? `<div class="result-3d" data-color="${beer.color}" style="width:68px;height:68px;border-radius:12px;background:radial-gradient(circle, #fff, #f4f4f4);box-shadow:inset 0 4px 10px rgba(0,0,0,0.05);flex-shrink:0;overflow:hidden"></div>` : `<div class="result-emoji" style="overflow:hidden;border-radius:12px;width:68px;height:68px;flex-shrink:0"><img src="${beer.img}" alt="${beer.name}" style="width:100%;height:100%;object-fit:contain"></div>`}
+    <div class="result-emoji" style="overflow:hidden;border-radius:12px;width:68px;height:68px;flex-shrink:0"><img src="${beer.img}" alt="${beer.name}" style="width:100%;height:100%;object-fit:contain"></div>
     <div>
       <div class="result-name">${beer.name}</div>
       <div class="result-meta">${beer.style} · ${beer.abv}% · IBU ${beer.ibu}</div>
@@ -1136,60 +1134,5 @@ styleSheet.innerText = `
 }
 `;
 document.head.appendChild(styleSheet);
-
-window.initAll3D = function() {
-  if (!window.THREE) return;
-  document.querySelectorAll('.result-3d').forEach(el => {
-    if (el.dataset.initialized) return;
-    el.dataset.initialized = 'true';
-    const color = el.dataset.color || '#F5C542';
-    
-    const w = el.clientWidth;
-    const h = el.clientHeight;
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, w/h, 0.1, 100);
-    camera.position.z = 5;
-    const renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
-    renderer.setSize(w, h);
-    el.appendChild(renderer.domElement);
-    
-    const glassGeo = new THREE.CylinderGeometry(0.7, 0.5, 2.2, 32);
-    const glassMat = new THREE.MeshPhysicalMaterial({
-      transmission: 0.9, opacity: 1, roughness: 0.1, metalness: 0.1,
-      transparent: true, side: THREE.DoubleSide
-    });
-    const glass = new THREE.Mesh(glassGeo, glassMat);
-    scene.add(glass);
-    
-    const liqGeo = new THREE.CylinderGeometry(0.65, 0.45, 1.8, 32);
-    const liqMat = new THREE.MeshStandardMaterial({
-      color: color, roughness: 0.2, metalness: 0.2,
-      transparent: true, opacity: 0.9
-    });
-    const liquid = new THREE.Mesh(liqGeo, liqMat);
-    liquid.position.y = -0.15;
-    glass.add(liquid);
-    
-    const foamGeo = new THREE.CylinderGeometry(0.66, 0.66, 0.3, 32);
-    const foamMat = new THREE.MeshStandardMaterial({color: 0xffffff, roughness: 0.9});
-    const foam = new THREE.Mesh(foamGeo, foamMat);
-    foam.position.y = 0.9;
-    liquid.add(foam);
-    
-    const light = new THREE.DirectionalLight(0xffffff, 1.2);
-    light.position.set(5, 5, 5);
-    scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-    
-    glass.rotation.x = 0.2;
-    
-    const animate = function() {
-      requestAnimationFrame(animate);
-      glass.rotation.y += 0.015;
-      renderer.render(scene, camera);
-    };
-    animate();
-  });
-};
 
 renderHome();
