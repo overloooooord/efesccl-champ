@@ -1,7 +1,13 @@
 const app=document.getElementById('app');
 let currentPage='home',flowMode=null,flowStep=0,flowSelections={},chatHistory=[];
 const OPENROUTER_KEY=localStorage.getItem('ft_api_key')||'';
-
+let globalMeal=localStorage.getItem('ft_global_meal')||'';
+window.setGlobalMeal=function(v){
+  globalMeal=v;
+  localStorage.setItem('ft_global_meal',v);
+  if (currentPage==='catalog') renderCatalog();
+  else if (currentPage==='home') renderHome();
+};
 // ═══ TRACKING ═══
 const T={start:Date.now(),views:{},clicks:[],pairings:[],chats:0,sessions:JSON.parse(localStorage.getItem('ft_sessions')||'[]')};
 T.sessions.push({ts:Date.now(),ua:navigator.userAgent});
@@ -32,16 +38,30 @@ const FUN_FACTS=[
 function renderHome(){
 flowMode=null;flowStep=0;flowSelections={};
 const prof=JSON.parse(localStorage.getItem('ft_profile')||'{}');
-const greeting=prof.name?`Привет, <span class="gold">${prof.name}</span>! 👋`:'';
+const greeting=prof.name?`Добро пожаловать, <span class="gold">${prof.name}</span>! 👋`:'';
 app.innerHTML=`<div class="container"><div class="welcome">
-<div class="welcome-tag">Beer & Food Pairing</div>
+<div class="welcome-tag">Beer &amp; Food Pairing · Efes Kazakhstan</div>
 <h1>Найди идеальную <span class="gold">пару</span></h1>
 ${greeting?`<p style="font-size:20px;margin-bottom:8px">${greeting}</p>`:''}
-<p>Подбери пиво к блюду или блюдо к пиву. Вкусовые профили 5 брендов Efes Kazakhstan для HoReCa.</p>
-${!isLoggedIn()?`<button class="btn-primary" style="margin-bottom:24px" onclick="navigate('register')">🚀 Зарегистрироваться</button>`:''}
+<div style="max-width:600px;margin-bottom:32px">
+  <p style="font-size:18px;color:var(--muted);line-height:1.7;margin-bottom:16px">FlavorTree — платформа сенсорного образования для пива. Мы раскладываем вкус каждого бренда на три слоя — как аромат в парфюмерии — и подбираем идеальное гастрономическое сочетание.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px">
+    <span style="padding:6px 14px;background:var(--cream);border-radius:999px;font-size:13px;font-weight:700;color:var(--accent2)">🍺 5 брендов Efes KZ</span>
+    <span style="padding:6px 14px;background:var(--cream);border-radius:999px;font-size:13px;font-weight:700;color:var(--accent2)">🌦️ Вкусовая пирамида</span>
+    <span style="padding:6px 14px;background:var(--cream);border-radius:999px;font-size:13px;font-weight:700;color:var(--accent2)">🤖 AI-Сомелье</span>
+    <span style="padding:6px 14px;background:var(--cream);border-radius:999px;font-size:13px;font-weight:700;color:var(--accent2)">📚 Школа вкуса</span>
+  </div>
+  <div style="display:flex;gap:8px;max-width:500px;width:100%">
+    <input type="text" id="global-meal-input-home" placeholder="Введите блюдо (напр. Шашлык, Бешбармак...)" value="${globalMeal}"
+      oninput="setGlobalMeal(this.value)"
+      onkeydown="if(event.key==='Enter'&&this.value.trim()){quickPairing(this.value.trim());}"
+      style="flex:1;padding:13px 18px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:var(--body);outline:none;">
+    <button onclick="quickPairing(document.getElementById('global-meal-input-home').value.trim())" style="padding:13px 22px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--body);white-space:nowrap">Подобрать →</button>
+  </div>
+</div>
 <div class="choice-grid">
-<div class="choice-card" onclick="startFlow('food')"><span class="choice-icon">🍽️</span><h3>У меня есть <span class="gold">блюдо</span></h3><p>Подберу пиво к еде по вкусовой пирамиде</p></div>
-<div class="choice-card" onclick="startFlow('beer')"><span class="choice-icon">🍺</span><h3>У меня есть <span class="gold">пиво</span></h3><p>Покажу идеальные блюда к напитку</p></div>
+<div class="choice-card" onclick="startFlow('food')"><span class="choice-icon">🍽️</span><h3>У меня есть <span class="gold">блюдо</span></h3><p>Подберу пиво к еде по вкусовой пирамиде за 4 шага</p></div>
+<div class="choice-card" onclick="startFlow('beer')"><span class="choice-icon">🍺</span><h3>У меня есть <span class="gold">пиво</span></h3><p>Покажу идеальные блюда и вкусовые мосты</p></div>
 </div>
 </div>
 <div style="max-width:900px;margin:0 auto;padding:0 24px 60px">
@@ -53,6 +73,39 @@ ${!isLoggedIn()?`<button class="btn-primary" style="margin-bottom:24px" onclick=
 
 window.startFlow=function(m){flowMode=m;flowStep=1;flowSelections={};fadeIn();renderStep()};
 window.renderHome=renderHome;
+
+window.quickPairing = function(v) {
+  if (!v) { startFlow('food'); return; }
+  setGlobalMeal(v);
+  flowMode = 'quick';
+  let bestBeer = BEERS[0]; let maxScore = -1; let text = v.toLowerCase();
+  BEERS.forEach(b => {
+    let score = 0;
+    b.foods.forEach(f => {
+      if (text.includes(f.name.toLowerCase()) || (f.cat && text.includes(f.cat.toLowerCase()))) score += 10;
+    });
+    if (text.includes('мясо') || text.includes('шашлык') || text.includes('беш') || text.includes('стейк') || text.includes('казы')) {
+      if (b.id === 'karaganda' || b.id === 'melnik' || b.id === 'kozel') score += 5;
+    }
+    if (text.includes('баурсак') || text.includes('хлеб') || text.includes('пицца')) {
+      if (b.style && b.style.toLowerCase().includes('пшенич')) score += 5;
+    }
+    if (score > maxScore) { maxScore = score; bestBeer = b; }
+  });
+  app.innerHTML=`<div class="container"><div class="results-section">
+<button class="step-back" onclick="renderHome()" style="margin-bottom:16px">← Новый подбор</button>
+<div class="section-tag">Результат для твоего блюда</div>
+<h2 class="section-title">Ты ешь <span class="gold">"${v}"</span></h2>
+<div class="ai-explain-card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;display:flex;gap:16px;align-items:flex-start">
+  <div style="font-size:40px;flex-shrink:0">🧠</div>
+  <div><div class="section-tag" style="margin-bottom:8px">Мнение AI-Сомелье Макса</div><div id="ai-explain-content">…анализирую твое блюдо и подбираю пару...</div></div>
+</div>
+${resultCard(bestBeer, {name: v, desc: 'Идеальное сочетание для твоего выбора'}, true, Math.min(99, 85 + maxScore*2))}
+</div></div>`;
+  setTimeout(initAll3D, 50);
+  const aiPrompt = \`Я ем блюдо: "\${v}". Почему пиво \${bestBeer.name} (стиль \${bestBeer.style}, вкусовые ноты: \${bestBeer.notes.map(n=>n.n).join(', ')}) идеально подходит к этой еде? Объясни конкретно сочетание их вкусовых нот и мосты вкуса в 1-2 предложениях. Отвечай как профессиональный пивной сомелье Макс. Без общих фраз и лишних приветствий.\`;
+  aiExplain('ai-explain-content', aiPrompt, getLocalExplanation(bestBeer.id, bestBeer.name, v, '', '', ''));
+};
 
 function renderStep(){fadeIn();flowMode==='food'?renderFoodStep():renderBeerStep()}
 function SH(title,sub,total){return `<div class="step-header"><button class="step-back" onclick="stepBack()">← Назад</button><div class="step-progress">${Array.from({length:total},(_,i)=>`<div class="step-dot ${i<flowStep-1?'done':''} ${i===flowStep-1?'active':''}"></div>`).join('')}</div><h2 class="step-title">${title}</h2><p class="step-subtitle">${sub}</p></div>`}
@@ -218,6 +271,7 @@ app.innerHTML=`<div class="container"><div class="results-section">
 </div>
 ${scored.map((s,i)=>resultCard(s.beer,s.food,i===0,Math.min(99,Math.round(50+s.score*.5)))).join('')}
 </div></div>`;
+setTimeout(initAll3D, 50);
 aiExplain('ai-explain-content', aiPrompt, fallbackText);}
 
 // ═══ BEER FLOW ═══
@@ -304,13 +358,57 @@ setTimeout(()=>{document.querySelectorAll('.note-bar-fill').forEach(el=>{const w
   aiExplain('beer-ai-explain',`Почему ${beer.name} (${beer.style}, ${beer.abv}%, ноты: ${beer.notes.slice(0,3).map(n=>n.n).join(', ')}) — хороший выбор? Объясни 1-2 предложения про его характер и с чем он лучший.`, beerFallback);
 }
 
-function resultCard(beer,food,best,pct){return `<div class="result-card"><div class="result-header"><div class="result-left"><div class="result-emoji"><img src="${beer.img}" alt="${beer.name}" style="width:68px;height:68px;object-fit:contain;border-radius:12px"></div><div><div class="result-name">${beer.name}</div><div class="result-meta">${beer.style} · ${beer.abv}% · IBU ${beer.ibu}</div></div></div><div class="match-badge ${best?'match-high':'match-mid'}">${pct}%</div></div><div class="result-why">${food.why}</div><div class="result-bridges">${food.bridges.map(b=>`<span class="bridge-tag">${b}</span>`).join('')}</div><div style="margin-top:14px"><button class="btn-ghost" onclick="flowSelections.beer='${beer.id}';flowStep=2;flowMode='beer';renderStep()">Подробнее →</button></div></div>`}
-function resultCardFood(beer,food){return `<div class="result-card"><div class="result-header"><div class="result-left"><div class="result-emoji">${food.em}</div><div><div class="result-name">${food.dish}</div><div class="result-meta">${food.cat}</div></div></div><div class="match-badge match-high">${food.match}%</div></div><div class="result-why">${food.why}</div><div class="result-bridges">${food.bridges.map(b=>`<span class="bridge-tag">${b}</span>`).join('')}</div></div>`}
+function resultCard(beer,food,best,pct){
+return `<div class="result-card">
+<div class="result-header">
+  <div class="result-left">
+    ${best ? `<div class="result-3d" data-color="${beer.color}" style="width:68px;height:68px;border-radius:12px;background:radial-gradient(circle, #fff, #f4f4f4);box-shadow:inset 0 4px 10px rgba(0,0,0,0.05);flex-shrink:0;overflow:hidden"></div>` : `<div class="result-emoji" style="overflow:hidden;border-radius:12px;width:68px;height:68px;flex-shrink:0"><img src="${beer.img}" alt="${beer.name}" style="width:100%;height:100%;object-fit:contain"></div>`}
+    <div>
+      <div class="result-name">${beer.name}</div>
+      <div class="result-meta">${beer.style} · ${beer.abv}% · IBU ${beer.ibu}</div>
+    </div>
+  </div>
+  <div class="match-badge ${best?'match-high':'match-mid'}">${pct}%</div>
+</div>
+<div class="result-why">${food.why}</div>
+<div class="result-bridges" style="flex-wrap:wrap">${food.bridges.map(b=>`<span class="bridge-tag">${b}</span>`).join('')}</div>
+${best?`<div style="margin-top:14px"><button class="btn-ghost" onclick="flowSelections.beer='${beer.id}';flowStep=2;flowMode='beer';renderStep()">Подробный профиль →</button></div>`:''}
+</div>`;}
+function resultCardFood(beer,food){
+return `<div class="result-card">
+<div class="result-header">
+  <div class="result-left">
+    <div class="result-emoji" style="font-size:40px">${food.em}</div>
+    <div>
+      <div class="result-name">${food.dish}</div>
+      <div class="result-meta">${food.cat}</div>
+    </div>
+  </div>
+  <div class="match-badge match-high">${food.match}%</div>
+</div>
+<div class="result-why">${food.why}</div>
+<div class="result-bridges" style="flex-wrap:wrap">${food.bridges.map(b=>`<span class="bridge-tag">${b}</span>`).join('')}</div>
+</div>`;}
 
 // ═══ CATALOG ═══
 let activeToneFilter=null;
 function renderCatalog(){
-  const filtered=activeToneFilter?BEERS.filter(b=>b.tones&&b.tones.includes(activeToneFilter)):BEERS;
+  let filtered=activeToneFilter?BEERS.filter(b=>b.tones&&b.tones.includes(activeToneFilter)):BEERS;
+  
+  if (globalMeal) {
+    const query = globalMeal.toLowerCase();
+    filtered.forEach(b => {
+      let maxMatch = 0;
+      b.foods.forEach(f => {
+        if (f.dish.toLowerCase().includes(query) || f.cat.toLowerCase().includes(query)) {
+          maxMatch = Math.max(maxMatch, f.match || 0);
+        }
+      });
+      b._mealMatch = maxMatch;
+    });
+    filtered.sort((a,b) => (b._mealMatch||0) - (a._mealMatch||0));
+  }
+
   app.innerHTML=`<div class="container" style="padding:28px 20px 60px">
 <div class="section-tag">Каталог</div>
 <h2 class="section-title">Все <span class="gold">5 брендов</span> Efes Kazakhstan</h2>
@@ -324,8 +422,11 @@ function renderCatalog(){
   ${activeToneFilter?`<button class="tone-btn tone-clear" onclick="setToneFilter(null)">✕ Сбросить</button>`:''}
 </div>
 
+${globalMeal ? `<div class="result-card" style="margin-bottom:20px;padding:16px;background:var(--cream);border-color:var(--gold)"><strong style="color:var(--accent)">🍽️ Текущее блюдо: ${globalMeal}</strong>. Пиво отсортировано по совместимости!</div>` : ''}
+
 ${filtered.length===0?`<div style="text-align:center;padding:48px;color:var(--muted)">Нет пива с таким тоном</div>`:`
 <div class="tools-grid">${filtered.map(b=>`<div class="tool-card" onclick="flowSelections.beer='${b.id}';flowStep=2;flowMode='beer';renderStep()">
+  ${globalMeal && b._mealMatch ? `<div class="match-badge match-high" style="position:absolute;top:12px;left:12px;font-size:11px;padding:4px 8px">🔥 ${b._mealMatch}% к еде</div>` : ''}
   <img src="${b.img}" alt="${b.name}" style="width:80px;height:auto;max-height:110px;object-fit:contain;border-radius:8px;margin-bottom:8px">
   <h3>${b.name}</h3>
   <p style="margin-bottom:8px;color:var(--muted);font-size:13px">${b.tagline}</p>
@@ -336,12 +437,43 @@ ${filtered.length===0?`<div style="text-align:center;padding:48px;color:var(--mu
 }
 window.setToneFilter=function(id){activeToneFilter=id;renderCatalog();};
 
-// ═══ BARTENDER AI ═══
-const BARTENDER_PROMPT=`Ты — Серёга, бармен в баре FlavorTree. Говоришь живо, по-свойски, иногда с юмором, используешь эмодзи. ПРАВИЛО 1: если человек только зашёл — сначала спроси как дела или какой день выдался, НЕ рекомендуй пиво сразу. ПРАВИЛО 2: когда рекомендуешь пиво — в самом конце ответа добавь тег BEER:[id] (только один из: efes, kozel, wukong, kruzhka, melnik). ПРАВИЛО 3: отвечай не больше 3-4 предложений. Знаешь пива:\nefes: Efes Pilsener (Pilsener 5%, цитрус, хлеб, трава. К шашлыку, цезарю)\nkozel: Kozel Тёмное (Dark Lager 3.7%, карамель, шоколад, орех. К гуляшу, фондану)\nwukong: Wùkōng Jū (Rice Lager 4%, рис, свежесть, цветочный. К суши, пад тай)\nkruzhka: Кружка Свежего (Lager 4%, солод, хлеб, мёд. К колбаскам, пельменям)\nmelnik: Старый Мельник (Lager 4.3%, хмель-трио, хлеб, мёд. К бешбармаку, мантам)`;
+// ═══ AI SOMMELIER ═══
+// Persistent guest memory across sessions
+let guestProfile = JSON.parse(localStorage.getItem('ft_guest_profile') || '{"name":"","company":"","friends":[],"likes":[],"dislikes":[],"meals":[],"occasions":[]}');
+function saveGuestProfile() { localStorage.setItem('ft_guest_profile', JSON.stringify(guestProfile)); }
+function buildGuestContext() {
+  let ctx = '';
+  if(guestProfile.name) ctx += `Имя гостя: ${guestProfile.name}. `;
+  if(guestProfile.company) ctx += `Компания/заведение: ${guestProfile.company}. `;
+  if(guestProfile.friends.length) ctx += `Друзья/компания: ${guestProfile.friends.join(', ')}. `;
+  if(guestProfile.likes.length) ctx += `Любит: ${guestProfile.likes.join(', ')}. `;
+  if(guestProfile.dislikes.length) ctx += `Не любит: ${guestProfile.dislikes.join(', ')}. `;
+  if(guestProfile.meals.length) ctx += `Ели раньше: ${guestProfile.meals.join(', ')}. `;
+  if(guestProfile.occasions.length) ctx += `Поводы: ${guestProfile.occasions.join(', ')}. `;
+  return ctx;
+}
+
+const BARTENDER_PROMPT = `Ты — Макс, харизматичный AI-Сомелье и амбассадор FlavorTree × Efes Kazakhstan. Ты ПРОДАЁШЬ пиво — страстно, убедительно, с экспертизой. Твоя миссия: влюбить гостя в пиво Efes и помочь ему выбрать идеальный вариант.
+
+ПРАВИЛА ПОВЕДЕНИЯ:
+1. ВСЕГДА собирай информацию о госте: спрашивай как зовут, с кем пришли, что едят, какой повод, что любят/не любят. Задавай ОДИН конкретный вопрос за раз.
+2. ЗАПОМИНАЙ всё сказанное и используй это в следующих ответах. Если гость сказал что едет с друзьями — уточни сколько их, что предпочитают.
+3. ПРОДАВАЙ активно: описывай пиво ярко и вкусно, создавай желание. Используй эмоциональные образы: «первый глоток как летний вечер», «карамель обволакивает нёбо».
+4. Когда рекомендуешь пиво — в конце ответа добавь тег BEER:[id] (только один из: efes, kozel, wukong, kruzhka, melnik).
+5. Ответ 3-5 предложений. Живо, с огнём, с эмодзи.
+6. Если гость колеблется — дожимай: «Поверь, это именно то, что тебе сейчас нужно» или предложи взять набор для компании.
+7. Если спрашивают про компанию друзей — уточни вкусы каждого и рекомендуй разные пива для всей группы.
+
+ЗНАЕШЬ 5 ПИВ (продавай их как сокровища!):
+🍺 efes: Efes Pilsener — «Золото Средиземноморья». Пильзнер 5%, IBU 22. Ноты: яркий цитрус 85%, свежий хлеб 72%, луговые травы 60%. К шашлыку, цезарю, стейку, морепродуктам. ПРОДАЖНАЯ ТОЧКА: 50 лет истории, немецкий хмель Hallertau, идеален для жаркого вечера.
+🐐 kozel: Kozel Тёмное — «Бархатная ночь». Тёмный лагер 3.7%, IBU 15. Ноты: карамель 88%, горький шоколад 50%, лесной орех 42%. К гуляшу, утке, фондану, сырной тарелке. ПРОДАЖНАЯ ТОЧКА: чешская рецептура, мягче чем думаешь, для тех кто хочет чего-то особенного.
+🐒 wukong: Wùkōng Jū — «Дух Азии». Рисовый лагер 4%, IBU 12. Ноты: чистый рис 90%, жасмин 55%, свежесть 70%. К суши, пад тай, дим-самам, рыбе. ПРОДАЖНАЯ ТОЧКА: самое лёгкое в линейке, уникальный рисовый профиль, откроет гостям новый мир вкуса.
+🍻 kruzhka: Кружка Свежего — «Домашний уют». Лагер 4%, IBU 14. Ноты: мягкий солод 75%, медовая сладость 48%, трава 35%. К пельменям, колбаскам, пицце, закускам. ПРОДАЖНАЯ ТОЧКА: легко пьётся, всем нравится, отличный выбор для большой компании.
+🏺 melnik: Старый Мельник — «Три хмеля». Лагер 4.3%, IBU 18. Ноты: хмелевое трио 80%, ржаной хлеб 70%, мёд 45%. К бешбармаку, мантам, плову, лагману. ПРОДАЖНАЯ ТОЧКА: бочковая технология, три сорта хмеля, душа казахской кухни.`;
 
 const CHAT_SUGGESTIONS=[
-  [{text:'😔 Тяжёлый день',msg:'Ой, тяжёлый день выдался...'},{text:'🎉 Хочу отметить',msg:'Хочу отметить кое-что!'},{text:'🍖 Что к шашлыку?',msg:'Что посоветуешь к шашлыку?'},{text:'🥘 Что к бешбармаку?',msg:'Что к бешбармаку возьмёшь?'},{text:'🍋 Что-то лёгкое',msg:'Хочу что-то лёгкое и цитрусовое'},{text:'🍫 Что-то тёмное',msg:'Давай что-нибудь тёмное'}],
-  [{text:'Расскажи подробнее',msg:'Расскажи про это пиво подробнее'},{text:'А что ещё подойдёт?',msg:'А ещё что-нибудь подойдёт?'},{text:'К чему ещё подходит?',msg:'К каким блюдам оно ещё подходит?'},{text:'🧊 При какой температуре?',msg:'При какой температуре подавать?'}]
+  [{text:'🍖 К шашлыку',msg:'Подберите пиво к шашлыку из баранины'},{text:'🥘 К бешбармаку',msg:'Что порекомендуете к бешбармаку?'},{text:'🍣 К суши',msg:'Какое пиво подходит к суши и сашими?'},{text:'🍫 Тёмное пиво',msg:'Расскажите про тёмные сорта пива'},{text:'🍋 Лёгкое и свежее',msg:'Хочу что-то лёгкое и цитрусовое'},{text:'🏆 Лучший выбор',msg:'Какое пиво из Efes Kazakhstan вы рекомендуете для ресторана?'}],
+  [{text:'Вкусовая пирамида',msg:'Расскажи про вкусовую пирамиду этого пива'},{text:'Мосты вкуса',msg:'Объясни мосты вкуса между пивом и блюдом'},{text:'Другие блюда',msg:'К каким ещё блюдам подходит?'},{text:'Температура подачи',msg:'При какой температуре лучше подавать?'}]
 ];
 let suggIdx=0;
 
@@ -366,7 +498,11 @@ function beerCardHTML(beer){
 
 function renderAI(){
   if(!chatHistory.length){
-    chatHistory=[{role:'bot',text:'Привет! Я Серёга, бармен FlavorTree 🍺\n\nКак дела? Что за день выдался? Расскажи — и я подберу тебе идеальное пиво.'}];
+    const name = guestProfile.name;
+    const greeting = name
+      ? `${name}, рад снова тебя видеть! 🍺 Что сегодня на столе? С кем пришёл — те же друзья или новая компания?`
+      : `Привет! Я Макс, твой персональный сомелье FlavorTree 🍺\n\nМеня зовут Макс — помогаю подобрать идеальное пиво под любой повод и любое блюдо. Кстати, как тебя зовут? И с кем сегодня — с друзьями, коллегами, или сам по себе? 😊`;
+    chatHistory=[{role:'bot',text:greeting}];
   }
   renderChat();
 }
@@ -374,13 +510,17 @@ function renderAI(){
 function renderChat(){
   const sugg=CHAT_SUGGESTIONS[suggIdx]||CHAT_SUGGESTIONS[0];
   app.innerHTML=`<div class="container"><div class="ai-section">
-<div style="text-align:center;margin-bottom:20px"><div class="section-tag">🍺 Бармен FlavorTree</div><h2 class="section-title">Серёга <span class="gold">на связи</span></h2></div>
+<div style="text-align:center;margin-bottom:24px">
+  <div class="section-tag">🤖 AI-Сомелье FlavorTree</div>
+  <h2 class="section-title">Персональный <span class="gold">сомелье</span></h2>
+  <p style="color:var(--muted);font-size:15px;max-width:500px;margin:8px auto 0">Подбор пива по вкусовым профилям, гастрономическим сочетаниям и принципам сенсорного анализа</p>
+</div>
 <div class="chat-container">
 <div class="chat-messages" id="chat-msgs">${chatHistory.map(m=>{
   const parsed=m.role==='bot'?parseBeerFromReply(m.text):{text:m.text,beer:null};
   return `<div class="chat-msg ${m.role}">${parsed.text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}${parsed.beer?beerCardHTML(parsed.beer):''}</div>`;
 }).join('')}</div>
-<div class="chat-input-row"><input class="chat-input" id="chat-in" placeholder="Напиши Серёге..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="chat-send" onclick="sendMsg()">→</button></div>
+<div class="chat-input-row"><input class="chat-input" id="chat-in" placeholder="Опишите блюдо или вкусовые предпочтения..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="chat-send" onclick="sendMsg()">→</button></div>
 </div>
 <div class="chat-suggestions" id="chat-sugg">${sugg.map(s=>`<button class="sugg-btn" onclick="sendMsg('${s.msg}')">${s.text}</button>`).join('')}</div>
 </div></div>`;
@@ -388,31 +528,48 @@ function renderChat(){
   if(msgs)msgs.scrollTop=msgs.scrollHeight;
 }
 
-window.sendMsg=async function(preset){const input=document.getElementById('chat-in');const msg=preset||(input&&input.value.trim());if(!msg)return;chatHistory.push({role:'user',text:msg});T.chats++;track('ai_chat',msg);if(input)input.value='';suggIdx=chatHistory.length>3?1:0;renderChat();
-const msgs=document.getElementById('chat-msgs');msgs.innerHTML+='<div class="chat-msg bot" style="opacity:.5">Серёга думает... 🤔</div>';msgs.scrollTop=msgs.scrollHeight;
-const ctx=BEERS.map(b=>`${b.name}(${b.style},${b.abv}%):${b.notes.map(n=>n.n).join(',')}. Блюда:${b.foods.map(f=>f.dish).join(',')}`).join('\n');
-const sys=`Ты пивной сомелье FlavorTree для HoReCa Efes Kazakhstan. Отвечай на русском, кратко, с эмодзи. Знаешь 5 пив:\n${ctx}\nПодбирай пиво по нотам вкуса. Если спрашивают что попить с друзьями — рекомендуй 2-3 пива с описанием повода.`;
-try{
-  const key=OPENROUTER_KEY||localStorage.getItem('ft_api_key')||'';
-  if(!key){chatHistory.push({role:'bot',text:localMatch(msg)});renderChat();return}
-  const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-    method:'POST',
-    headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json','HTTP-Referer':'http://localhost:8080','X-Title':'FlavorTree'},
-    body:JSON.stringify({model:'google/gemini-2.5-flash',messages:[{role:'system',content:BARTENDER_PROMPT},...chatHistory.slice(-8).map(m=>({role:m.role==='bot'?'assistant':'user',content:m.text}))],max_tokens:350})
-  });
-  const d=await r.json();
-  console.log('AI response:',d);
-  const txt=d.choices?.[0]?.message?.content;
-  if(txt){chatHistory.push({role:'bot',text:txt})}
-  else{
-    const errInfo=d.error?.message||JSON.stringify(d).slice(0,100);
-    console.warn('AI fallback, reason:',errInfo);
+window.sendMsg=async function(preset){
+  const input=document.getElementById('chat-in');
+  const msg=preset||(input&&input.value.trim());
+  if(!msg)return;
+  chatHistory.push({role:'user',text:msg});
+  T.chats++;track('ai_chat',msg);
+  if(input)input.value='';
+  suggIdx=chatHistory.length>3?1:0;
+  renderChat();
+  const msgs=document.getElementById('chat-msgs');
+  msgs.innerHTML+='<div class="chat-msg bot" style="opacity:.5">Макс думает... 🍺</div>';
+  msgs.scrollTop=msgs.scrollHeight;
+
+  // Extract info from user messages into guestProfile
+  const ml=msg.toLowerCase();
+  if(ml.match(/меня зовут|я ([а-яёa-z]+)|мое имя/i)){const m=msg.match(/(?:меня зовут|мое имя|я)\s+([А-ЯЁа-яёA-Za-z]+)/i);if(m&&m[1].length>2){guestProfile.name=m[1];saveGuestProfile();}}
+  if(ml.includes('друз')||ml.includes('компани')){const m=msg.match(/(\d+)\s+(?:друз|человек|чел)/);if(m)guestProfile.friends=['компания '+m[1]+' человек'];else if(!guestProfile.friends.length)guestProfile.friends=['друзья'];saveGuestProfile();}
+  if(ml.match(/люблю|нравится|обожаю/)){guestProfile.likes.push(msg.slice(0,60));saveGuestProfile();}
+  if(ml.match(/не люблю|не нравится|терпеть не|горечь не|горькое не/)){guestProfile.dislikes.push(msg.slice(0,60));saveGuestProfile();}
+  if(globalMeal&&!guestProfile.meals.includes(globalMeal)){guestProfile.meals.push(globalMeal);saveGuestProfile();}
+
+  const guestCtx = buildGuestContext();
+  const mealCtx = globalMeal ? `Гость сейчас ест: ${globalMeal}. ` : '';
+  const fullSystem = BARTENDER_PROMPT + '\n\n=== ПРОФИЛЬ ГОСТЯ (используй в ответах!) ===\n' + (guestCtx||'Пока не знаем — узнай имя и повод!') + mealCtx;
+
+  try{
+    const key=OPENROUTER_KEY||localStorage.getItem('ft_api_key')||'';
+    if(!key){chatHistory.push({role:'bot',text:localMatch(msg)});renderChat();return}
+    const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json','HTTP-Referer':'http://localhost:3001','X-Title':'FlavorTree'},
+      body:JSON.stringify({model:'google/gemini-2.0-flash-001',messages:[{role:'system',content:fullSystem},...chatHistory.slice(-20).map(m=>({role:m.role==='bot'?'assistant':'user',content:m.text}))],max_tokens:450})
+    });
+    const d=await r.json();
+    const txt=d.choices?.[0]?.message?.content;
+    if(txt){chatHistory.push({role:'bot',text:txt})}
+    else{chatHistory.push({role:'bot',text:localMatch(msg)});}
+  }catch(e){
     chatHistory.push({role:'bot',text:localMatch(msg)});
   }
-}catch(e){
-  console.error('AI error:',e);
-  chatHistory.push({role:'bot',text:localMatch(msg)})
-}renderChat()};
+  renderChat();
+};
 
 function localMatch(msg){const l=msg.toLowerCase();
 for(const b of BEERS)for(const f of b.foods)if(l.includes(f.dish.toLowerCase().split(' ')[0]))return `🍺 К **${f.dish}** → **${b.name}** (${f.match}%)\n\n${f.why}\n\nМосты вкуса: ${f.bridges.join(', ')}`;
@@ -579,9 +736,38 @@ window.renderProfile=function(){
     ${done.length===0?'<span style="color:var(--muted);font-size:13px">Пройди квизы чтобы получить бейджи!</span>':''}
   </div>
 </div>
+<div class="result-card" style="margin-bottom:16px">
+  <h3 style="font-family:var(--heading);font-size:20px;margin-bottom:14px">📝 Мои заметки и отзывы</h3>
+  <div id="profile-reviews-list">${renderProfileReviews()}</div>
+</div>
 <button class="btn-primary" style="width:100%" onclick="navigate('learn')">📚 Пройти квизы</button>
 </div>`;
 };
+function renderProfileReviews() {
+  const prof = JSON.parse(localStorage.getItem('ft_profile')||'{}');
+  const allRevs = JSON.parse(localStorage.getItem('ft_reviews')||'{}');
+  let myRevs = [];
+  for (const beerId in allRevs) {
+    allRevs[beerId].forEach(r => {
+      if (r.author === prof.name || (prof.name === undefined && r.author === 'Аноним')) {
+        myRevs.push({beerId, ...r});
+      }
+    });
+  }
+  if (myRevs.length === 0) return '<p style="color:var(--muted);font-size:13px">Вы еще не оставляли заметок. Перейдите в каталог и оцените пиво!</p>';
+  myRevs.sort((a,b)=>b.ts-a.ts);
+  return myRevs.map(r=>{
+    const beer = BEERS.find(b=>b.id===r.beerId);
+    return `<div style="padding:12px;border-bottom:1px solid var(--border);cursor:pointer" onclick="flowSelections.beer='${r.beerId}';flowStep=2;flowMode='beer';renderStep()">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <strong style="font-size:14px">${beer?beer.name:'Пиво'}</strong>
+        <span style="color:var(--gold);font-size:12px">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin:4px 0">${r.text}</p>
+      <div style="font-size:11px;color:var(--border)">${new Date(r.ts).toLocaleDateString('ru')}</div>
+    </div>`;
+  }).join('');
+}
 window.saveName=function(v){const p=JSON.parse(localStorage.getItem('ft_profile')||'{}');p.name=v;localStorage.setItem('ft_profile',JSON.stringify(p));};
 window.uploadAva=function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const p=JSON.parse(localStorage.getItem('ft_profile')||'{}');p.avatar=ev.target.result;localStorage.setItem('ft_profile',JSON.stringify(p));renderProfile();};r.readAsDataURL(f);};
 
@@ -950,5 +1136,60 @@ styleSheet.innerText = `
 }
 `;
 document.head.appendChild(styleSheet);
+
+window.initAll3D = function() {
+  if (!window.THREE) return;
+  document.querySelectorAll('.result-3d').forEach(el => {
+    if (el.dataset.initialized) return;
+    el.dataset.initialized = 'true';
+    const color = el.dataset.color || '#F5C542';
+    
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, w/h, 0.1, 100);
+    camera.position.z = 5;
+    const renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
+    renderer.setSize(w, h);
+    el.appendChild(renderer.domElement);
+    
+    const glassGeo = new THREE.CylinderGeometry(0.7, 0.5, 2.2, 32);
+    const glassMat = new THREE.MeshPhysicalMaterial({
+      transmission: 0.9, opacity: 1, roughness: 0.1, metalness: 0.1,
+      transparent: true, side: THREE.DoubleSide
+    });
+    const glass = new THREE.Mesh(glassGeo, glassMat);
+    scene.add(glass);
+    
+    const liqGeo = new THREE.CylinderGeometry(0.65, 0.45, 1.8, 32);
+    const liqMat = new THREE.MeshStandardMaterial({
+      color: color, roughness: 0.2, metalness: 0.2,
+      transparent: true, opacity: 0.9
+    });
+    const liquid = new THREE.Mesh(liqGeo, liqMat);
+    liquid.position.y = -0.15;
+    glass.add(liquid);
+    
+    const foamGeo = new THREE.CylinderGeometry(0.66, 0.66, 0.3, 32);
+    const foamMat = new THREE.MeshStandardMaterial({color: 0xffffff, roughness: 0.9});
+    const foam = new THREE.Mesh(foamGeo, foamMat);
+    foam.position.y = 0.9;
+    liquid.add(foam);
+    
+    const light = new THREE.DirectionalLight(0xffffff, 1.2);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    
+    glass.rotation.x = 0.2;
+    
+    const animate = function() {
+      requestAnimationFrame(animate);
+      glass.rotation.y += 0.015;
+      renderer.render(scene, camera);
+    };
+    animate();
+  });
+};
 
 renderHome();

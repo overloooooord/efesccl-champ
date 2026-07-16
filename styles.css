@@ -25,16 +25,16 @@ body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:
 #app{transition:opacity .25s ease;}
 
 /* NAV */
-.nav{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100}
-.nav-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;height:64px}
-.logo{font-family:var(--heading);font-size:26px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:0 16px;position:sticky;top:0;z-index:100}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;height:56px;gap:8px}
+.logo{font-family:var(--heading);font-size:20px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0;white-space:nowrap}
 .logo em{font-style:normal;color:var(--accent)}
-.nav-tabs{display:flex;gap:3px;background:var(--cream);border-radius:var(--radius-sm);padding:3px}
-.nav-tab{padding:10px 20px;font-size:13px;font-weight:700;color:var(--muted);border-radius:6px;cursor:pointer;border:none;background:none;font-family:var(--body);text-transform:uppercase;letter-spacing:.5px;transition:all .2s}
+.nav-tabs{display:flex;gap:2px;background:var(--cream);border-radius:var(--radius-sm);padding:3px;flex-shrink:0}
+.nav-tab{padding:7px 13px;font-size:12px;font-weight:700;color:var(--muted);border-radius:5px;cursor:pointer;border:none;background:none;font-family:var(--body);text-transform:uppercase;letter-spacing:.3px;transition:all .2s;white-space:nowrap}
 .nav-tab:hover{color:var(--accent2)}
 .nav-tab.active{color:var(--accent2);background:#fff;box-shadow:var(--shadow)}
-.nav-right{display:flex;gap:6px}
-.nav-tool-btn{padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border);background:#fff;font-family:var(--body);transition:all .2s}
+.nav-right{display:flex;gap:4px;flex-shrink:0}
+.nav-tool-btn{padding:6px 11px;font-size:11px;font-weight:700;color:var(--muted);border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border);background:#fff;font-family:var(--body);transition:all .2s;white-space:nowrap}
 .nav-tool-btn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* CONTAINER */
