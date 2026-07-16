@@ -103,7 +103,7 @@ window.quickPairing = function(v) {
 ${resultCard(bestBeer, {name: v, desc: 'Идеальное сочетание для твоего выбора'}, true, Math.min(99, 85 + maxScore*2))}
 </div></div>`;
   setTimeout(initAll3D, 50);
-  const aiPrompt = \`Я ем блюдо: "\${v}". Почему пиво \${bestBeer.name} (стиль \${bestBeer.style}, вкусовые ноты: \${bestBeer.notes.map(n=>n.n).join(', ')}) идеально подходит к этой еде? Объясни конкретно сочетание их вкусовых нот и мосты вкуса в 1-2 предложениях. Отвечай как профессиональный пивной сомелье Макс. Без общих фраз и лишних приветствий.\`;
+  const aiPrompt = `Я ем блюдо: "${v}". Почему пиво ${bestBeer.name} (стиль ${bestBeer.style}, вкусовые ноты: ${bestBeer.notes.map(n=>n.n).join(', ')}) идеально подходит к этой еде? Объясни конкретно сочетание их вкусовых нот и мосты вкуса в 1-2 предложениях. Отвечай как профессиональный пивной сомелье Макс. Без общих фраз и лишних приветствий.`;
   aiExplain('ai-explain-content', aiPrompt, getLocalExplanation(bestBeer.id, bestBeer.name, v, '', '', ''));
 };
 
