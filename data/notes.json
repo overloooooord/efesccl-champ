@@ -1,0 +1,164 @@
+[
+  {
+    "id": "citrus",
+    "name": "Цитрус",
+    "emoji": "🍋",
+    "color": "#d4911a",
+    "group": "Фруктовые",
+    "description": "Лимон, лайм, грейпфрут, апельсиновая цедра",
+    "flavoractiv_ref": "Kettle Hop, Geraniol"
+  },
+  {
+    "id": "bread",
+    "name": "Хлеб",
+    "emoji": "🍞",
+    "color": "#a87d3e",
+    "group": "Зерновые",
+    "description": "Свежий хлеб, тост, хлебная корочка",
+    "flavoractiv_ref": "Malty, Worty"
+  },
+  {
+    "id": "grass",
+    "name": "Трава",
+    "emoji": "🌿",
+    "color": "#5e8c3e",
+    "group": "Растительные",
+    "description": "Свежескошенная трава, зелень, луговые травы",
+    "flavoractiv_ref": "Freshly Cut Grass"
+  },
+  {
+    "id": "bitter",
+    "name": "Горечь",
+    "emoji": "⚡",
+    "color": "#6a5aab",
+    "group": "Базовые вкусы",
+    "description": "Хмелевая горечь, терпкость",
+    "flavoractiv_ref": "Bitter (Iso-alpha-acids)"
+  },
+  {
+    "id": "honey",
+    "name": "Мёд",
+    "emoji": "🍯",
+    "color": "#c29530",
+    "group": "Сладкие",
+    "description": "Мёд, сладость солода, патока",
+    "flavoractiv_ref": "Sweet, Caramel"
+  },
+  {
+    "id": "floral",
+    "name": "Цветочный",
+    "emoji": "🌸",
+    "color": "#a85d8e",
+    "group": "Растительные",
+    "description": "Цветочный хмель, роза, бузина, жасмин",
+    "flavoractiv_ref": "Geraniol"
+  },
+  {
+    "id": "caramel",
+    "name": "Карамель",
+    "emoji": "🍬",
+    "color": "#c0392b",
+    "group": "Сладкие",
+    "description": "Жжёный сахар, ириска, тёмный солод",
+    "flavoractiv_ref": "Caramel (Ethyl maltol)"
+  },
+  {
+    "id": "nut",
+    "name": "Орех",
+    "emoji": "🥜",
+    "color": "#8B6914",
+    "group": "Зерновые",
+    "description": "Миндаль, фундук, грецкий орех",
+    "flavoractiv_ref": "Almond (Benzaldehyde)"
+  },
+  {
+    "id": "chocolate",
+    "name": "Шоколад",
+    "emoji": "🍫",
+    "color": "#5D3A1A",
+    "group": "Обжарка",
+    "description": "Горький шоколад, какао, шоколадный солод",
+    "flavoractiv_ref": "Burnt (O/N-heterocyclic)"
+  },
+  {
+    "id": "coffee",
+    "name": "Кофе",
+    "emoji": "☕",
+    "color": "#3e2723",
+    "group": "Обжарка",
+    "description": "Кофейная гуща, эспрессо, обжаренные зёрна",
+    "flavoractiv_ref": "Burnt, Smoky"
+  },
+  {
+    "id": "sweet",
+    "name": "Сладость",
+    "emoji": "🍭",
+    "color": "#e74c3c",
+    "group": "Базовые вкусы",
+    "description": "Остаточный сахар, солодовая сладость",
+    "flavoractiv_ref": "Sweet (Sucrose)"
+  },
+  {
+    "id": "rice",
+    "name": "Рис",
+    "emoji": "🍚",
+    "color": "#b8a88a",
+    "group": "Зерновые",
+    "description": "Варёный рис, жасмин, рисовая мука",
+    "flavoractiv_ref": "Grainy, Worty"
+  },
+  {
+    "id": "pear",
+    "name": "Груша",
+    "emoji": "🍐",
+    "color": "#aed581",
+    "group": "Фруктовые",
+    "description": "Груша, зелёное яблоко, лёгкая фруктовость",
+    "flavoractiv_ref": "Ethyl acetate, Isoamyl acetate"
+  },
+  {
+    "id": "freshness",
+    "name": "Свежесть",
+    "emoji": "💧",
+    "color": "#4fc3f7",
+    "group": "Текстура",
+    "description": "Газация, хрустящий финиш, чистота",
+    "flavoractiv_ref": "Carbonation (CO2)"
+  },
+  {
+    "id": "malt",
+    "name": "Солод",
+    "emoji": "🌾",
+    "color": "#d4a757",
+    "group": "Зерновые",
+    "description": "Ячменный солод, зерновые ноты",
+    "flavoractiv_ref": "Malty, Grainy"
+  },
+  {
+    "id": "hop",
+    "name": "Хмель",
+    "emoji": "🌱",
+    "color": "#4caf50",
+    "group": "Растительные",
+    "description": "Хмелевой аромат, травяной, цитрусовый, цветочный",
+    "flavoractiv_ref": "Hop Oil, Kettle Hop, Geraniol"
+  },
+  {
+    "id": "smoke",
+    "name": "Дым",
+    "emoji": "🔥",
+    "color": "#795548",
+    "group": "Обжарка",
+    "description": "Дымок, копчёность, угли",
+    "flavoractiv_ref": "Smoky (Guaiacol)"
+  },
+  {
+    "id": "spice",
+    "name": "Специи",
+    "emoji": "🌶️",
+    "color": "#ff5722",
+    "group": "Пряные",
+    "description": "Чёрный перец, гвоздика, кориандр",
+    "flavoractiv_ref": "Spicy (Eugenol)"
+  }
+]

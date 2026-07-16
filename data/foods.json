@@ -1,0 +1,92 @@
+[
+  {
+    "id": "shashlik",
+    "name": "Шашлык из баранины",
+    "emoji": "🍖",
+    "category": "meat",
+    "tags": ["гриль", "мясо", "дым"],
+    "notes": ["smoke", "spice", "malt"],
+    "description": "Сочное мясо на углях с дымной корочкой и специями"
+  },
+  {
+    "id": "caesar",
+    "name": "Цезарь с курицей",
+    "emoji": "🥗",
+    "category": "salad",
+    "tags": ["салат", "зелень", "сыр"],
+    "notes": ["grass", "citrus", "bitter"],
+    "description": "Классический салат с хрустящими листьями, пармезаном и лимонной заправкой"
+  },
+  {
+    "id": "goulash",
+    "name": "Гуляш по-чешски",
+    "emoji": "🍲",
+    "category": "soup",
+    "tags": ["суп", "тушёное", "мясо"],
+    "notes": ["caramel", "spice", "sweet"],
+    "description": "Томлёная говядина в густом соусе с паприкой, подаётся с кнедликами"
+  },
+  {
+    "id": "fondan",
+    "name": "Шоколадный фондан",
+    "emoji": "🍫",
+    "category": "dessert",
+    "tags": ["десерт", "шоколад", "выпечка"],
+    "notes": ["chocolate", "coffee", "sweet"],
+    "description": "Горячий десерт с жидким шоколадным центром и ванильным мороженым"
+  },
+  {
+    "id": "dimsam",
+    "name": "Дим-самы на пару",
+    "emoji": "🥟",
+    "category": "asian",
+    "tags": ["азиатское", "на пару", "тесто"],
+    "notes": ["rice", "freshness", "floral"],
+    "description": "Паровые пельмени с креветками и имбирём в рисовом тесте"
+  },
+  {
+    "id": "padthai",
+    "name": "Пад Тай",
+    "emoji": "🍜",
+    "category": "asian",
+    "tags": ["азиатское", "лапша", "острое"],
+    "notes": ["rice", "sweet", "pear", "spice"],
+    "description": "Тайская лапша с тамариндом, арахисом, лаймом и чили"
+  },
+  {
+    "id": "sausages",
+    "name": "Колбаски на гриле",
+    "emoji": "🌭",
+    "category": "meat",
+    "tags": ["гриль", "мясо", "закуска"],
+    "notes": ["malt", "bread", "smoke"],
+    "description": "Сочные мясные колбаски с горчицей и хрустящей корочкой"
+  },
+  {
+    "id": "potato",
+    "name": "Картошка по-деревенски",
+    "emoji": "🥔",
+    "category": "side",
+    "tags": ["гарнир", "картофель"],
+    "notes": ["honey", "grass", "malt"],
+    "description": "Запечённые дольки с чесноком, укропом и золотистой корочкой"
+  },
+  {
+    "id": "beshbarmak",
+    "name": "Бешбармак",
+    "emoji": "🥘",
+    "category": "meat",
+    "tags": ["мясо", "тесто", "казахское"],
+    "notes": ["bread", "hop", "honey"],
+    "description": "Отварное мясо с домашним тестом и луковым соусом"
+  },
+  {
+    "id": "fish",
+    "name": "Рыба на углях",
+    "emoji": "🐟",
+    "category": "fish",
+    "tags": ["рыба", "гриль", "лёгкое"],
+    "notes": ["floral", "grass", "freshness", "citrus"],
+    "description": "Цельная рыба на углях с лимоном и свежей зеленью"
+  }
+]

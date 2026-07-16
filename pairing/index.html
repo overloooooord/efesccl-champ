@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flavor Tree — Подбери пиво к блюду или блюдо к пиву</title>
+<meta name="description" content="Flavor Tree — интеллектуальный подбор пива к еде и еды к пиву. Efes Kazakhstan. 5 пив, вкусовые пирамиды, AI-сомелье.">
+<link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+
+<nav class="nav" id="main-nav">
+  <div class="nav-inner">
+    <div class="logo" onclick="goHome()">🍺 Flavor<em>Tree</em></div>
+    <div class="nav-tabs" id="nav-tabs">
+      <button class="nav-tab active" data-page="home" onclick="navigate('home')">Подбор</button>
+      <button class="nav-tab" data-page="catalog" onclick="navigate('catalog')">Каталог</button>
+      <button class="nav-tab" data-page="ai" onclick="navigate('ai')">🍺 Бармен</button>
+      <button class="nav-tab" data-page="learn" onclick="navigate('learn')">📚 Обучение</button>
+      <button class="nav-tab" data-page="profile" onclick="navigate('profile')">👤 Профиль</button>
+    </div>
+    <div class="nav-right">
+      <button class="nav-tool-btn" onclick="navigate('lexicon')">📖 Лексикон</button>
+      <button class="nav-tool-btn" onclick="navigate('tools')">🔧 Инструменты</button>
+    </div>
+  </div>
+</nav>
+
+<div id="app"></div>
+
+<div class="footer">
+  🍺 <strong>FlavorTree</strong> — OneIdea Championship 2026 · Efes Kazakhstan · «Не пей — слушай вкус»
+</div>
+
+<script src="data.js?v=5"></script>
+<script src="app.js?v=5"></script>
+</body>
+</html>
