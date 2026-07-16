@@ -223,6 +223,19 @@ body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:
 .sugg-btn{padding:8px 16px;background:#fff;border:1px solid var(--border);border-radius:999px;font-size:13px;font-weight:600;color:var(--accent2);cursor:pointer;font-family:var(--body);transition:all .2s;white-space:nowrap}
 .sugg-btn:hover{border-color:var(--accent);background:var(--accent-light);transform:translateY(-2px)}
 
+/* FACTS */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:20px}
+.fact-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all .25s}
+.fact-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.fact-emoji{font-size:32px;display:block;margin-bottom:10px}
+.fact-card h4{font-family:var(--heading);font-size:17px;font-weight:600;margin-bottom:6px}
+.fact-card p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* STAR RATING */
+.star-rating{display:inline-flex;gap:4px;margin-left:8px;vertical-align:middle}
+.star-rating .star{transition:color .15s;user-select:none}
+.star-rating .star:hover{color:var(--gold)!important}
+
 /* QUIZ DONE */
 .quiz-done{opacity:.7;border-color:#16a34a!important}
 .quiz-done h3{text-decoration:line-through;color:var(--muted)}

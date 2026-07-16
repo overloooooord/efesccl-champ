@@ -10,22 +10,47 @@ localStorage.setItem('ft_sessions',JSON.stringify(T.sessions));
 function track(type,data){T.clicks.push({ts:Date.now(),type,data});T.views[currentPage]=(T.views[currentPage]||0)+1;}
 
 function fadeIn(){app.style.opacity='0';app.style.transition='opacity .25s ease';requestAnimationFrame(()=>{requestAnimationFrame(()=>{app.style.opacity='1'})})}
+function isLoggedIn(){return!!localStorage.getItem('ft_profile')&&JSON.parse(localStorage.getItem('ft_profile')).registered}
 function navigate(p){currentPage=p;track('navigate',p);document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.dataset.page===p));
 fadeIn();
-if(p==='home')renderHome();else if(p==='catalog')renderCatalog();else if(p==='ai')renderAI();else if(p==='lexicon')renderLexicon();else if(p==='tools')renderTools();else if(p==='admin')renderAdmin();else if(p==='learn')renderLearn();else if(p==='profile')renderProfile();}
+if(p==='home')renderHome();else if(p==='catalog')renderCatalog();else if(p==='ai')renderAI();else if(p==='lexicon')renderLexicon();else if(p==='tools')renderTools();else if(p==='admin')renderAdmin();else if(p==='learn')renderLearn();else if(p==='profile')renderProfile();else if(p==='register')renderRegister();}
 function goHome(){navigate('home')}
 window.navigate=navigate;window.goHome=goHome;
 
+const FUN_FACTS=[
+  {e:'🍺',t:'Пиво — древнейший напиток',d:'Шумеры варили пиво ещё 6000 лет назад. Они даже посвятили ему богиню — Нинкаси.'},
+  {e:'🌡️',t:'Температура решает',d:'Лагер подают при 4–7°C. Каждый лишний градус убивает свежесть и раскрывает горечь.'},
+  {e:'🧬',t:'IBU — это язык горечи',d:'IBU 12 — почти вода. IBU 22 — лёгкий намёк. IBU 60+ — IPA для смельчаков.'},
+  {e:'🐱',t:'Кошачий тон (Catty)',d:'Аромат кошачьей мочи или листьев черной смородины (вызван p-menthane-8-thiol-3-one) указывает на окисление пива, хотя в некоторых элях это норма.'},
+  {e:'🧀',t:'Сырные носки (Isovaleric)',d:'Изовалериановая кислота пахнет потными носками или старым сыром. Это верный маркер использования старого или испорченного хмеля.'},
+  {e:'🤢',t:'Прогорклое масло (Butyric)',d:'Резкий запах рвоты или прогорклого масла вызывается масляной кислотой (Butyric acid) из-за бактериального заражения сусла.'},
+  {e:'📦',t:'Мокрый картон (Papery)',d:'Запах старой бумаги или картона (trans-2-nonenal) — главный индикатор старения пива из-за окисления и неправильного температурного режима.'},
+  {e:'🥂',t:'Бокал меняет вкус',d:'Тюльпан концентрирует аромат хмеля, а пилснер-бокал усиливает газацию и свежесть.'},
+  {e:'🍖',t:'Пиво × Мясо = наука',d:'Горечь хмеля расщепляет жир на языке. Именно поэтому шашлык без пива — неполный опыт.'},
+  {e:'🌾',t:'Три солода Козела',d:'Карамельный, жжёный и базовый солод — три слоя, которые создают рубиновый цвет и бархатный вкус.'},
+];
 function renderHome(){
 flowMode=null;flowStep=0;flowSelections={};
+const prof=JSON.parse(localStorage.getItem('ft_profile')||'{}');
+const greeting=prof.name?`Привет, <span class="gold">${prof.name}</span>! 👋`:'';
 app.innerHTML=`<div class="container"><div class="welcome">
 <div class="welcome-tag">Beer & Food Pairing</div>
 <h1>Найди идеальную <span class="gold">пару</span></h1>
+${greeting?`<p style="font-size:20px;margin-bottom:8px">${greeting}</p>`:''}
 <p>Подбери пиво к блюду или блюдо к пиву. Вкусовые профили 5 брендов Efes Kazakhstan для HoReCa.</p>
+${!isLoggedIn()?`<button class="btn-primary" style="margin-bottom:24px" onclick="navigate('register')">🚀 Зарегистрироваться</button>`:''}
 <div class="choice-grid">
 <div class="choice-card" onclick="startFlow('food')"><span class="choice-icon">🍽️</span><h3>У меня есть <span class="gold">блюдо</span></h3><p>Подберу пиво к еде по вкусовой пирамиде</p></div>
 <div class="choice-card" onclick="startFlow('beer')"><span class="choice-icon">🍺</span><h3>У меня есть <span class="gold">пиво</span></h3><p>Покажу идеальные блюда к напитку</p></div>
-</div></div></div>`;}
+</div>
+</div>
+<div style="max-width:900px;margin:0 auto;padding:0 24px 60px">
+<div class="section-tag" style="margin-top:20px">💡 Интересные факты</div>
+<h2 class="section-title">Знал ли ты<span class="gold">?</span></h2>
+<div class="facts-grid">${FUN_FACTS.map(f=>`<div class="fact-card"><span class="fact-emoji">${f.e}</span><h4>${f.t}</h4><p>${f.d}</p></div>`).join('')}</div>
+</div>
+</div>`;}
+
 window.startFlow=function(m){flowMode=m;flowStep=1;flowSelections={};fadeIn();renderStep()};
 window.renderHome=renderHome;
 
@@ -68,23 +93,23 @@ window.submitCustomTaste=function(){const v=document.getElementById('custom-in')
 window.submitCustomIntensity=function(){const v=document.getElementById('custom-in').value.trim();if(v){flowSelections.intensity='custom';flowStep=5;renderStep()}};
 
 // ═══ AI EXPLAIN on results ═══
-async function aiExplain(containerId, prompt){
+async function aiExplain(containerId, prompt, fallbackText){
   const el=document.getElementById(containerId);
   if(!el)return;
   const key=OPENROUTER_KEY||localStorage.getItem('ft_api_key')||'';
-  if(!key){el.innerHTML=`<p style="color:var(--muted);font-size:14px">💡 ${localMatch(prompt)}</p>`;return}
+  if(!key){el.innerHTML=`<p style="font-size:15px;line-height:1.7;color:var(--text)">💡 ${fallbackText || localExplain(prompt)}</p>`;return}
   try{
     const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
       headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json','HTTP-Referer':'http://localhost:8080','X-Title':'FlavorTree'},
-      body:JSON.stringify({model:'google/gemini-2.0-flash',messages:[{role:'system',content:'Ты пивной сомелье. Отвечай 1-2 предложения на русском без лишнего. Только конкретный вкусовой факт. Без AI-вступлений.'},{role:'user',content:prompt}],max_tokens:200})
+      body:JSON.stringify({model:'google/gemini-2.0-flash',messages:[{role:'system',content:'Ты пивной сомелье FlavorTree. Твоя задача — объяснить гастрономическую совместимость выбранного пива и блюда. Отвечай ровно 1-2 предложения на русском, максимально конкретно про вкусы, сочетания и мосты вкуса. Без общих фраз и без приветствий.'},{role:'user',content:prompt}],max_tokens:200})
     });
     const d=await r.json();
     const txt=d.choices?.[0]?.message?.content;
-    if(txt&&el)el.innerHTML=`<p style="font-size:15px;line-height:1.7;color:var(--text)">${txt}</p>`;
-    else if(el)el.innerHTML=`<p style="color:var(--muted);font-size:14px">💡 ${localExplain(prompt)}</p>`;
+    if(txt&&el)el.innerHTML=`<p style="font-size:15px;line-height:1.7;color:var(--text)">💡 ${txt}</p>`;
+    else if(el)el.innerHTML=`<p style="font-size:15px;line-height:1.7;color:var(--text)">💡 ${fallbackText || localExplain(prompt)}</p>`;
   }catch(e){
-    if(el)el.innerHTML=`<p style="color:var(--muted);font-size:14px">💡 ${localExplain(prompt)}</p>`;
+    if(el)el.innerHTML=`<p style="font-size:15px;line-height:1.7;color:var(--text)">💡 ${fallbackText || localExplain(prompt)}</p>`;
   }
 }
 function localExplain(prompt){
@@ -92,6 +117,61 @@ function localExplain(prompt){
   if(prompt.includes('Kozel')||prompt.includes('карамел'))return 'Карамельная сладость усиливает вкус блюда и создаёт гармонию вкусов.';
   if(prompt.includes('Wùkōng'))return 'Минимальная горечь не перебивает деликатные вкусы блюда.';
   return 'Вкусовые ноты пива и блюда создают идеальное сочетание.';
+}
+function getLocalExplanation(beerId, beerName, catName, methodName, tasteName, intensityName) {
+  const foodDesc = `${catName}${methodName ? ' (' + methodName.toLowerCase() + ')' : ''}`;
+  
+  if (beerId === 'efes') {
+    if (tasteName.toLowerCase().includes('остр') || tasteName.toLowerCase().includes('солен') || tasteName.toLowerCase().includes('умами') || tasteName.toLowerCase().includes('прян')) {
+      return `Яркая цитрусовая свежесть Efes Pilsener отлично гасит остроту и компенсирует соль в ${foodDesc}, а благородная хмелевая горечь (IBU 22) и газация смывают жирность, подготавливая рецепторы к новому кусочку.`;
+    }
+    if (tasteName.toLowerCase().includes('кисл') || methodName.toLowerCase().includes('сыр') || methodName.toLowerCase().includes('свеж') || methodName.toLowerCase().includes('сырое')) {
+      return `Травянистый хмель Hallertau и цитрусовые ноты Efes Pilsener идеально подчеркивают естественную кислотность и свежесть ${foodDesc}, не перегружая рецепторы.`;
+    }
+    return `Классический сухой пильзнер Efes Pilsener с его чистым хлебным телом и свежей хмелевой горчинкой выступает универсальным гастрономическим контрастом для ${foodDesc}, отлично освежая нёбо.`;
+  }
+  
+  if (beerId === 'kozel') {
+    if (methodName.toLowerCase().includes('туш') || methodName.toLowerCase().includes('запеч') || tasteName.toLowerCase().includes('умами') || methodName.toLowerCase().includes('томлен')) {
+      return `Карамельные и ореховые тона Kozel Тёмное идеально резонируют с томленым или запеченным характером ${foodDesc}, подчеркивая глубокие карамелизированные нотки корочки.`;
+    }
+    if (catName.toLowerCase().includes('десерт') || tasteName.toLowerCase().includes('сладк')) {
+      return `Мягкие шоколадно-кофейные оттенки и деликатная солодовая сладость Kozel Тёмное сливаются с десертными нотами ${foodDesc}, создавая бархатистый тандем без лишней горечи.`;
+    }
+    return `Бархатное, легкое тело Kozel Тёмное с тонами карамельной ириски и поджаренного ржаного хлеба создает мягкое, обволакивающее сочетание с ${foodDesc}.`;
+  }
+  
+  if (beerId === 'wukong') {
+    if (catName.toLowerCase().includes('азиат') || methodName.toLowerCase().includes('пар') || methodName.toLowerCase().includes('вок') || methodName.toLowerCase().includes('wok')) {
+      return `Деликатный рисовый профиль Wùkōng Jū и его минимальная горечь (IBU 12) гармонируют с лапшой, тестом и соевым соусом в ${foodDesc}, подчеркивая восточные специи и не перебивая их.`;
+    }
+    if (catName.toLowerCase().includes('рыб') || catName.toLowerCase().includes('море') || methodName.toLowerCase().includes('сыр') || methodName.toLowerCase().includes('свеж') || methodName.toLowerCase().includes('сырое')) {
+      return `Нейтральное тело и цветочные тона Wùkōng Jū бережно уважают нежную текстуру морепродуктов в ${foodDesc}, мягко очищая нёбо и оставляя легкое жасминовое послевкусие.`;
+    }
+    return `Этот ультра-легкий рисовый лагер Wùkōng Jū с мягкими фруктовыми и цветочными нотками служит идеальным нейтральным фоном для ${foodDesc}, сохраняя его собственный деликатный вкус.`;
+  }
+  
+  if (beerId === 'kruzhka') {
+    if (methodName.toLowerCase().includes('гриль') || methodName.toLowerCase().includes('мангал') || methodName.toLowerCase().includes('сковорода') || tasteName.toLowerCase().includes('солен') || tasteName.toLowerCase().includes('умами')) {
+      return `Солодовая база и легкие медовые оттенки Кружки Свежего отлично смягчают соленость и жареную корочку в ${foodDesc}, а хорошая газация смывает жирность.`;
+    }
+    if (catName.toLowerCase().includes('гарнир') || catName.toLowerCase().includes('закус')) {
+      return `Мягкая солодово-хлебная основа Кружки Свежего отлично дополняет простые и сытные закуски в ${foodDesc}, создавая понятное, классическое сочетание.`;
+    }
+    return `Мягкий светлый лагер Кружка Свежего с чистым солодовым вкусом и легким травянистым оттенком не отвлекает от трапезы, служа освежающим сопровождением для ${foodDesc}.`;
+  }
+  
+  if (beerId === 'melnik') {
+    if (catName.toLowerCase().includes('бешбармак') || catName.toLowerCase().includes('манты') || catName.toLowerCase().includes('плов') || methodName.toLowerCase().includes('отвар') || methodName.toLowerCase().includes('пар')) {
+      return `Бархатистая мягкость Старого Мельника не спорит с нежным вкусом отварного теста и мяса в ${foodDesc}, а аромат трех сортов хмеля мягко освежает после насыщенного бульона.`;
+    }
+    if (catName.toLowerCase().includes('мясо') || methodName.toLowerCase().includes('гриль') || methodName.toLowerCase().includes('мангал')) {
+      return `Хлебные и медовые ноты Старого Мельника дополняют плотную структуру мяса в ${foodDesc}, а деликатная горчинка хмелевого трио мягко балансирует жирность.`;
+    }
+    return `Старый Мельник предлагает мягкое бархатистое тело с травянисто-хлебным ароматом, создавая плотное и сбалансированное гастрономическое сочетание с ${foodDesc}.`;
+  }
+  
+  return `Вкусовые ноты пива ${beerName} и блюда ${foodDesc} гармонично дополняют друг друга.`;
 }
 function showFoodResults(){
 const {cat,method,taste,intensity}=flowSelections;
@@ -115,8 +195,18 @@ const food=b.foods.find(f=>f.cat===cat)||b.foods.find(f=>f.method===method)||b.f
 return{beer:b,food,score}}).sort((a,b)=>b.score-a.score);
 const catLabel=FOOD_CATS.find(c=>c.id===cat);
 const tasteLabel=TASTE_GROUPS.find(t=>t.id===taste);
+const methodLabel=COOK_METHODS.find(m=>m.id===method);
+const intensityLabel=INTENSITIES.find(i=>i.id===intensity);
+
+const catName=catLabel?catLabel.name:(flowSelections.catText||'твоему блюду');
+const tasteName=tasteLabel?tasteLabel.name:(flowSelections.tasteText||'выбранному вкусу');
+const methodName=methodLabel?methodLabel.name:(flowSelections.methodText||'');
+const intensityName=intensityLabel?intensityLabel.name:'';
+
 const top=scored[0];
-const aiPrompt=`Почему ${top.beer.name} лучше всего подходит к ${catLabel?catLabel.name:cat} с доминирующим вкусом ${tasteLabel?tasteLabel.name:taste}? Ноты пива: ${top.beer.notes.slice(0,3).map(n=>n.n).join(', ')}. Объясни 1-2 предложения, конкретно про вкус.`;
+const fallbackText = getLocalExplanation(top.beer.id, top.beer.name, catName, methodName, tasteName, intensityName);
+const aiPrompt=`Почему пиво ${top.beer.name} (стиль ${top.beer.style}, ноты: ${top.beer.notes.slice(0,3).map(n=>n.n).join(', ')}) идеально подходит к блюду: ${catName} ${methodName?'(приготовлено: '+methodName+')':''}, с доминирующим вкусом: ${tasteName} и интенсивностью: ${intensityName}? Объясни конкретно сочетание их вкусовых нот и мосты вкуса в 1-2 предложениях.`;
+
 app.innerHTML=`<div class="container"><div class="results-section">
 <button class="step-back" onclick="renderHome()" style="margin-bottom:16px">← Новый подбор</button>
 <div class="section-tag">Результат</div>
@@ -128,7 +218,7 @@ app.innerHTML=`<div class="container"><div class="results-section">
 </div>
 ${scored.map((s,i)=>resultCard(s.beer,s.food,i===0,Math.min(99,Math.round(50+s.score*.5)))).join('')}
 </div></div>`;
-aiExplain('ai-explain-content', aiPrompt);}
+aiExplain('ai-explain-content', aiPrompt, fallbackText);}
 
 // ═══ BEER FLOW ═══
 function renderBeerStep(){
@@ -191,9 +281,28 @@ app.innerHTML=`<div class="container"><div class="results-section">
 <div class="section-tag" style="margin-top:28px">Food Pairing</div>
 <h3 class="section-title" style="font-size:24px">Идеальные блюда</h3>
 <p class="section-desc">Подобрано по совпадению вкусовых нот</p>
-${beer.foods.map(f=>resultCardFood(beer,f)).join('')}</div></div>`;
+${beer.foods.map(f=>resultCardFood(beer,f)).join('')}
+
+<div class="section-tag" style="margin-top:28px">⭐ Отзывы</div>
+<h3 class="section-title" style="font-size:22px">Что говорят о <span class="gold">${beer.name}</span></h3>
+<div id="reviews-section">${renderReviews(beer.id)}</div>
+<div class="review-form" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-top:16px">
+<h4 style="font-family:var(--heading);font-size:18px;margin-bottom:12px">Оставить отзыв</h4>
+<div style="margin-bottom:12px"><span style="font-size:12px;color:var(--muted)">Оценка:</span><div class="star-rating" id="star-input">${[1,2,3,4,5].map(i=>`<span class="star" data-v="${i}" onclick="setStarRating(${i})" style="font-size:28px;cursor:pointer;color:var(--border)">★</span>`).join('')}</div></div>
+<textarea id="review-text" rows="3" placeholder="Что понравилось? Какие ноты почувствовал?" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--body);font-size:14px;resize:vertical;outline:none"></textarea>
+<button class="btn-primary" style="margin-top:10px;width:100%" onclick="submitReview('${beer.id}')">Отправить отзыв</button>
+</div>
+</div></div>`;
 setTimeout(()=>{document.querySelectorAll('.note-bar-fill').forEach(el=>{const w=el.style.width;el.style.width='0';requestAnimationFrame(()=>el.style.width=w)})},50);
-aiExplain('beer-ai-explain',`Почему ${beer.name} (${beer.style}, ${beer.abv}%, ноты: ${beer.notes.slice(0,3).map(n=>n.n).join(', ')}) — хороший выбор? Объясни 1-2 предложения про его характер и с чем он лучший.`);}
+  let beerFallback = `${beer.name} — отличный выбор с богатым характером.`;
+  if(beer.id==='efes') beerFallback = 'Efes Pilsener — это классический средиземноморский пильзнер с выразительной хмелевой горчинкой Hallertau и цитрусовой свежестью. Он служит великолепным гастрономическим контрастом к насыщенным мясным блюдам на гриле и свежим салатам.';
+  else if(beer.id==='kozel') beerFallback = 'Kozel Тёмное предлагает бархатистый карамельно-ореховый профиль с тонами ржаного хлеба и легким кофейным финишем. Это пиво идеально дополняет томленое мясо, гуляш и шоколадные десерты.';
+  else if(beer.id==='wukong') beerFallback = 'Wùkōng Jū — ультра-легкий рисовый лагер с мягкими жасминовыми и цветочными тонами и минимальной горечью. Он деликатно обрамляет блюда паназиатской кухни, суши и морепродукты, не заглушая их вкус.';
+  else if(beer.id==='kruzhka') beerFallback = 'Кружка Свежего — легкий и питкий светлый лагер с мягкой солодовой базой и медовым оттенком. Он станет отличным, понятным сопровождением к домашней кухне, пельменям и мясным закускам на гриле.';
+  else if(beer.id==='melnik') beerFallback = 'Старый Мельник сочетает три сорта ароматного хмеля по бочковой технологии, раскрываясь бархатистой мягкостью и травяными нотами. Оно превосходно гармонирует со сложными блюдами национальной кухни вроде бешбармака.';
+
+  aiExplain('beer-ai-explain',`Почему ${beer.name} (${beer.style}, ${beer.abv}%, ноты: ${beer.notes.slice(0,3).map(n=>n.n).join(', ')}) — хороший выбор? Объясни 1-2 предложения про его характер и с чем он лучший.`, beerFallback);
+}
 
 function resultCard(beer,food,best,pct){return `<div class="result-card"><div class="result-header"><div class="result-left"><div class="result-emoji"><img src="${beer.img}" alt="${beer.name}" style="width:68px;height:68px;object-fit:contain;border-radius:12px"></div><div><div class="result-name">${beer.name}</div><div class="result-meta">${beer.style} · ${beer.abv}% · IBU ${beer.ibu}</div></div></div><div class="match-badge ${best?'match-high':'match-mid'}">${pct}%</div></div><div class="result-why">${food.why}</div><div class="result-bridges">${food.bridges.map(b=>`<span class="bridge-tag">${b}</span>`).join('')}</div><div style="margin-top:14px"><button class="btn-ghost" onclick="flowSelections.beer='${beer.id}';flowStep=2;flowMode='beer';renderStep()">Подробнее →</button></div></div>`}
 function resultCardFood(beer,food){return `<div class="result-card"><div class="result-header"><div class="result-left"><div class="result-emoji">${food.em}</div><div><div class="result-name">${food.dish}</div><div class="result-meta">${food.cat}</div></div></div><div class="match-badge match-high">${food.match}%</div></div><div class="result-why">${food.why}</div><div class="result-bridges">${food.bridges.map(b=>`<span class="bridge-tag">${b}</span>`).join('')}</div></div>`}
@@ -474,5 +583,86 @@ window.renderProfile=function(){
 };
 window.saveName=function(v){const p=JSON.parse(localStorage.getItem('ft_profile')||'{}');p.name=v;localStorage.setItem('ft_profile',JSON.stringify(p));};
 window.uploadAva=function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const p=JSON.parse(localStorage.getItem('ft_profile')||'{}');p.avatar=ev.target.result;localStorage.setItem('ft_profile',JSON.stringify(p));renderProfile();};r.readAsDataURL(f);};
+
+// ═══ REGISTRATION ═══
+window.renderRegister=function(){
+  const p=JSON.parse(localStorage.getItem('ft_profile')||'{}');
+  if(p.registered){navigate('profile');return;}
+  app.innerHTML=`<div class="container" style="padding:40px 20px 80px;max-width:520px">
+<div class="section-tag">🚀 Регистрация</div>
+<h2 class="section-title">Создай <span class="gold">профиль</span></h2>
+<p class="section-desc">Сохраняй отзывы, зарабатывай XP и отслеживай прогресс</p>
+<div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px">
+<label style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Имя</label>
+<input id="reg-name" placeholder="Как тебя зовут?" style="width:100%;padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:var(--body);margin-bottom:16px;outline:none">
+<label style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Email</label>
+<input id="reg-email" type="email" placeholder="email@example.com" style="width:100%;padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:var(--body);margin-bottom:16px;outline:none">
+<label style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Возраст</label>
+<select id="reg-age" style="width:100%;padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:var(--body);margin-bottom:16px;outline:none;background:#fff">
+<option value="">Подтверди возраст</option><option value="18-25">18–25</option><option value="26-35">26–35</option><option value="36-45">36–45</option><option value="46+">46+</option></select>
+<label style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Любимый стиль пива</label>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">${BEERS.map(b=>`<button class="reg-style-btn bridge-tag" data-id="${b.id}" onclick="this.classList.toggle('reg-selected');this.style.background=this.classList.contains('reg-selected')?'var(--accent-light)':''">${b.emoji} ${b.name}</button>`).join('')}</div>
+<div id="reg-error" style="color:#e74c3c;font-size:13px;margin-bottom:10px;display:none"></div>
+<button class="btn-primary" style="width:100%" onclick="doRegister()">Создать профиль →</button>
+</div>
+<p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">Уже есть профиль? <a href="#" onclick="navigate('profile');return false" style="color:var(--accent)">Войти</a></p>
+</div>`;
+};
+window.doRegister=function(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const age=document.getElementById('reg-age').value;
+  const err=document.getElementById('reg-error');
+  if(!name){err.textContent='Введи имя';err.style.display='block';return;}
+  if(!email||!email.includes('@')){err.textContent='Введи корректный email';err.style.display='block';return;}
+  if(!age){err.textContent='Подтверди возраст';err.style.display='block';return;}
+  const favs=Array.from(document.querySelectorAll('.reg-selected')).map(e=>e.dataset.id);
+  const p=JSON.parse(localStorage.getItem('ft_profile')||'{}');
+  p.name=name;p.email=email;p.age=age;p.favBeers=favs;p.registered=true;p.registeredAt=Date.now();
+  if(!p.xp)p.xp=0;
+  localStorage.setItem('ft_profile',JSON.stringify(p));
+  navigate('profile');
+};
+
+// ═══ REVIEWS ═══
+let pendingStarRating=0;
+window.setStarRating=function(v){
+  pendingStarRating=v;
+  document.querySelectorAll('#star-input .star').forEach(s=>{
+    s.style.color=parseInt(s.dataset.v)<=v?'var(--gold)':'var(--border)';
+  });
+};
+function getReviews(beerId){
+  const all=JSON.parse(localStorage.getItem('ft_reviews')||'{}');
+  return all[beerId]||[];
+}
+function renderReviews(beerId){
+  const revs=getReviews(beerId);
+  if(!revs.length)return '<p style="color:var(--muted);font-size:14px">Пока нет отзывов. Будь первым!</p>';
+  const avg=(revs.reduce((s,r)=>s+r.stars,0)/revs.length).toFixed(1);
+  return `<div style="margin-bottom:16px"><span style="font-family:var(--heading);font-size:32px;font-weight:700">${avg}</span> <span style="color:var(--gold);font-size:20px">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5-Math.round(avg))}</span> <span style="font-size:13px;color:var(--muted)">${revs.length} отзывов</span></div>`+
+  revs.slice(-6).reverse().map(r=>`<div class="result-card" style="padding:18px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <strong style="font-size:15px">${r.author||'Аноним'}</strong>
+      <span style="color:var(--gold);font-size:14px">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span>
+    </div>
+    <p style="font-size:14px;color:var(--muted);line-height:1.6">${r.text}</p>
+    <div style="font-size:11px;color:var(--border);margin-top:6px">${new Date(r.ts).toLocaleDateString('ru')}</div>
+  </div>`).join('');
+}
+window.submitReview=function(beerId){
+  const text=document.getElementById('review-text').value.trim();
+  if(!text||!pendingStarRating){alert('Напиши отзыв и поставь оценку');return;}
+  const prof=JSON.parse(localStorage.getItem('ft_profile')||'{}');
+  const all=JSON.parse(localStorage.getItem('ft_reviews')||'{}');
+  if(!all[beerId])all[beerId]=[];
+  all[beerId].push({author:prof.name||'Аноним',stars:pendingStarRating,text,ts:Date.now()});
+  localStorage.setItem('ft_reviews',JSON.stringify(all));
+  pendingStarRating=0;
+  const el=document.getElementById('reviews-section');
+  if(el)el.innerHTML=renderReviews(beerId);
+  document.getElementById('review-text').value='';
+  document.querySelectorAll('#star-input .star').forEach(s=>s.style.color='var(--border)');
+};
 
 renderHome();
