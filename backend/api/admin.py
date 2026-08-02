@@ -1,72 +1,215 @@
-"""
-Flavor Tree — Django Admin Configuration
-"""
-
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import (
-    Brand, FlavorCategory, Beer, FlavorPyramid, BeerFlavorNote,
-    Dish, FoodPairing, ExpertReview,
-    SchoolLevel, Lesson, QuizQuestion,
-    UserProfile, TastingNote,
+    FlavorNote, Brand, FlavorProfile, ServingRecommendation,
+    Course, TeamMember, Dish, FoodPairing, Venue, QRCode, AnonymousSession,
 )
 
 
-class BeerFlavorNoteInline(admin.TabularInline):
-    model = BeerFlavorNote
+# ─── Inlines ─────────────────────────────────────────────────────────────────
+
+class FlavorProfileInline(admin.TabularInline):
+    model = FlavorProfile
     extra = 1
+    fields = ['flavor_note', 'layer', 'intensity', 'sommelier_note', 'sommelier_name']
+    autocomplete_fields = ['flavor_note']
 
 
-class FlavorPyramidInline(admin.StackedInline):
-    model = FlavorPyramid
+class ServingRecommendationInline(admin.StackedInline):
+    model = ServingRecommendation
     extra = 0
+    max_num = 1
 
 
 class FoodPairingInline(admin.TabularInline):
     model = FoodPairing
     extra = 0
-    fk_name = 'beer'
+    fk_name = 'brand'
+    autocomplete_fields = ['dish']
 
 
-class ExpertReviewInline(admin.TabularInline):
-    model = ExpertReview
+class QRCodeInline(admin.TabularInline):
+    model = QRCode
     extra = 0
+
+
+# ─── Model Admins ────────────────────────────────────────────────────────────
+
+@admin.register(FlavorNote)
+class FlavorNoteAdmin(admin.ModelAdmin):
+    list_display = ['icon', 'name', 'category', 'technical_term', 'is_off_flavour', 'sort_order']
+    list_filter = ['category', 'is_off_flavour']
+    search_fields = ['name', 'technical_term']
+    ordering = ['sort_order']
 
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ['name', 'country']
+    list_display = ['image_preview', 'name', 'brand_owner', 'style', 'abv', 'packaging_type', 'is_horeca_only', 'is_active', 'profile_status']
+    list_filter = ['packaging_type', 'is_horeca_only', 'brand_owner', 'style_family', 'is_active', 'abv_estimated']
+    search_fields = ['name', 'brand_owner', 'style', 'slug']
+    prepopulated_fields = {'slug': ('name',)}
+    readonly_fields = ['image_preview_large']
+    inlines = [FlavorProfileInline, ServingRecommendationInline, FoodPairingInline]
+
+    @admin.display(description='Фото')
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="height: 38px; width: auto; border-radius: 4px; object-fit: contain;" />', obj.image.url)
+        return '—'
+
+    @admin.display(description='Предпросмотр фото')
+    def image_preview_large(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="max-height: 200px; border-radius: 8px;" />', obj.image.url)
+        return 'Нет загруженного изображения'
+
+    @admin.display(description='Профиль')
+    def profile_status(self, obj):
+        profiles = obj.flavor_profiles.all()
+        layers = set(p.layer for p in profiles)
+        total = profiles.count()
+        if total == 0:
+            return '⚪ Пустой'
+        if len(layers) == 3 and total >= 3:
+            return '✅ Заполнен'
+        return '⚠️ Частично'
 
 
-@admin.register(FlavorCategory)
-class FlavorCategoryAdmin(admin.ModelAdmin):
-    list_display = ['emoji', 'name', 'name_en', 'color']
+@admin.register(FlavorProfile)
+class FlavorProfileAdmin(admin.ModelAdmin):
+    list_display = ['brand', 'flavor_note', 'layer', 'intensity', 'sommelier_name']
+    list_filter = ['layer', 'brand']
+    search_fields = ['brand__name', 'flavor_note__name']
+    autocomplete_fields = ['brand', 'flavor_note']
 
 
-@admin.register(Beer)
-class BeerAdmin(admin.ModelAdmin):
-    list_display = ['name', 'brand', 'style', 'abv', 'ibu', 'rating', 'is_premium', 'is_active']
-    list_filter = ['brand', 'style', 'is_premium', 'is_active']
-    search_fields = ['name', 'brand__name']
-    inlines = [FlavorPyramidInline, BeerFlavorNoteInline, FoodPairingInline, ExpertReviewInline]
+@admin.register(ServingRecommendation)
+class ServingRecommendationAdmin(admin.ModelAdmin):
+    list_display = ['brand', 'serving_temp_min', 'serving_temp_max', 'glass_type', 'seasonality']
+    search_fields = ['brand__name']
+    autocomplete_fields = ['brand']
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ['level', 'title', 'color', 'required_score']
+    ordering = ['level']
+
+
+@admin.register(TeamMember)
+class TeamMemberAdmin(admin.ModelAdmin):
+    list_display = ['name', 'role']
 
 
 @admin.register(Dish)
 class DishAdmin(admin.ModelAdmin):
-    list_display = ['emoji', 'name', 'cuisine']
+    list_display = ['name', 'cuisine', 'category', 'dominant_taste', 'weight', 'fat_level', 'cooking_method']
+    list_filter = ['cuisine', 'dominant_taste', 'weight', 'fat_level', 'cooking_method']
+    search_fields = ['name', 'category', 'description']
 
 
-@admin.register(SchoolLevel)
-class SchoolLevelAdmin(admin.ModelAdmin):
-    list_display = ['emoji', 'name', 'order', 'xp_required']
+@admin.register(FoodPairing)
+class FoodPairingAdmin(admin.ModelAdmin):
+    list_display = ['brand', 'dish', 'compatibility_score', 'pairing_type']
+    list_filter = ['pairing_type']
+    autocomplete_fields = ['brand', 'dish']
 
 
-@admin.register(Lesson)
-class LessonAdmin(admin.ModelAdmin):
-    list_display = ['title', 'level', 'order', 'xp_reward']
-    list_filter = ['level']
+@admin.register(Venue)
+class VenueAdmin(admin.ModelAdmin):
+    list_display = ['name', 'venue_type', 'address']
+    list_filter = ['venue_type']
+    search_fields = ['name']
+    inlines = [QRCodeInline]
 
 
-@admin.register(QuizQuestion)
-class QuizQuestionAdmin(admin.ModelAdmin):
-    list_display = ['text', 'lesson', 'correct_index']
-    list_filter = ['lesson__level']
+@admin.register(QRCode)
+class QRCodeAdmin(admin.ModelAdmin):
+    list_display = ['venue', 'table_number', 'unique_token', 'scans_count']
+    search_fields = ['unique_token', 'venue__name']
+
+
+@admin.register(AnonymousSession)
+class AnonymousSessionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'qr_code', 'completed_levels', 'score', 'created_at']
+    list_filter = ['completed_levels']
+    ordering = ['-created_at']
+
+
+# ── SaaS: заведения-клиенты, их карта, столы, события и воронка продаж ──
+from datetime import timedelta
+
+from django.utils import timezone
+
+from .models import Lead, MenuEvent, ScanEvent, VenueAccount, VenueMenuItem
+
+
+class VenueMenuItemInline(admin.TabularInline):
+    model = VenueMenuItem
+    extra = 0
+    fields = ('kind', 'ref_slug', 'price', 'volume', 'is_available', 'is_featured', 'sort_order')
+
+
+@admin.register(VenueAccount)
+class VenueAccountAdmin(admin.ModelAdmin):
+    list_display = ('email', 'venue', 'plan', 'days_left', 'subscription_ok', 'is_active', 'last_login_at')
+    list_filter = ('plan', 'is_active')
+    search_fields = ('email', 'venue__name', 'phone', 'contact_name')
+    readonly_fields = ('api_token', 'created_at', 'last_login_at', 'password_hash')
+    actions = ('extend_month', 'rotate_tokens')
+
+    @admin.display(description='Осталось дней')
+    def days_left(self, obj):
+        return obj.days_left
+
+    @admin.display(boolean=True, description='Подписка активна')
+    def subscription_ok(self, obj):
+        return obj.subscription_ok
+
+    @admin.action(description='Продлить на 30 дней')
+    def extend_month(self, request, queryset):
+        now = timezone.now()
+        for account in queryset:
+            base = account.paid_until if account.paid_until and account.paid_until > now else now
+            account.paid_until = base + timedelta(days=30)
+            account.save(update_fields=['paid_until'])
+        self.message_user(request, f'Продлено аккаунтов: {queryset.count()}')
+
+    @admin.action(description='Сбросить токен API')
+    def rotate_tokens(self, request, queryset):
+        for account in queryset:
+            account.rotate_token()
+        self.message_user(request, 'Токены обновлены')
+
+
+@admin.register(VenueMenuItem)
+class VenueMenuItemAdmin(admin.ModelAdmin):
+    list_display = ('venue', 'kind', 'ref_slug', 'price', 'volume', 'is_available', 'is_featured')
+    list_filter = ('kind', 'is_available', 'is_featured', 'venue')
+    list_editable = ('price', 'is_available', 'is_featured')
+    search_fields = ('ref_slug', 'custom_name', 'venue__name')
+
+
+@admin.register(Lead)
+class LeadAdmin(admin.ModelAdmin):
+    list_display = ('venue_name', 'contact_name', 'phone', 'city', 'tables', 'plan_interest', 'status', 'created_at')
+    list_filter = ('status', 'city', 'plan_interest')
+    list_editable = ('status',)
+    search_fields = ('venue_name', 'phone', 'email', 'contact_name')
+    date_hierarchy = 'created_at'
+
+
+@admin.register(ScanEvent)
+class ScanEventAdmin(admin.ModelAdmin):
+    list_display = ('venue', 'table_number', 'created_at')
+    list_filter = ('venue',)
+    date_hierarchy = 'created_at'
+
+
+@admin.register(MenuEvent)
+class MenuEventAdmin(admin.ModelAdmin):
+    list_display = ('venue', 'kind', 'dish_slug', 'beer_slug', 'score', 'price', 'created_at')
+    list_filter = ('kind', 'venue')
+    search_fields = ('dish_slug', 'beer_slug')
+    date_hierarchy = 'created_at'
