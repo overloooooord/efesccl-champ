@@ -1,280 +1,478 @@
-"""
-Flavor Tree — API Views
-"""
-
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
-from django.db.models import Q, Sum
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Count, Q, Prefetch
+from django.shortcuts import get_object_or_404
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 from .models import (
-    Brand, FlavorCategory, Beer, BeerFlavorNote,
-    Dish, FoodPairing,
-    SchoolLevel, Lesson, QuizQuestion,
+    FlavorNote, Brand, FlavorProfile, ServingRecommendation,
+    Course, TeamMember, Dish, FoodPairing,
 )
 from .serializers import (
-    BrandSerializer, FlavorCategorySerializer,
-    BeerListSerializer, BeerDetailSerializer,
-    BeerFlavorNoteSerializer, FoodPairingSerializer,
-    FlavorMatchRequestSerializer, BeerMatchResultSerializer,
-    SchoolLevelSerializer, LessonSerializer,
-    QuizAnswerSerializer,
+    FlavorNoteSerializer, BrandListSerializer, BrandDetailSerializer,
+    BrandCreateUpdateSerializer, FlavorProfileSerializer,
+    PyramidNoteSerializer, CourseSerializer, TeamMemberSerializer,
+    DishSerializer, FoodPairingSerializer,
+    FlavorProfileBulkSerializer, ServingRecommendationUpsertSerializer,
+    ServingRecommendationSerializer,
 )
+from .auth import ADMIN_AUTHENTICATION, IsSommelierAdminOrReadOnly, sommelier_only
 
 
-class BrandViewSet(viewsets.ReadOnlyModelViewSet):
-    """Бренды пива"""
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
-    pagination_class = None
+# ═══════════════════════════════════════════════════════════════════════════════
+#  PUBLIC VIEWSETS
+# ═══════════════════════════════════════════════════════════════════════════════
 
+class BrandViewSet(viewsets.ModelViewSet):
+    """
+    GET  /api/brands/           — список с фильтрами и пагинацией
+    POST /api/brands/           — создать бренд
+    GET  /api/brands/{id}/      — детальная карточка
+    PATCH/PUT /api/brands/{id}/ — обновить
+    DELETE /api/brands/{id}/    — удалить (каскадно)
+    GET  /api/brands/{id}/pyramid/ — вкусовая пирамида
 
-class FlavorCategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    """Все вкусовые категории (для навигации Ноты -> Пиво)"""
-    queryset = FlavorCategory.objects.all()
-    serializer_class = FlavorCategorySerializer
-    pagination_class = None
-
-
-class BeerViewSet(viewsets.ReadOnlyModelViewSet):
-    """Каталог пива"""
-    queryset = Beer.objects.filter(is_active=True).select_related('brand').prefetch_related(
-        'flavor_notes__category', 'pyramid', 'food_pairings__dish', 'expert_reviews'
-    )
+    Чтение открыто всем; POST/PUT/PATCH/DELETE и upload-image — только сомелье (см. api/auth.py).
+    """
+    authentication_classes = ADMIN_AUTHENTICATION
+    permission_classes = [IsSommelierAdminOrReadOnly]
+    queryset = Brand.objects.prefetch_related(
+        'flavor_profiles__flavor_note',
+        'serving_recommendation',
+    ).all()
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return BeerDetailSerializer
-        return BeerListSerializer
+        if self.action == 'list':
+            return BrandListSerializer
+        if self.action in ('create', 'update', 'partial_update'):
+            return BrandCreateUpdateSerializer
+        return BrandDetailSerializer
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        style = self.request.query_params.get('style')
-        brand = self.request.query_params.get('brand')
-        search = self.request.query_params.get('search')
+        queryset = super().get_queryset()
+        params = self.request.query_params
 
+        style = params.get('style')
         if style:
-            qs = qs.filter(style=style)
-        if brand:
-            qs = qs.filter(brand__id=brand)
-        if search:
-            qs = qs.filter(Q(name__icontains=search) | Q(brand__name__icontains=search))
-        return qs
+            queryset = queryset.filter(style__icontains=style)
 
-    @action(detail=True, methods=['get'])
-    def similar(self, request, pk=None):
-        """Похожие по вкусу (на основе общих нот)"""
-        beer = self.get_object()
-        beer_note_ids = set(beer.flavor_notes.values_list('category_id', flat=True))
+        q = params.get('q')
+        if q:
+            queryset = queryset.filter(name__icontains=q)
 
-        if not beer_note_ids:
-            return Response([])
+        is_active = params.get('is_active')
+        if is_active is not None and is_active != '':
+            queryset = queryset.filter(is_active=is_active.lower() in ('true', '1'))
 
-        similar_beers = (
-            Beer.objects.filter(is_active=True)
-            .exclude(id=beer.id)
-            .filter(flavor_notes__category_id__in=beer_note_ids)
-            .distinct()
-        )
+        packaging_type = params.get('packaging_type')
+        if packaging_type:
+            queryset = queryset.filter(packaging_type=packaging_type.upper())
 
-        results = []
-        for other_beer in similar_beers[:6]:
-            other_note_ids = set(other_beer.flavor_notes.values_list('category_id', flat=True))
-            common = beer_note_ids & other_note_ids
-            total = beer_note_ids | other_note_ids
-            match_pct = int((len(common) / len(total)) * 100) if total else 0
-            results.append({
-                'beer': BeerListSerializer(other_beer).data,
-                'match_percent': match_pct,
-            })
+        is_horeca_only = params.get('is_horeca_only')
+        if is_horeca_only is not None and is_horeca_only != '':
+            queryset = queryset.filter(is_horeca_only=is_horeca_only.lower() in ('true', '1'))
 
-        results.sort(key=lambda x: x['match_percent'], reverse=True)
-        return Response(results[:3])
+        # Ordering filter
+        ordering = params.get('ordering')
+        if ordering:
+            allowed = {'name', '-name', 'abv', '-abv', 'created_at', '-created_at', 'style', '-style'}
+            if ordering in allowed:
+                queryset = queryset.order_by(ordering)
 
+        return queryset
 
-@api_view(['POST'])
-def flavor_match(request):
-    """
-    Двусторонняя навигация: Ноты -> Пиво
-    POST {"note_ids": [1, 3, 5]}
-    """
-    serializer = FlavorMatchRequestSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        # Вложенный servingRecommendation при PATCH
+        sr_data = self.request.data.get('serving_recommendation')
+        if sr_data and isinstance(sr_data, dict):
+            ServingRecommendation.objects.update_or_create(
+                brand=instance,
+                defaults={
+                    'serving_temp_min': sr_data.get('serving_temp_min', 4),
+                    'serving_temp_max': sr_data.get('serving_temp_max', 8),
+                    'glass_type': sr_data.get('glass_type', 'Standard'),
+                    'seasonality': sr_data.get('seasonality', ''),
+                },
+            )
 
-    selected_ids = set(serializer.validated_data['note_ids'])
-    beers = Beer.objects.filter(is_active=True).prefetch_related('flavor_notes__category')
+    @action(detail=True, methods=['get'], url_path='pyramid')
+    def pyramid(self, request, pk=None):
+        """GET /api/brands/{id}/pyramid/ — вкусовая пирамида."""
+        brand = self.get_object()
+        profiles = FlavorProfile.objects.filter(brand=brand).select_related('flavor_note')
 
-    results = []
-    for beer in beers:
-        beer_note_ids = set(beer.flavor_notes.values_list('category_id', flat=True))
-        if not beer_note_ids:
-            continue
+        top = profiles.filter(layer='TOP').order_by('-intensity')
+        heart = profiles.filter(layer='HEART').order_by('-intensity')
+        base = profiles.filter(layer='BASE').order_by('-intensity')
 
-        common = selected_ids & beer_note_ids
-        if not common:
-            continue
-
-        total = selected_ids | beer_note_ids
-        jaccard = len(common) / len(total)
-
-        intensity_bonus = 0
-        matching_notes_names = []
-        for note in beer.flavor_notes.filter(category_id__in=common):
-            intensity_bonus += note.intensity
-            matching_notes_names.append(f'{note.category.emoji} {note.category.name}')
-
-        avg_intensity = intensity_bonus / len(common) if common else 0
-        match_pct = int(jaccard * 60 + (avg_intensity / 100) * 40)
-        match_pct = min(match_pct, 99)
-
-        results.append({
-            'beer': BeerListSerializer(beer).data,
-            'match_percent': match_pct,
-            'matching_notes': matching_notes_names,
+        return Response({
+            'brand': brand.name,
+            'brand_id': str(brand.id),
+            'top': PyramidNoteSerializer(top, many=True).data,
+            'heart': PyramidNoteSerializer(heart, many=True).data,
+            'base': PyramidNoteSerializer(base, many=True).data,
         })
 
-    results.sort(key=lambda x: x['match_percent'], reverse=True)
-    return Response(results[:10])
-
-
-# -- Школа Сомелье --
-
-class SchoolLevelViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = SchoolLevel.objects.prefetch_related('lessons__questions').all()
-    serializer_class = SchoolLevelSerializer
-    pagination_class = None
-
-
-class LessonViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Lesson.objects.prefetch_related('questions').all()
-    serializer_class = LessonSerializer
-    lookup_field = 'slug'
-
-
-@api_view(['POST'])
-def check_quiz_answer(request):
-    """Проверка ответа на вопрос квиза"""
-    serializer = QuizAnswerSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-
-    try:
-        question = QuizQuestion.objects.get(id=serializer.validated_data['question_id'])
-    except QuizQuestion.DoesNotExist:
-        return Response({'error': 'Question not found'}, status=404)
-
-    selected = serializer.validated_data['selected_index']
-    is_correct = selected == question.correct_index
-
-    return Response({
-        'correct': is_correct,
-        'correct_index': question.correct_index,
-        'explanation': question.explanation,
-        'xp_earned': question.lesson.xp_reward // max(question.lesson.questions.count(), 1) if is_correct else 0,
-    })
-
-
-# -- AI Сомелье --
-
-@api_view(['POST'])
-def ai_sommelier(request):
-    """AI Сомелье — чат о пиве. POST {"message": "..."}"""
-    message = request.data.get('message', '')
-    if not message:
-        return Response({'error': 'Message is required'}, status=400)
-
-    beers = Beer.objects.filter(is_active=True).select_related('brand')
-    pairings = FoodPairing.objects.select_related('beer', 'dish').all()
-
-    response_text = _generate_local_response(message, beers, pairings)
-
-    return Response({
-        'message': response_text,
-        'source': 'local',
-    })
-
-
-def _generate_local_response(message, beers, pairings):
-    """Умный fallback без OpenAI"""
-    message_lower = message.lower()
-
-    # Ищем упоминание блюда
-    for pairing in pairings:
-        dish_name = pairing.dish.name.lower()
-        if dish_name in message_lower or any(word in message_lower for word in dish_name.split() if len(word) > 3):
-            return (
-                f'К {pairing.dish.name} я рекомендую **{pairing.beer.name}**!\n\n'
-                f'Совпадение: {pairing.match_percent}%\n\n'
-                f'{pairing.why_it_works}\n\n'
-                f'Подавать при {pairing.beer.serving_temp}.'
+    @action(detail=True, methods=['post'], url_path='upload-image', parser_classes=[MultiPartParser, FormParser])
+    def upload_image(self, request, pk=None):
+        """POST /api/brands/{id}/upload-image/ — загрузка фотографии бренда."""
+        brand = self.get_object()
+        file_obj = request.FILES.get('image') or request.FILES.get('file')
+        if not file_obj:
+            return Response(
+                {'error': 'Файл изображения (поле image или file) не передан'},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-
-    # Ищем упоминание пива
-    for beer in beers:
-        if beer.name.lower() in message_lower:
-            return (
-                f'**{beer.name}** — отличный выбор!\n\n'
-                f'{beer.description}\n\n'
-                f'ABV: {beer.abv}% | IBU: {beer.ibu} | Подача: {beer.serving_temp}'
-            )
-
-    # Ищем ноты
-    note_keywords = {
-        'цитрус': 'цитрусовыми нотами',
-        'хлеб': 'хлебными нотами',
-        'горечь': 'горьковатым профилем',
-        'мед': 'медовой сладостью',
-        'карамель': 'карамельными нотами',
-        'шоколад': 'шоколадными нотами',
-    }
-
-    for keyword, description in note_keywords.items():
-        if keyword in message_lower:
-            matching = beers.filter(
-                flavor_notes__category__name__icontains=keyword
-            ).distinct()[:3]
-            if matching:
-                beer_list = ', '.join([b.name for b in matching])
-                return (
-                    f'Пива с {description}:\n\n'
-                    f'{beer_list}\n\n'
-                    f'Попробуйте начать с {matching[0].name} — '
-                    f'это {matching[0].style_display} с ABV {matching[0].abv}%.'
-                )
-
-    # Default
-    top_beers = beers[:3]
-    return (
-        f'Вот мои топ-рекомендации для начала:\n\n'
-        + '\n'.join([f'- **{b.name}** — {b.tagline}' for b in top_beers])
-        + '\n\nРасскажите подробнее — какие вкусы вам нравятся?'
-    )
+        brand.image = file_obj
+        brand.save()
+        serializer = BrandDetailSerializer(brand, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# -- Flavor DNA (demo) --
+class FlavorNoteViewSet(viewsets.ModelViewSet):
+    """
+    GET /api/flavor-notes/              — справочник нот, фильтр ?category=, ?off_flavour=
+    GET /api/flavor-notes/{id}/brands/  — обратный поиск: нота → бренды
+
+    Чтение открыто всем; POST/PUT/PATCH/DELETE — только сомелье (см. api/auth.py).
+    """
+    authentication_classes = ADMIN_AUTHENTICATION
+    permission_classes = [IsSommelierAdminOrReadOnly]
+    queryset = FlavorNote.objects.all()
+    serializer_class = FlavorNoteSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        params = self.request.query_params
+
+        category = params.get('category')
+        if category:
+            queryset = queryset.filter(category=category.upper())
+
+        off_flavour = params.get('off_flavour')
+        if off_flavour is not None and off_flavour != '':
+            queryset = queryset.filter(is_off_flavour=off_flavour.lower() in ('true', '1'))
+
+        return queryset
+
+    @action(detail=True, methods=['get'], url_path='brands')
+    def brands(self, request, pk=None):
+        """GET /api/flavor-notes/{id}/brands/ — бренды, содержащие эту ноту."""
+        note = self.get_object()
+        profiles = FlavorProfile.objects.filter(flavor_note=note).select_related('brand')
+        brands_data = []
+        for p in profiles:
+            brands_data.append({
+                'brand_id': str(p.brand.id),
+                'brand_name': p.brand.name,
+                'layer': p.layer,
+                'intensity': p.intensity,
+            })
+        return Response(brands_data)
+
+
+class CourseViewSet(viewsets.ReadOnlyModelViewSet):
+    """GET /api/courses/ — курсы Школы Пивных Сомелье (read-only)."""
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+
+class TeamMemberViewSet(viewsets.ReadOnlyModelViewSet):
+    """GET /api/team/ — команда Flavor Tree (read-only)."""
+    queryset = TeamMember.objects.all()
+    serializer_class = TeamMemberSerializer
+
+
+class DishViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    GET /api/dishes/ — каталог блюд для food pairing с фильтрами:
+    ?cuisine=KZ|ITALIAN|JAPANESE|AMERICAN|MEXICAN|GERMAN
+    ?dominant_taste=SALTY|SWEET|SOUR|BITTER|UMAMI|SPICY|MIXED
+    ?weight=LIGHT|MEDIUM|HEAVY
+    ?fat_level=LOW|MEDIUM|HIGH
+    ?q=поиск_по_названию
+    """
+    queryset = Dish.objects.all()
+    serializer_class = DishSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        params = self.request.query_params
+
+        cuisine = params.get('cuisine')
+        if cuisine:
+            queryset = queryset.filter(cuisine=cuisine.upper())
+
+        dominant_taste = params.get('dominant_taste')
+        if dominant_taste:
+            queryset = queryset.filter(dominant_taste=dominant_taste.upper())
+
+        weight = params.get('weight')
+        if weight:
+            queryset = queryset.filter(weight=weight.upper())
+
+        fat_level = params.get('fat_level')
+        if fat_level:
+            queryset = queryset.filter(fat_level=fat_level.upper())
+
+        q = params.get('q')
+        if q:
+            queryset = queryset.filter(name__icontains=q)
+
+        return queryset
+
+
+class FoodPairingViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    GET /api/pairings/ — пары пиво ↔ блюдо с фильтрами:
+    ?brand_id=uuid / ?brand_name=...
+    ?dish_id=uuid / ?dish_name=...
+    ?pairing_type=COMPLEMENT|CONTRAST|CLEANSE|BRIDGE
+    """
+    queryset = FoodPairing.objects.select_related('brand', 'dish').all()
+    serializer_class = FoodPairingSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        params = self.request.query_params
+
+        brand_id = params.get('brand_id')
+        if brand_id:
+            queryset = queryset.filter(brand_id=brand_id)
+
+        brand_name = params.get('brand_name')
+        if brand_name:
+            queryset = queryset.filter(brand__name__icontains=brand_name)
+
+        dish_id = params.get('dish_id')
+        if dish_id:
+            queryset = queryset.filter(dish_id=dish_id)
+
+        dish_name = params.get('dish_name')
+        if dish_name:
+            queryset = queryset.filter(dish__name__icontains=dish_name)
+
+        pairing_type = params.get('pairing_type')
+        if pairing_type:
+            queryset = queryset.filter(pairing_type=pairing_type.upper())
+
+        return queryset
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  STANDALONE VIEWS
+# ═══════════════════════════════════════════════════════════════════════════════
 
 @api_view(['GET'])
-def flavor_dna_demo(request):
-    """Demo Flavor DNA"""
+@cache_page(60 * 5)  # Кеширование на 5 минут
+def landing_data(request):
+    """
+    GET /api/landing/ — агрегирующий эндпоинт: project info, team, courses, stats, quote.
+    Один запрос вместо четырёх.
+    """
+    brands_count = Brand.objects.filter(is_active=True).count()
+    notes_count = FlavorNote.objects.count()
+    profiles_count = FlavorProfile.objects.count()
+    courses_qs = Course.objects.all()
+    team_qs = TeamMember.objects.all()
+
     return Response({
-        'username': 'demo_user',
-        'level': 'Исследователь',
-        'total_tastings': 12,
-        'xp': 847,
-        'streak': 5,
-        'dna': [
-            {'name': 'Цитрус', 'emoji': '🍋', 'percent': 42, 'color': '#f59e0b'},
-            {'name': 'Хлеб', 'emoji': '🍞', 'percent': 28, 'color': '#d97706'},
-            {'name': 'Горечь', 'emoji': '⚡', 'percent': 15, 'color': '#8b5cf6'},
-            {'name': 'Трава', 'emoji': '🌿', 'percent': 9, 'color': '#22c55e'},
-            {'name': 'Цветочный', 'emoji': '🌸', 'percent': 6, 'color': '#ec4899'},
-        ],
-        'tagline': 'Ты на 42% цитрусовый',
-        'achievements': [
-            {'name': 'Первый глоток', 'emoji': '🍺', 'unlocked': True},
-            {'name': '5 дней подряд', 'emoji': '🔥', 'unlocked': True},
-            {'name': 'Цитрусовый фанат', 'emoji': '🍋', 'unlocked': True},
-            {'name': '10 заметок', 'emoji': '📝', 'unlocked': True},
-            {'name': 'Слепая дегустация', 'emoji': '🔒', 'unlocked': False},
-            {'name': 'Food Pairing Pro', 'emoji': '🔒', 'unlocked': False},
+        'project': {
+            'name': 'Flavor Tree',
+            'tagline': "Don't just drink — listen to the flavor",
+            'description': (
+                'Платформа сенсорного образования и подбора пива. '
+                'Каждый сорт раскладывается на «Вкусовую пирамиду»: '
+                'Top Notes, Heart Notes, Base Notes.'
+            ),
+            'partner': 'EFES Kazakhstan · One Idea University / Anadolu Group',
+            'market': 'Казахстан',
+        },
+        'quote': {
+            'text': (
+                'Сегодня я услышал пиво, а не просто выпил его. '
+                'Flavor Tree меняет то, как я отношусь к любимому напитку.'
+            ),
+            'author': 'Участник пилотной дегустации, Алматы',
+        },
+        'stats': {
+            'brands': brands_count,
+            'flavor_notes': notes_count,
+            'flavor_profiles': profiles_count,
+            'courses': courses_qs.count(),
+            'team_members': team_qs.count(),
+        },
+        'courses': CourseSerializer(courses_qs, many=True).data,
+        'team': TeamMemberSerializer(team_qs, many=True).data,
+        'pyramid_layers': [
+            {'key': 'TOP', 'label': 'Top Notes', 'time': '0–3 сек', 'color': '#facc15'},
+            {'key': 'HEART', 'label': 'Heart Notes', 'time': '3–15 сек', 'color': '#b45309'},
+            {'key': 'BASE', 'label': 'Base Notes', 'time': '15+ сек', 'color': '#451a03'},
         ],
     })
+
+
+@api_view(['GET'])
+def health_check(request):
+    """GET /api/health/ — health check."""
+    return Response({'ok': True})
+
+
+@api_view(['GET', 'POST'])
+@sommelier_only
+def seed_data(request):
+    """POST /api/seed/ — загрузка демо-данных и 17 сортов (идемпотентно). Только сомелье.
+
+    Перезаписывает сорта и пирамиды данными из data/*.json, поэтому закрыт токеном.
+    GET оставлен для совместимости со старыми скриптами.
+    """
+    from django.core.management import call_command
+    try:
+        call_command('load_flavor_data')
+        return Response({'ok': True, 'message': '17 brands and flavor pyramid data loaded successfully'})
+    except Exception as e:
+        return Response(
+            {'ok': False, 'error': str(e)[:200]},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  ADMIN (SOMMELIER) VIEWS
+#  Все закрыты @sommelier_only: токен FT_ADMIN_TOKEN или сотрудник Django (api/auth.py).
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@api_view(['GET', 'POST'])
+@sommelier_only
+def admin_brands(request):
+    """
+    GET  /api/admin/brands/ — список брендов со статусом профиля
+    POST /api/admin/brands/ — создать бренд из админки
+    """
+    if request.method == 'GET':
+        brands = Brand.objects.prefetch_related('flavor_profiles').all()
+        serializer = BrandListSerializer(brands, many=True)
+        return Response(serializer.data)
+
+    # POST
+    serializer = BrandCreateUpdateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    brand = serializer.save()
+    return Response(BrandDetailSerializer(brand).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['PUT'])
+@sommelier_only
+def admin_flavor_profiles(request):
+    """
+    PUT /api/admin/flavor-profiles/ — заменить вкусовую пирамиду бренда целиком.
+    Body: { brand_id, notes: [{ flavor_note_id, layer, intensity, sommelier_note }] }
+    """
+    serializer = FlavorProfileBulkSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    brand_id = serializer.validated_data['brand_id']
+    notes_data = serializer.validated_data['notes']
+
+    brand = get_object_or_404(Brand, id=brand_id)
+
+    # Валидация: layer ноты должен соответствовать category ноты
+    warnings = []
+    for item in notes_data:
+        try:
+            note = FlavorNote.objects.get(id=item['flavor_note_id'])
+            if note.category != item['layer']:
+                warnings.append(
+                    f'Нота «{note.name}» ({note.category}) указана в слое {item["layer"]}'
+                )
+        except FlavorNote.DoesNotExist:
+            return Response(
+                {'error': f'Нота {item["flavor_note_id"]} не найдена'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    # Удалить старые профили и вставить новые
+    FlavorProfile.objects.filter(brand=brand).delete()
+    for item in notes_data:
+        FlavorProfile.objects.create(
+            brand=brand,
+            flavor_note_id=item['flavor_note_id'],
+            layer=item['layer'],
+            intensity=item['intensity'],
+            sommelier_note=item.get('sommelier_note', ''),
+        )
+
+    # Проверка полноты
+    layers = set(FlavorProfile.objects.filter(brand=brand).values_list('layer', flat=True))
+    complete = len(layers) == 3
+
+    if not complete:
+        missing = {'TOP', 'HEART', 'BASE'} - layers
+        warnings.append(f'Не заполнены слои: {", ".join(missing)}')
+
+    return Response({
+        'ok': True,
+        'warnings': warnings,
+        'profile': {'complete': complete},
+    })
+
+
+@api_view(['PUT'])
+@sommelier_only
+def admin_serving_recommendations(request):
+    """
+    PUT /api/admin/serving-recommendations/ — upsert рекомендаций по подаче.
+    Body: { brand_id, serving_temp_min, serving_temp_max, glass_type, seasonality }
+    """
+    serializer = ServingRecommendationUpsertSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+
+    brand = get_object_or_404(Brand, id=data['brand_id'])
+    ServingRecommendation.objects.update_or_create(
+        brand=brand,
+        defaults={
+            'serving_temp_min': data['serving_temp_min'],
+            'serving_temp_max': data['serving_temp_max'],
+            'glass_type': data['glass_type'],
+            'seasonality': data.get('seasonality', ''),
+        },
+    )
+    return Response({'ok': True})
+
+
+@api_view(['POST', 'PATCH', 'DELETE'])
+@sommelier_only
+def admin_flavor_notes(request):
+    """
+    POST   /api/admin/flavor-notes/ — создать ноту
+    PATCH  /api/admin/flavor-notes/ — обновить ноту (body: {id, ...fields})
+    DELETE /api/admin/flavor-notes/?id= — удалить ноту
+    """
+    if request.method == 'POST':
+        serializer = FlavorNoteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    if request.method == 'PATCH':
+        note_id = request.data.get('id')
+        if not note_id:
+            return Response({'error': 'id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        note = get_object_or_404(FlavorNote, id=note_id)
+        serializer = FlavorNoteSerializer(note, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    if request.method == 'DELETE':
+        note_id = request.query_params.get('id')
+        if not note_id:
+            return Response({'error': 'id query param is required'}, status=status.HTTP_400_BAD_REQUEST)
+        note = get_object_or_404(FlavorNote, id=note_id)
+        note.delete()
+        return Response({'ok': True, 'deleted': str(note_id)})
