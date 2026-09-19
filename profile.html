@@ -1,4 +1,3 @@
-:
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -692,7 +691,7 @@
             </div><span class="pct">6%</span>
           </div>
         </div>
-        <div class="dna-share">🧬 «Ты на 42% цитрусовый» — <strong>Поделиться DNA</strong></div>
+        <div class="dna-share" onclick="openFlavorDNAWrapped('Алибек')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">🧬 «Ты на 42% цитрусовый» — <strong>Поделиться DNA (Spotify Wrapped стиль) ↗</strong></div>
       </div>
 
       <div class="dna-card">
@@ -925,6 +924,7 @@ function toggleBeerDetail() {
   if (!isOpen) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
+<script src="story_generator.js"></script>
 </body>
 
 </html>

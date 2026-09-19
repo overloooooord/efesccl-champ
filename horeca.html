@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0e0d0b">
+<title>Flavor Tree x HoReCa — Пиво как искусство продаж</title>
+<meta name="description" content="Платформа сенсорного образования и продаж пива для ресторанной индустрии. Цифровой сомелье за каждым столом, рост среднего чека на 15-20%, Duolingo для персонала. Efes Kazakhstan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Nunito+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ══════════════════════════════════════════════════════════
+     FLAVOR TREE × HORECA — DARK GASTRO PREMIUM THEME
+     Deep graphite · Warm amber gold · Glassmorphism
+  ══════════════════════════════════════════════════════════ */
+
+  :root {
+    --h-bg:        #0e0d0b;
+    --h-bg2:       #131210;
+    --h-surface:   #1a1814;
+    --h-surface2:  #211f1a;
+    --h-surface3:  #2a2720;
+    --h-border:    rgba(255,255,255,0.07);
+    --h-border2:   rgba(200,160,80,0.22);
+    --h-gold:      #c8922a;
+    --h-gold2:     #d4a843;
+    --h-gold-grad: linear-gradient(135deg,#d4a843 0%,#c8922a 55%,#8b5e10 100%);
+    --h-gold-soft: rgba(212,168,67,0.10);
+    --h-text:      #f0ead8;
+    --h-text2:     #b5a98a;
+    --h-text3:     #7a6e58;
+    --h-ok:        #5da86b;
+    --h-danger:    #c85858;
+    --h-shadow:    0 4px 24px rgba(0,0,0,0.45);
+    --h-shadow-lg: 0 12px 50px rgba(0,0,0,0.6);
+    --h-glow:      0 0 40px rgba(200,146,42,0.10);
+    --ease: cubic-bezier(0.22,1,0.36,1);
+  }
+
+  *,*::before,*::after { box-sizing:border-box; }
+
+  body {
+    background:var(--h-bg)!important; color:var(--h-text)!important;
+    font-family:'Nunito Sans',sans-serif!important; margin:0; min-height:100vh;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.3;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+  body::after {
+    content:''; position:fixed; top:-200px; right:-150px; z-index:0; pointer-events:none;
+    width:700px; height:700px; border-radius:50%;
+    background:radial-gradient(circle,rgba(200,146,42,0.05) 0%,transparent 65%);
+  }
+
+  /* NAV */
+  .h-nav { position:sticky; top:0; z-index:50; background:rgba(14,13,11,0.85); backdrop-filter:blur(28px) saturate(200%); border-bottom:1px solid var(--h-border); box-shadow:0 1px 0 rgba(200,146,42,0.06); }
+  .h-nav-inner { max-width:1180px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .h-brand { display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--h-text); }
+  .h-brand-logo { width:38px; height:38px; border-radius:10px; background:var(--h-gold-grad); display:grid; place-items:center; font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:700; color:#0e0d0b; box-shadow:0 4px 16px rgba(200,146,42,0.35),inset 0 1px 0 rgba(255,255,255,0.3); flex-shrink:0; }
+  .h-brand-text { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; letter-spacing:-0.01em; line-height:1.1; color:var(--h-text); }
+  .h-brand-text em { font-style:normal; color:var(--h-gold2); }
+  .h-brand-badge { font-size:9px; font-weight:800; letter-spacing:0.16em; text-transform:uppercase; background:var(--h-gold-soft); color:var(--h-gold2); padding:2px 8px; border-radius:99px; margin-left:8px; border:1px solid var(--h-border2); }
+  .mode-switch { display:inline-flex; align-items:center; background:var(--h-surface2); border:1px solid var(--h-border); border-radius:999px; padding:4px; gap:3px; }
+  .mode-btn { border:none; background:transparent; padding:8px 18px; border-radius:999px; font-family:'Nunito Sans',sans-serif; font-size:13px; font-weight:700; color:var(--h-text3); cursor:pointer; transition:all 0.22s var(--ease); display:flex; align-items:center; gap:7px; white-space:nowrap; }
+  .mode-btn:hover { color:var(--h-text2); }
+  .mode-btn.active { background:var(--h-surface3); color:var(--h-gold2); box-shadow:0 2px 10px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.04); border:1px solid var(--h-border2); }
+  .mode-btn .ico { font-size:14px; }
+  .h-nav-links { display:flex; align-items:center; gap:6px; }
+  .h-nav-link { font-size:13px; font-weight:600; color:var(--h-text3); text-decoration:none; padding:7px 13px; border-radius:8px; transition:all 0.2s; border:1px solid transparent; }
+  .h-nav-link:hover { color:var(--h-gold2); background:var(--h-surface2); border-color:var(--h-border); }
+  .h-btn-action { background:var(--h-gold-grad); color:#0e0d0b; border:none; font-family:'Nunito Sans',sans-serif; font-size:13px; font-weight:800; padding:9px 18px; border-radius:999px; cursor:pointer; box-shadow:0 4px 20px rgba(200,146,42,0.35),inset 0 1px 0 rgba(255,255,255,0.25); text-decoration:none; display:inline-flex; align-items:center; gap:7px; transition:transform 0.2s,box-shadow 0.2s; }
+  .h-btn-action:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(200,146,42,0.5); }
+
+  /* LAYOUT */
+  .section-wrap { max-width:1180px; margin:0 auto; padding:56px 24px; }
+  .section-header { text-align:center; max-width:700px; margin:0 auto 48px; }
+  .section-header.left { text-align:left; margin:0 0 36px; }
+  .sec-eyebrow { font-size:11px; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:var(--h-gold); margin-bottom:10px; display:block; }
+  .sec-title { font-family:'Cormorant Garamond',serif; font-size:clamp(30px,3.8vw,48px); font-weight:700; line-height:1.12; margin:0 0 16px; color:var(--h-text); }
+  .sec-desc { font-size:16px; color:var(--h-text2); line-height:1.65; margin:0; }
+  h2 { color:var(--h-text)!important; }
+  h3 { color:var(--h-text)!important; }
+  p { color:var(--h-text2); }
+
+  /* HERO B2B */
+  .hero-b2b { padding:72px 24px 56px; max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1.2fr 0.8fr; gap:56px; align-items:center; }
+  @media(max-width:920px){ .hero-b2b { grid-template-columns:1fr; padding:48px 20px 36px; gap:40px; } }
+  .hero-tag { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:800; letter-spacing:0.16em; text-transform:uppercase; color:var(--h-gold2); background:var(--h-gold-soft); border:1px solid var(--h-border2); padding:6px 16px; border-radius:99px; margin-bottom:22px; }
+  .hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(38px,5vw,64px); font-weight:700; line-height:1.06; letter-spacing:-0.015em; margin:0 0 20px; color:var(--h-text); }
+  .hero-title .accent,.hero-title span.accent { background:var(--h-gold-grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .hero-lede { font-size:17px; line-height:1.65; color:var(--h-text2); margin-bottom:32px; max-width:580px; }
+  .hero-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin-bottom:36px; }
+  .hero-kpi { background:var(--h-surface); border:1px solid var(--h-border); border-radius:14px; padding:16px 18px; transition:border-color 0.2s,transform 0.2s; }
+  .hero-kpi:hover { border-color:var(--h-border2); transform:translateY(-2px); }
+  .hero-kpi b { display:block; font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:700; color:var(--h-gold2); line-height:1.1; margin-bottom:4px; }
+  .hero-kpi span { font-size:11.5px; color:var(--h-text3); line-height:1.35; display:block; }
+  .hero-cta-group { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+
+  /* TENT CARD */
+  .hero-mockup { position:relative; }
+  .tent-card { background:linear-gradient(160deg,var(--h-surface2) 0%,var(--h-surface) 100%); border:1px solid var(--h-border2); border-radius:24px; padding:28px; box-shadow:var(--h-shadow-lg),var(--h-glow),inset 0 1px 0 rgba(255,255,255,0.03); position:relative; overflow:hidden; animation:cardFloat 5s ease-in-out infinite; }
+  @keyframes cardFloat { 0%,100% { transform:translateY(0) rotate(-0.5deg); } 50% { transform:translateY(-8px) rotate(0.3deg); } }
+  .tent-card::before { content:''; position:absolute; top:-60px; right:-60px; width:180px; height:180px; border-radius:50%; background:radial-gradient(circle,rgba(200,146,42,0.12) 0%,transparent 70%); pointer-events:none; }
+  .tent-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .tent-badge { font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.16em; color:var(--h-gold2); background:var(--h-gold-soft); padding:4px 10px; border-radius:99px; border:1px solid var(--h-border2); }
+  .tent-table-no { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--h-gold2); }
+  .tent-demo-dish { display:flex; gap:14px; align-items:center; background:var(--h-surface3); border:1px solid var(--h-border); border-radius:14px; padding:13px 15px; margin-bottom:16px; }
+  .tent-demo-dish .em { font-size:30px; line-height:1; }
+  .tent-demo-dish .d-title { font-weight:700; font-size:14px; margin-bottom:3px; color:var(--h-text); }
+  .tent-demo-dish .d-sub { font-size:11.5px; color:var(--h-text3); }
+  .tent-reco-box { background:var(--h-surface3); border:1px solid var(--h-border2); border-radius:16px; padding:18px; }
+  .tent-reco-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+  .tent-beer-name { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; line-height:1.1; color:var(--h-text); }
+  .tent-beer-meta { font-size:11px; color:var(--h-text3); margin-top:3px; }
+  .tent-match-ring { width:54px; height:54px; border-radius:50%; background:conic-gradient(var(--h-gold2) 0% 94%,rgba(200,146,42,0.12) 94% 100%); display:grid; place-items:center; padding:4px; flex-shrink:0; }
+  .tent-match-inner { width:100%; height:100%; border-radius:50%; background:var(--h-surface2); display:grid; place-items:center; font-family:'Cormorant Garamond',serif; font-size:15px; font-weight:700; color:var(--h-gold2); }
+  .tent-bridge-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .tent-bridge-tag { font-size:10.5px; font-weight:700; padding:4px 9px; border-radius:6px; background:rgba(200,146,42,0.10); color:var(--h-gold2); border:1px solid rgba(200,146,42,0.2); }
+  .tent-why { font-size:12.5px; line-height:1.55; color:var(--h-text2); margin:0 0 14px; }
+  .tent-btn-row { display:flex; gap:8px; }
+  .tent-btn-row button { flex:1; padding:9px; font-size:12px; font-weight:700; border-radius:10px; cursor:pointer; transition:all 0.2s; }
+  .tent-btn-row button:first-child { background:var(--h-gold-grad); color:#0e0d0b; border:none; box-shadow:0 4px 14px rgba(200,146,42,0.3); }
+  .tent-btn-row button:last-child { background:transparent; color:var(--h-text2); border:1px solid var(--h-border); }
+  .tent-btn-row button:hover { transform:translateY(-1px); }
+
+  /* VENUE STRIP */
+  .venue-selector-strip { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-bottom:28px; scrollbar-width:thin; scrollbar-color:var(--h-border) transparent; }
+  .venue-chip-card { flex:0 0 auto; background:var(--h-surface); border:1px solid var(--h-border); border-radius:14px; padding:13px 16px; cursor:pointer; text-align:left; transition:all 0.2s var(--ease); display:flex; align-items:center; gap:12px; }
+  .venue-chip-card:hover { border-color:var(--h-border2); transform:translateY(-2px); box-shadow:var(--h-shadow); }
+  .venue-chip-card.selected { border-color:var(--h-gold2); background:var(--h-surface2); box-shadow:0 0 0 1px rgba(200,146,42,0.2),var(--h-shadow); }
+  .venue-chip-icon { font-size:22px; width:42px; height:42px; border-radius:10px; background:var(--h-surface3); display:grid; place-items:center; border:1px solid var(--h-border); }
+  .venue-chip-name { font-size:13.5px; font-weight:700; display:block; color:var(--h-text); }
+  .venue-chip-meta { font-size:11px; color:var(--h-text3); display:block; margin-top:2px; }
+
+  /* DISH GRID */
+  .dish-selection-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; margin-bottom:28px; }
+  .dish-btn-card { background:var(--h-surface); border:1px solid var(--h-border); border-radius:16px; padding:16px; text-align:left; cursor:pointer; transition:all 0.22s var(--ease); position:relative; }
+  .dish-btn-card:hover { border-color:var(--h-border2); transform:translateY(-3px); box-shadow:var(--h-shadow); }
+  .dish-btn-card.active { border-color:var(--h-gold2); background:var(--h-surface2); box-shadow:0 0 0 1px rgba(200,146,42,0.2),var(--h-shadow); }
+  .dish-btn-emoji { font-size:34px; display:block; margin-bottom:10px; }
+  .dish-btn-name { font-size:13.5px; font-weight:700; display:block; line-height:1.25; margin-bottom:6px; color:var(--h-text); }
+  .dish-btn-price { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:600; color:var(--h-gold2); }
+  .dish-btn-tag { position:absolute; top:10px; right:10px; font-size:9px; font-weight:800; text-transform:uppercase; background:var(--h-gold-soft); color:var(--h-gold2); padding:2px 6px; border-radius:5px; border:1px solid rgba(200,146,42,0.2); }
+
+  /* PAIRING SHOWCASE */
+  .pairing-showcase { background:var(--h-surface); border:1px solid var(--h-border2); border-radius:24px; padding:32px; box-shadow:var(--h-shadow-lg),var(--h-glow); display:grid; grid-template-columns:1fr 1.2fr; gap:36px; align-items:start; margin-bottom:36px; position:relative; overflow:hidden; }
+  @media(max-width:860px){ .pairing-showcase { grid-template-columns:1fr; padding:22px; gap:28px; } }
+  .pairing-showcase::before { content:''; position:absolute; top:-80px; left:-80px; width:220px; height:220px; background:radial-gradient(circle,rgba(200,146,42,0.06) 0%,transparent 70%); pointer-events:none; }
+  .beer-visual-pane { text-align:center; padding:12px; }
+  .beer-bottle-img { max-height:230px; width:auto; object-fit:contain; filter:drop-shadow(0 16px 32px rgba(0,0,0,0.6)) drop-shadow(0 0 40px rgba(200,146,42,0.15)); transition:transform 0.4s var(--ease); }
+  .beer-bottle-img:hover { transform:scale(1.06) rotate(-2deg); }
+  .beer-badges-row { display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-top:16px; }
+
+  /* PYRAMID */
+  .pyramid-mini { display:flex; flex-direction:column; gap:6px; margin:18px 0; }
+  .pyr-mini-level { padding:10px 14px; border-radius:10px; font-size:12.5px; line-height:1.45; display:flex; align-items:center; gap:12px; }
+  .pyr-mini-level.top  { background:rgba(212,168,67,0.10); border-left:3px solid var(--h-gold2); }
+  .pyr-mini-level.heart { background:rgba(184,80,80,0.08); border-left:3px solid #c05050; }
+  .pyr-mini-level.base  { background:rgba(100,90,180,0.08); border-left:3px solid #7870c0; }
+  .pyr-mini-lbl { font-weight:800; font-size:9.5px; letter-spacing:0.14em; text-transform:uppercase; min-width:50px; color:var(--h-text3); }
+  .pyr-mini-desc { flex:1; color:var(--h-text2); }
+
+  /* PROBLEM CARDS */
+  .b2b-problem-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+  .problem-card { background:var(--h-surface); border:1px solid var(--h-border); border-radius:20px; padding:26px; display:flex; flex-direction:column; gap:14px; transition:border-color 0.2s,transform 0.2s; }
+  .problem-card:hover { border-color:var(--h-border2); transform:translateY(-3px); box-shadow:var(--h-shadow); }
+  .problem-card .icon-box { width:48px; height:48px; border-radius:12px; background:rgba(200,80,80,0.10); display:grid; place-items:center; font-size:22px; border:1px solid rgba(200,80,80,0.15); }
+  .problem-card h3 { font-family:'Cormorant Garamond',serif; font-size:22px; margin:0; font-weight:700; color:var(--h-text); }
+  .problem-card p { font-size:13.5px; color:var(--h-text2); margin:0; line-height:1.6; }
+  .problem-stat { margin-top:auto; padding-top:14px; border-top:1px solid var(--h-border); font-size:12px; font-weight:800; color:var(--h-gold); letter-spacing:0.04em; }
+
+  /* PILLARS */
+  .pillars-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(255px,1fr)); gap:20px; }
+  .pillar-card { background:var(--h-surface); border:1px solid var(--h-border); border-radius:20px; padding:26px; transition:all 0.25s var(--ease); display:flex; flex-direction:column; position:relative; overflow:hidden; }
+  .pillar-card:hover { transform:translateY(-4px); box-shadow:var(--h-shadow); border-color:var(--h-border2); }
+  .pillar-num { font-family:'Cormorant Garamond',serif; font-size:13px; font-weight:700; color:var(--h-gold); letter-spacing:0.1em; margin-bottom:16px; padding:5px 12px; background:var(--h-gold-soft); border-radius:99px; align-self:flex-start; border:1px solid var(--h-border2); }
+  .pillar-card h3 { font-size:17px; font-weight:700; margin:0 0 10px; line-height:1.3; color:var(--h-text); }
+  .pillar-card p { font-size:13.5px; color:var(--h-text2); line-height:1.6; margin:0 0 16px; }
+  .pillar-badge { margin-top:auto; align-self:flex-start; font-size:10.5px; font-weight:700; padding:5px 12px; border-radius:99px; background:var(--h-surface3); color:var(--h-gold2); border:1px solid var(--h-border); }
+
+  /* ROI CALCULATOR */
+  .calc-card { background:var(--h-surface); border:1px solid var(--h-border2); border-radius:28px; padding:40px; box-shadow:var(--h-shadow-lg),var(--h-glow); display:grid; grid-template-columns:1.2fr 0.8fr; gap:44px; align-items:center; position:relative; overflow:hidden; }
+  @media(max-width:880px){ .calc-card { grid-template-columns:1fr; padding:26px; gap:30px; } }
+  .calc-slider-group { margin-bottom:24px; }
+  .calc-slider-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+  .calc-slider-head label { font-size:13.5px; font-weight:600; color:var(--h-text2); }
+  .calc-slider-head span.val { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:var(--h-gold2); }
+  .calc-slider { width:100%; -webkit-appearance:none; appearance:none; height:6px; border-radius:3px; background:rgba(200,146,42,0.15); outline:none; cursor:pointer; }
+  .calc-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:22px; height:22px; border-radius:50%; background:var(--h-gold-grad); cursor:pointer; box-shadow:0 2px 8px rgba(200,146,42,0.5); border:3px solid var(--h-bg); }
+  .calc-result-box { background:var(--h-surface2); border:1px solid var(--h-border2); border-radius:20px; padding:30px; text-align:center; }
+  .calc-res-label { font-size:10.5px; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:var(--h-text3); margin-bottom:8px; }
+  .calc-res-big { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,4.5vw,52px); font-weight:700; color:var(--h-gold2); line-height:1.05; margin-bottom:10px; }
+  .calc-res-sub { font-size:13px; color:var(--h-text3); margin-bottom:22px; line-height:1.45; }
+  .calc-meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding-top:18px; border-top:1px solid var(--h-border); }
+  .calc-meta-item small { display:block; font-size:10px; color:var(--h-text3); text-transform:uppercase; }
+  .calc-meta-item b { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--h-ok); }
+
+  /* QUIZ */
+  .quiz-card { background:var(--h-surface); border:1px solid var(--h-border); border-radius:20px; padding:28px; box-shadow:var(--h-shadow); }
+  .quiz-options { display:grid; gap:10px; margin-top:18px; }
+  .quiz-opt { background:var(--h-surface2); border:1px solid var(--h-border); border-radius:12px; padding:15px 20px; font-size:14px; font-weight:600; text-align:left; cursor:pointer; transition:all 0.2s; display:flex; justify-content:space-between; align-items:center; color:var(--h-text2); }
+  .quiz-opt:hover { border-color:var(--h-border2); color:var(--h-text); background:var(--h-surface3); }
+  .quiz-opt.correct { background:rgba(93,168,107,0.10); border-color:var(--h-ok); color:var(--h-ok); }
+  .quiz-opt.wrong   { background:rgba(200,88,88,0.08); border-color:var(--h-danger); color:var(--h-danger); }
+  .quiz-explanation { margin-top:16px; padding:14px 18px; border-radius:12px; background:var(--h-surface3); font-size:13.5px; line-height:1.55; color:var(--h-text2); display:none; border:1px solid var(--h-border2); }
+
+  /* PRICING */
+  .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:24px; }
+  .price-card { background:var(--h-surface); border:1px solid var(--h-border); border-radius:24px; padding:34px; display:flex; flex-direction:column; transition:transform 0.25s,box-shadow 0.25s; }
+  .price-card:hover { transform:translateY(-4px); box-shadow:var(--h-shadow); }
+  .price-card.featured { border-color:var(--h-gold2); box-shadow:0 0 0 1px rgba(200,146,42,0.15),var(--h-shadow); background:linear-gradient(160deg,var(--h-surface2) 0%,var(--h-surface) 100%); }
+  .price-tag { font-size:10.5px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--h-gold2); margin-bottom:14px; }
+  .price-num { font-family:'Cormorant Garamond',serif; font-size:48px; font-weight:700; color:var(--h-text); line-height:1; margin-bottom:8px; }
+  .price-num small { font-size:16px; font-weight:500; color:var(--h-text3); }
+  .price-features { list-style:none; padding:0; margin:24px 0; display:flex; flex-direction:column; gap:13px; }
+  .price-features li { font-size:13.5px; color:var(--h-text2); display:flex; align-items:center; gap:10px; }
+  .price-features li span.check { color:var(--h-ok); font-weight:800; font-size:15px; }
+
+  /* ONBOARDING FORM */
+  .onboarding-card { background:var(--h-surface); border:1px solid var(--h-border2); border-radius:28px; padding:40px; box-shadow:var(--h-shadow-lg),var(--h-glow); max-width:700px; margin:0 auto; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:580px){ .form-row { grid-template-columns:1fr; } }
+  .form-group { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+  .form-group label { font-size:12.5px; font-weight:700; color:var(--h-text2); }
+  .form-control { background:var(--h-surface2)!important; border:1px solid var(--h-border)!important; border-radius:12px!important; padding:13px 15px!important; font-family:'Nunito Sans',sans-serif!important; font-size:14px!important; color:var(--h-text)!important; transition:border 0.2s!important; outline:none!important; width:100%; }
+  .form-control:focus { border-color:var(--h-gold2)!important; box-shadow:0 0 0 3px rgba(200,146,42,0.10)!important; }
+  .form-control option { background:var(--h-surface2); color:var(--h-text); }
+  input::placeholder,textarea::placeholder { color:var(--h-text3)!important; }
+
+  /* MODALS */
+  .modal-overlay { position:fixed; inset:0; background:rgba(8,7,5,0.80); backdrop-filter:blur(14px); z-index:100; display:grid; place-items:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.25s var(--ease); }
+  .modal-overlay.open { opacity:1; pointer-events:auto; }
+  .modal-box { background:var(--h-surface); border:1px solid var(--h-border2); border-radius:24px; padding:36px; max-width:500px; width:100%; box-shadow:var(--h-shadow-lg),var(--h-glow); transform:translateY(20px) scale(0.97); transition:transform 0.28s var(--ease); text-align:center; color:var(--h-text); }
+  .modal-overlay.open .modal-box { transform:translateY(0) scale(1); }
+
+  /* BUTTONS */
+  .primary { background:var(--h-gold-grad)!important; color:#0e0d0b!important; border:none!important; font-family:'Nunito Sans',sans-serif!important; font-weight:800!important; border-radius:12px!important; cursor:pointer!important; box-shadow:0 4px 18px rgba(200,146,42,0.28)!important; transition:transform 0.2s,box-shadow 0.2s!important; }
+  .primary:hover { transform:translateY(-2px)!important; box-shadow:0 8px 28px rgba(200,146,42,0.45)!important; }
+  .primary.block { display:block!important; width:100%!important; text-align:center!important; }
+  .ghost { background:transparent!important; border:1px solid var(--h-border)!important; color:var(--h-text2)!important; border-radius:12px!important; font-family:'Nunito Sans',sans-serif!important; font-weight:600!important; cursor:pointer!important; transition:all 0.2s!important; }
+  .ghost:hover { border-color:var(--h-border2)!important; color:var(--h-text)!important; background:var(--h-surface2)!important; }
+  .ghost.block { display:block!important; width:100%!important; text-align:center!important; }
+  .chip { background:var(--h-surface2)!important; border:1px solid var(--h-border)!important; color:var(--h-text2)!important; border-radius:99px!important; font-size:12.5px!important; font-weight:600!important; padding:5px 13px!important; cursor:pointer!important; transition:all 0.2s!important; }
+  .chip:hover { border-color:var(--h-border2)!important; color:var(--h-gold2)!important; }
+  .chip.gold { background:var(--h-gold-soft)!important; border-color:var(--h-border2)!important; color:var(--h-gold2)!important; }
+
+  /* FOOTER */
+  .h-footer { background:var(--h-surface); border-top:1px solid var(--h-border); padding:52px 24px 36px; font-size:13px; color:var(--h-text3); }
+  .h-footer-inner { max-width:1180px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; }
+  .h-footer-links { display:flex; gap:16px; flex-wrap:wrap; }
+  .h-footer-links a { color:var(--h-text3); text-decoration:none; font-weight:600; transition:color 0.2s; }
+  .h-footer-links a:hover { color:var(--h-gold2); }
+
+  /* MISC */
+  .hidden { display:none!important; }
+  .card,.card.tight { background:var(--h-surface)!important; border:1px solid var(--h-border)!important; border-radius:20px!important; box-shadow:var(--h-shadow)!important; }
+  .badge { background:var(--h-gold-soft); color:var(--h-gold2); border:1px solid var(--h-border2); border-radius:8px; font-weight:800; font-size:11.5px; }
+  .stripe-bg { background:var(--h-bg2); border-top:1px solid var(--h-border); border-bottom:1px solid var(--h-border); }
+
+</style>
+</head>
+<body>
+
+<!-- SVG Gradients -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="ftGoldGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#b3814e"/><stop offset="0.6" stop-color="#9b6b3d"/><stop offset="1" stop-color="#6b4526"/>
+  </linearGradient>
+</defs></svg>
+
+<!-- Navigation Bar -->
+<header class="h-nav">
+  <div class="h-nav-inner">
+    <a href="index.html" class="h-brand">
+      <div class="h-brand-logo">FT</div>
+      <div class="h-brand-text">Flavor<em>Tree</em><span class="h-brand-badge">HoReCa</span></div>
+    </a>
+
+    <!-- Dual Mode Switcher -->
+    <div class="mode-switch" role="tablist" aria-label="Режим платформы">
+      <button class="mode-btn active" id="btn-mode-guest" onclick="switchMode('guest')" role="tab" aria-selected="true">
+        <span class="ico">🍽️</span> Гостям заведений
+      </button>
+      <button class="mode-btn" id="btn-mode-b2b" onclick="switchMode('b2b')" role="tab" aria-selected="false">
+        <span class="ico">💼</span> Рестораторам и барам
+      </button>
+    </div>
+
+    <!-- Quick Navigation Links -->
+    <div class="h-nav-links">
+      <a href="index.html" class="h-nav-link">Каталог</a>
+      <a href="dashboard.html" class="h-nav-link">Кабинет</a>
+      <a href="train.html" class="h-nav-link">Школа сомелье</a>
+      <a href="#onboarding" class="h-btn-action" id="nav-action-btn">Подключить пилот</a>
+    </div>
+  </div>
+</header>
+
+<!-- ========================================================================= -->
+<!-- 1. GUEST MODE VIEW: ДЛЯ ГОСТЕЙ И ПОСЕТИТЕЛЕЙ ЗАВЕДЕНИЙ                     -->
+<!-- ========================================================================= -->
+<div id="view-guest">
+  <!-- Guest Hero -->
+  <section class="section-wrap" style="padding-top:36px; padding-bottom:20px;">
+    <div class="section-header left">
+      <span class="sec-eyebrow">Flavor Tree Guest Experience · Без скачивания приложений</span>
+      <h1 class="sec-title">Слушай вкус за вашим столом</h1>
+      <p class="sec-desc">Выберите заведение, укажите блюдо — AI-сомелье Макс мгновенно подберёт пиво из наличия бара, объяснит вкусовые мосты и раскроет органолептику по 3-уровневой пирамиде.</p>
+    </div>
+
+    <!-- Venue Selector Strip -->
+    <div class="venue-selector-strip" id="venue-strip">
+      <div class="venue-chip-card selected" onclick="selectVenue('gastrobar-efes')">
+        <div class="venue-chip-icon">🍺</div>
+        <div>
+          <span class="venue-chip-name">Gastrobar Efes</span>
+          <span class="venue-chip-meta">Алматы, Достык 42 · 12 кранов</span>
+        </div>
+      </div>
+      <div class="venue-chip-card" onclick="selectVenue('paulaner')">
+        <div class="venue-chip-icon">🥨</div>
+        <div>
+          <span class="venue-chip-name">Paulaner Bräuhaus</span>
+          <span class="venue-chip-meta">Алматы, Сатпаева 9 · 8 сортов</span>
+        </div>
+      </div>
+      <div class="venue-chip-card" onclick="selectVenue('line-brew')">
+        <div class="venue-chip-icon">🥩</div>
+        <div>
+          <span class="venue-chip-name">Line Brew Craft</span>
+          <span class="venue-chip-meta">Астана, Кенесары 20 · 14 сортов</span>
+        </div>
+      </div>
+      <div class="venue-chip-card" onclick="selectVenue('chechil')">
+        <div class="venue-chip-icon">🍻</div>
+        <div>
+          <span class="venue-chip-name">Chechil Grill Bar</span>
+          <span class="venue-chip-meta">Алматы, Толе би 71 · 10 сортов</span>
+        </div>
+      </div>
+      <div class="venue-chip-card" onclick="openQrModal()">
+        <div class="venue-chip-icon">📱</div>
+        <div>
+          <span class="venue-chip-name">Ввести QR стола</span>
+          <span class="venue-chip-meta">Прямой вход по токену стола</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Dish Selector & Pairing Engine -->
+  <section class="section-wrap" style="padding-top:10px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-size:24px; margin:0; font-weight:700;">Что на вашем столе?</h2>
+        <p style="font-size:13px; color:var(--h-text2); margin:2px 0 0;">Выберите блюдо из меню заведения или впишите своё</p>
+      </div>
+      <div style="display:flex; gap:8px; max-width:440px; width:100%;">
+        <input type="text" id="guest-dish-input" class="form-control" style="padding:8px 12px; font-size:13.5px;" placeholder="или впишите: стейк, пицца..." enterkeyhint="search">
+        <button class="primary" style="padding:0 14px; font-size:13px;" onclick="pairCustomDish()">Подобрать</button>
+        <button class="ghost" style="padding:0 12px; font-size:12.5px; white-space:nowrap; border:1px solid var(--gold-border); color:var(--gold-deep);" onclick="openFoodScanner()">📸 Сфоткать</button>
+      </div>
+    </div>
+
+    <!-- Popular Dishes Grid -->
+    <div class="dish-selection-grid" id="dishes-grid">
+      <div class="dish-btn-card active" onclick="selectDish('Шашлык из баранины', '🍖', 4900, 'efes')">
+        <span class="dish-btn-tag">Хит</span>
+        <span class="dish-btn-emoji">🍖</span>
+        <span class="dish-btn-name">Шашлык из баранины</span>
+        <span class="dish-btn-price">4 900 ₸</span>
+      </div>
+      <div class="dish-btn-card" onclick="selectDish('Бешбармак с казы', '🥘', 5400, 'melnik')">
+        <span class="dish-btn-tag">Казахская</span>
+        <span class="dish-btn-emoji">🥘</span>
+        <span class="dish-btn-name">Бешбармак с казы</span>
+        <span class="dish-btn-price">5 400 ₸</span>
+      </div>
+      <div class="dish-btn-card" onclick="selectDish('Гуляш по-чешски', '🍲', 4200, 'kozel')">
+        <span class="dish-btn-emoji">🍲</span>
+        <span class="dish-btn-name">Гуляш по-чешски</span>
+        <span class="dish-btn-price">4 200 ₸</span>
+      </div>
+      <div class="dish-btn-card" onclick="selectDish('Манты с бараниной', '🥟', 3200, 'melnik')">
+        <span class="dish-btn-emoji">🥟</span>
+        <span class="dish-btn-name">Манты с бараниной</span>
+        <span class="dish-btn-price">3 200 ₸</span>
+      </div>
+      <div class="dish-btn-card" onclick="selectDish('Колбаски на гриле', '🌭', 3800, 'kruzhka')">
+        <span class="dish-btn-emoji">🌭</span>
+        <span class="dish-btn-name">Колбаски на гриле</span>
+        <span class="dish-btn-price">3 800 ₸</span>
+      </div>
+      <div class="dish-btn-card" onclick="selectDish('Дим-самы на пару', '🥢', 3600, 'wukong')">
+        <span class="dish-btn-tag">Азия</span>
+        <span class="dish-btn-emoji">🥢</span>
+        <span class="dish-btn-name">Дим-самы на пару</span>
+        <span class="dish-btn-price">3 600 ₸</span>
+      </div>
+    </div>
+
+    <!-- Live Pairing Match Showcase -->
+    <div class="pairing-showcase" id="pairing-showcase">
+      <!-- Left: Beer Bottle & Quick Specs -->
+      <div class="beer-visual-pane">
+        <span class="sec-eyebrow" id="match-score-label">Совпадение 94% · Идеальная пара</span>
+        <h3 id="reco-beer-name" style="font-family:'Cormorant Garamond',serif; font-size:32px; margin:4px 0 8px; font-weight:700;">Efes Pilsener</h3>
+        <p id="reco-beer-style" style="font-size:13px; color:var(--h-text2); margin:0 0 14px;">Пильзнер · 5.0% ABV · 22 IBU · 4–6°C</p>
+        <img id="reco-beer-img" src="img/efes_official.png" alt="Пиво" class="beer-bottle-img">
+        <div class="beer-badges-row" id="reco-badges">
+          <span class="chip gold">Разливное</span>
+          <span class="chip">Хмель Hallertau</span>
+          <span class="chip">Премиум-сегмент</span>
+        </div>
+      </div>
+
+      <!-- Right: Sommelier Explanation, Bridges & 3-Tier Pyramid -->
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+          <div>
+            <span class="sec-eyebrow" style="margin-bottom:2px;">Рекомендация AI-сомелье Макса</span>
+            <div style="font-size:15px; font-weight:700; color:var(--gold-deep);" id="reco-dish-name">К блюду: Шашлык из баранины</div>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:700; color:var(--h-gold2);" id="reco-price">1 490 ₸ <small style="font-family:'Nunito Sans',sans-serif; font-size:11px; color:var(--h-text2);">500 мл</small></div>
+        </div>
+
+        <div class="tent-bridge-tags" id="reco-bridges">
+          <span class="tent-bridge-tag">🔥 Горечь × Дым углей</span>
+          <span class="tent-bridge-tag">🍋 Цитрус освежает нёбо</span>
+          <span class="tent-bridge-tag">🍞 Солод × Жирность мяса</span>
+        </div>
+
+        <p class="tent-why" id="reco-why" style="font-size:14px; line-height:1.6; margin:12px 0 16px;">
+          Дымная корочка шашлыка и благородная хмелевая горечь Efes Pilsener — это союз, проверенный поколениями. Углекислота и хмель Hallertau промывают рецепторы после каждого сочного куска баранины, а хлебные ноты светлого солода идеально резонируют с ароматом мангала.
+        </p>
+
+        <!-- 3-Tier Sensory Pyramid -->
+        <div style="margin-top:14px;">
+          <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--h-text2); display:block; margin-bottom:6px;">Вкусовая пирамида сочетания</span>
+          <div class="pyramid-mini" id="reco-pyramid">
+            <div class="pyr-mini-level top">
+              <span class="pyr-mini-lbl">TOP</span>
+              <span class="pyr-mini-desc" id="pyr-top">Эмоция: Закат на террасе, ветер, чувство безмятежности и свободы.</span>
+            </div>
+            <div class="pyr-mini-level heart">
+              <span class="pyr-mini-lbl">HEART</span>
+              <span class="pyr-mini-desc" id="pyr-heart">Ноты: Цедра лимона, свежеиспечённая булочка, луговые травы после дождя.</span>
+            </div>
+            <div class="pyr-mini-level base">
+              <span class="pyr-mini-lbl">BASE</span>
+              <span class="pyr-mini-desc" id="pyr-base">База: Обволакивающая деликатная горечь, сухое чистое послевкусие.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display:flex; gap:12px; margin-top:20px; flex-wrap:wrap;">
+          <button class="primary" style="flex:1.2; min-width:180px; padding:12px 20px;" onclick="simulateOrder()">
+            Заказать официанту (1 490 ₸)
+          </button>
+          <button class="ghost" style="flex:1; min-width:140px; padding:12px 18px;" onclick="openRatingModal()">
+            Оценить вкус (+25 XP)
+          </button>
+          <button class="ghost" style="padding:12px 14px; font-size:12.5px; border:1px solid rgba(212,145,26,0.35); color:var(--gold-deep);" onclick="openFlavorDNAWrapped()">
+            🧬 Вкусовая ДНК
+          </button>
+          <button class="ghost" style="padding:12px 14px; font-size:12.5px; border:1px solid rgba(61,139,92,0.35); color:var(--h-ok);" onclick="openEfesCertificate()">
+            🎓 Сертификат Efes
+          </button>
+          <a href="table.html?t=DEMO-TABLE-04" class="h-nav-link" style="padding:12px 14px; font-size:12.5px; border:1px solid var(--h-border);" target="_blank">
+            Вид стола ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guest Sommelier Ask Section -->
+  <section class="section-wrap" style="padding-top:0;">
+    <div class="card tight" style="padding:22px; border-radius:20px;">
+      <div style="display:flex; gap:14px; align-items:center; margin-bottom:14px;">
+        <div style="width:42px; height:42px; border-radius:12px; background:var(--gold-subtle); display:grid; place-items:center; font-size:22px;">✦</div>
+        <div>
+          <h3 style="margin:0; font-size:16px; font-weight:700;">Задать вопрос сомелье Максу</h3>
+          <p style="margin:2px 0 0; font-size:12.5px; color:var(--h-text2);">Спросите о сочетаниях, горечи, температуре подачи или безалкогольных опциях</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+        <button class="chip" onclick="quickAsk('Какое пиво взять к бешбармаку?')">К бешбармаку?</button>
+        <button class="chip" onclick="quickAsk('Что выбрать, если не люблю горечь?')">Если не люблю горькое?</button>
+        <button class="chip" onclick="quickAsk('Какое пиво подойдёт к десерту?')">К шоколадному десерту?</button>
+        <button class="chip" onclick="quickAsk('Что самое лёгкое из наличия?')">Самое лёгкое?</button>
+      </div>
+      <div id="guest-chat-log" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; margin-bottom:12px;"></div>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="guest-chat-input" class="form-control" placeholder="Напишите ваш вопрос сомелье..." enterkeyhint="send">
+        <button class="primary" style="padding:0 20px;" onclick="sendGuestMessage()">Спросить</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 2. B2B PARTNER VIEW: ДЛЯ РЕСТОРАТОРОВ, БАРОВ И УПРАВЛЯЮЩИХ                 -->
+<!-- ========================================================================= -->
+<div id="view-b2b" class="hidden">
+  <!-- B2B Hero Section -->
+  <section class="hero-b2b">
+    <div>
+      <div class="hero-tag">OneIdea Championship 2026 · Efes Kazakhstan</div>
+      <h1 class="hero-title">Пиво как <span class="accent">искусство продаж</span></h1>
+      <p class="hero-lede">Превратите обычную пивную карту в высокомаржинальный гастрономический инструмент. Цифровой AI-сомелье за столом увеличивает средний чек на пиво на 15–20% и обучает линейный персонал за 10 минут в день.</p>
+
+      <div class="hero-kpis">
+        <div class="hero-kpi">
+          <b>+18%</b>
+          <span>Рост среднего чека на пиво</span>
+        </div>
+        <div class="hero-kpi">
+          <b>2–3×</b>
+          <span>Маржинальность премиум-линеек</span>
+        </div>
+        <div class="hero-kpi">
+          <b>14 дней</b>
+          <span>Срок полной окупаемости</span>
+        </div>
+        <div class="hero-kpi">
+          <b>0 ₸</b>
+          <span>Стоимость пилота от Efes</span>
+        </div>
+      </div>
+
+      <div class="hero-cta-group">
+        <a href="#calculator" class="h-btn-action" style="padding:12px 24px; font-size:14px;">Рассчитать прибыль ₸</a>
+        <a href="#onboarding" class="ghost" style="padding:12px 22px; font-size:14px;">Заявка на пилот</a>
+        <a href="dashboard.html" class="h-nav-link" style="padding:12px 16px; font-size:13.5px; border:1px solid var(--h-border);">Дашборд заведения ↗</a>
+      </div>
+    </div>
+
+    <!-- Live Preview Teaser Card -->
+    <div class="hero-mockup">
+      <div class="tent-card">
+        <div class="tent-head">
+          <span class="tent-badge">Тейбл-тент стола №4</span>
+          <span class="tent-table-no">Стол #4</span>
+        </div>
+
+        <div class="tent-demo-dish">
+          <div class="em">🥩</div>
+          <div>
+            <div class="d-title">Стейк Рибай с перечным соусом</div>
+            <div class="d-sub">Заказ гостя · 14 500 ₸</div>
+          </div>
+        </div>
+
+        <div class="tent-reco-box">
+          <div class="tent-reco-head">
+            <div>
+              <div class="tent-beer-name">Efes Pilsener</div>
+              <div class="tent-beer-meta">Светлый лагер · 5.0% · 1 490 ₸</div>
+            </div>
+            <div class="tent-match-ring">
+              <div class="tent-match-inner">94%</div>
+            </div>
+          </div>
+          <div class="tent-bridge-tags">
+            <span class="tent-bridge-tag">Хмель режет жир</span>
+            <span class="tent-bridge-tag">Цитрус освежает</span>
+          </div>
+          <p class="tent-why">«Горечь Hallertau расщепляет жирность мраморной говядины, подчёркивая корочку и освежая вкусовые сосочки перед каждым новым укусом».</p>
+          <div class="tent-btn-row">
+            <button class="primary" onclick="alert('Демо: Гость нажал «Заказать». Заказ передан на терминал официанта!')">Заказ в 1 клик</button>
+            <button class="ghost" onclick="switchMode('guest')">Открыть демо стола</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem: The "Синдром светлого нефильтрованного" -->
+  <section class="section-wrap" style="background:var(--surface-2); border-top:1px solid var(--h-border); border-bottom:1px solid var(--h-border);">
+    <div class="section-header">
+      <span class="sec-eyebrow">Анатомия проблемы HoReCa</span>
+      <h2 class="sec-title">Разница, которую никто не видит</h2>
+      <p class="sec-desc">72% потребителей выбирают пиво по цене или привычке. У Efes Kazakhstan 15 уникальных сортов, но гости застревают в экономе, а заведения теряют маржу.</p>
+    </div>
+
+    <div class="b2b-problem-grid">
+      <div class="problem-card">
+        <div class="icon-box">👤</div>
+        <h3>Боль Гостя</h3>
+        <p>Заказывает стейк за 15,000 тенге, но берёт самый дешёвый лагер по привычке. В вине есть сомелье, а в пиве гость боится экспериментировать, не зная вкусовых нот.</p>
+        <div class="problem-stat">72% заказывают наугад</div>
+      </div>
+      <div class="problem-card">
+        <div class="icon-box">👔</div>
+        <h3>Боль Официанта</h3>
+        <p>Не знает дескрипторов вкуса. Максимум, что может сказать при заказе: «светлое, тёмное, нефильтрованное». Нет языка описания и уверенности для апселла.</p>
+        <div class="problem-stat">85% текучесть персонала</div>
+      </div>
+      <div class="problem-card">
+        <div class="icon-box">📉</div>
+        <h3>Боль Ресторатора</h3>
+        <p>Пиво остаётся дешевым аутсайдером в чеке. Дорогие краны простаивают, а заведение недополучает 2–3× маржи на премиальных линейках и крафте.</p>
+        <div class="problem-stat">Потеря до 350,000 ₸/мес</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The 4 Pillars Solution -->
+  <section class="section-wrap">
+    <div class="section-header">
+      <span class="sec-eyebrow">Технологическая экосистема</span>
+      <h2 class="sec-title">4 столпа Flavor Tree для вашего зала</h2>
+      <p class="sec-desc">Комплексное B2B-решение, связывающее стол гостя, карман официанта и управленческий дашборд ресторатора.</p>
+    </div>
+
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <span class="pillar-num">01</span>
+        <h3>Zero-Friction Тейбл-Тенты</h3>
+        <p>Гость сканирует QR на столе и за 1 секунду попадает в веб-сессию. Никаких скачиваний из App Store. Только актуальные позиции, налитые в баре прямо сейчас.</p>
+        <span class="pillar-badge">Гостю за столом</span>
+      </div>
+      <div class="pillar-card">
+        <span class="pillar-num">02</span>
+        <h3>Smart Food Pairing</h3>
+        <p>Детерминированный движок на базе органолептики FlavorActiV и химических маркеров. Первые в СНГ адаптировали пейринг под казахскую кухню (бешбармак, казы, шашлык).</p>
+        <span class="pillar-badge">Алгоритмы сомелье</span>
+      </div>
+      <div class="pillar-card">
+        <span class="pillar-num">03</span>
+        <h3>Duolingo для официантов</h3>
+        <p>Геймифицированная «Школа Сомелье»: уроки по 5 минут, квизы, XP, стрики. Официант прокачивает экспертность во время смены и уверенно рекомендует премиум.</p>
+        <span class="pillar-badge">Обучение персонала</span>
+      </div>
+      <div class="pillar-card">
+        <span class="pillar-num">04</span>
+        <h3>B2B Дашборд & POS-синхронизация</h3>
+        <p>Управление стоп-листом бара в 1 клик. Аналитика воронки: сканы → подборы → заказы → оценки. Топ прибыльных связок «Блюдо × Пиво» для шеф-повара.</p>
+        <span class="pillar-badge">Управление & KPI</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive ROI & Revenue Calculator -->
+  <section class="section-wrap" id="calculator">
+    <div class="section-header">
+      <span class="sec-eyebrow">Финансовая модель</span>
+      <h2 class="sec-title">Калькулятор окупаемости для заведения</h2>
+      <p class="sec-desc">Передвигайте ползунки, чтобы увидеть расчёт дополнительной прибыли вашего ресторана от внедрения Flavor Tree.</p>
+    </div>
+
+    <div class="calc-card">
+      <div>
+        <div class="calc-slider-group">
+          <div class="calc-slider-head">
+            <label for="slider-tables">Количество столов с QR-тентами</label>
+            <span class="val" id="val-tables">25</span>
+          </div>
+          <input type="range" min="5" max="100" value="25" step="1" class="calc-slider" id="slider-tables" oninput="recalcROI()">
+        </div>
+
+        <div class="calc-slider-group">
+          <div class="calc-slider-head">
+            <label for="slider-guests">Посадок на один стол в день</label>
+            <span class="val" id="val-guests">4</span>
+          </div>
+          <input type="range" min="1" max="10" value="4" step="1" class="calc-slider" id="slider-guests" oninput="recalcROI()">
+        </div>
+
+        <div class="calc-slider-group">
+          <div class="calc-slider-head">
+            <label for="slider-price">Базовая цена бокала пива (₸)</label>
+            <span class="val" id="val-price">1 500 ₸</span>
+          </div>
+          <input type="range" min="1000" max="4000" value="1500" step="100" class="calc-slider" id="slider-price" oninput="recalcROI()">
+        </div>
+
+        <div class="calc-slider-group" style="margin-bottom:0;">
+          <div class="calc-slider-head">
+            <label for="slider-upsell">Конверсия в рекомендацию сомелье</label>
+            <span class="val" id="val-upsell">22%</span>
+          </div>
+          <input type="range" min="5" max="50" value="22" step="1" class="calc-slider" id="slider-upsell" oninput="recalcROI()">
+        </div>
+      </div>
+
+      <div class="calc-result-box">
+        <div class="calc-res-label">Дополнительная выручка в месяц</div>
+        <div class="calc-res-big" id="calc-net-profit">+396 000 ₸</div>
+        <p class="calc-res-sub">За счёт перехода гостей из эконома в премиум-сегмент (+20% к чеку на пиво).</p>
+
+        <div class="calc-meta-grid">
+          <div class="calc-meta-item">
+            <small>Окупаемость подписки</small>
+            <b id="calc-payback">3 дня</b>
+          </div>
+          <div class="calc-meta-item">
+            <small>ROI на подписку</small>
+            <b id="calc-roi">1 590%</b>
+          </div>
+        </div>
+
+        <a href="#onboarding" class="primary block" style="margin-top:20px; font-size:13.5px; padding:12px;">Запустить пилот на этих столах</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Waiter Quiz Mini-Game -->
+  <section class="section-wrap" style="padding-top:0;">
+    <div class="section-header">
+      <span class="sec-eyebrow">Обучение персонала</span>
+      <h2 class="sec-title">Как учатся ваши официанты</h2>
+      <p class="sec-desc">Попробуйте реальный вопрос из Школы Сомелье Flavor Tree. Официанты проходят такие микро-квизы прямо со смартфона во время смены.</p>
+    </div>
+
+    <div class="quiz-card" style="max-width:720px; margin:0 auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span class="sec-eyebrow" style="margin:0;">Уровень 2 · Food Pairing</span>
+        <span class="badge" style="background:var(--gold-subtle); color:var(--h-gold2); padding:3px 8px; border-radius:6px; font-size:12px; font-weight:700;">+25 XP</span>
+      </div>
+      <h3 style="font-size:17px; margin:0 0 4px; font-weight:700;" id="quiz-q">Гость заказал жирный сочный бешбармак с казы. Какое пиво лучше порекомендовать и почему?</h3>
+      <p style="font-size:12.5px; color:var(--h-text2); margin:0;">Выберите один вариант ответа для официанта:</p>
+
+      <div class="quiz-options" id="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(0, this)">
+          <span>А) Самый крепкий тёмный стаут, чтобы перебить жирность</span>
+          <span class="quiz-status"></span>
+        </button>
+        <button class="quiz-opt" onclick="checkQuiz(1, this)">
+          <span>Б) Старый Мельник (мягкий тройной хмель + хлебный солод к тесту и бульону)</span>
+          <span class="quiz-status"></span>
+        </button>
+        <button class="quiz-opt" onclick="checkQuiz(2, this)">
+          <span>В) Лимонад или ледяную воду, пиво к бешбармаку не подходит</span>
+          <span class="quiz-status"></span>
+        </button>
+      </div>
+
+      <div class="quiz-explanation" id="quiz-exp">
+        <b>Правильно!</b> Старый Мельник сочетет бархатистую мягкость с хлебными нотами, которые поддерживают домашнее тесто бешбармака, а деликатный тройной хмель освежает вкусовые рецепторы после наваристого сорпа.
+      </div>
+    </div>
+  </section>
+
+  <!-- Pilot Packages & Efes Grant -->
+  <section class="section-wrap">
+    <div class="section-header">
+      <span class="sec-eyebrow">Тарифные планы</span>
+      <h2 class="sec-title">Условия подключения</h2>
+      <p class="sec-desc">В рамках чемпионата OneIdea 2026 пилотные заведения получают 100% субсидию на запуск от Efes Kazakhstan.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Pilot Grant Card -->
+      <div class="price-card featured">
+        <span class="price-tag">Грант Efes OneIdea · 30 Дней</span>
+        <div class="price-num">0 ₸ <small>/ первый месяц</small></div>
+        <p style="font-size:13px; color:var(--h-text2); margin-bottom:12px;">Полная поддержка и установка за счёт корпоративного акселератора Efes Kazakhstan.</p>
+
+        <ul class="price-features">
+          <li><span class="check">✓</span> 25 деревянных тейбл-тентов с гравировкой и QR</li>
+          <li><span class="check">✓</span> Подключение цифрового AI-сомелье под ваше меню</li>
+          <li><span class="check">✓</span> Школа Сомелье для персонала (до 20 официантов)</li>
+          <li><span class="check">✓</span> B2B Аналитический дашборд и воронка блюд</li>
+          <li><span class="check">✓</span> Персональный куратор от команды Efes KZ</li>
+        </ul>
+
+        <a href="#onboarding" class="primary block" style="margin-top:auto; padding:12px; font-size:14px;">Подать заявку на грант</a>
+      </div>
+
+      <!-- Regular SaaS Card -->
+      <div class="price-card">
+        <span class="price-tag">Регулярная B2B-подписка</span>
+        <div class="price-num">24 900 ₸ <small>/ мес (~$49)</small></div>
+        <p style="font-size:13px; color:var(--h-text2); margin-bottom:12px;">Ежемесячная подписка после завершения 30-дневного тестового пилота.</p>
+
+        <ul class="price-features">
+          <li><span class="check">✓</span> Неограниченное число столов и сканов</li>
+          <li><span class="check">✓</span> Управление стоп-листом пива в реальном времени</li>
+          <li><span class="check">✓</span> Интеграция с POS-системами (iiko, r_keeper)</li>
+          <li><span class="check">✓</span> Сертификаты Efes Sommelier для официантов</li>
+          <li><span class="check">✓</span> Еженедельные отчеты по динамике среднего чека</li>
+        </ul>
+
+        <a href="#onboarding" class="ghost block" style="margin-top:auto; padding:12px; font-size:14px;">Выбрать стандарт</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fast Onboarding Form -->
+  <section class="section-wrap" id="onboarding" style="padding-bottom:70px;">
+    <div class="section-header">
+      <span class="sec-eyebrow">Старт за 48 часов</span>
+      <h2 class="sec-title">Подключите ваше заведение к пилоту</h2>
+      <p class="sec-desc">Оставьте контакты — мы подготовим брендированные тейбл-тенты с вашим меню и настроим AI-сомелье для вашего бара.</p>
+    </div>
+
+    <div class="onboarding-card">
+      <form id="b2b-lead-form" onsubmit="submitOnboarding(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-venue-name">Название заведения *</label>
+            <input type="text" id="f-venue-name" class="form-control" placeholder="Gastrobar Efes" required>
+          </div>
+          <div class="form-group">
+            <label for="f-city">Город *</label>
+            <select id="f-city" class="form-control" required>
+              <option value="Алматы">Алматы</option>
+              <option value="Астана">Астана</option>
+              <option value="Шымкент">Шымкент</option>
+              <option value="Караганда">Караганда</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-contact-name">Имя управляющего / шеф-сомелье *</label>
+            <input type="text" id="f-contact-name" class="form-control" placeholder="Данияр Ахметов" required>
+          </div>
+          <div class="form-group">
+            <label for="f-phone">Телефон / WhatsApp *</label>
+            <input type="tel" id="f-phone" class="form-control" placeholder="+7 (701) 123-45-67" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-tables-cnt">Количество столов в зале</label>
+            <input type="number" id="f-tables-cnt" class="form-control" placeholder="25" min="3" max="500">
+          </div>
+          <div class="form-group">
+            <label for="f-pos">POS-система заведения</label>
+            <select id="f-pos" class="form-control">
+              <option value="iiko">iiko</option>
+              <option value="r_keeper">r_keeper</option>
+              <option value="poster">Poster</option>
+              <option value="other">Другая / Ручной учёт</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="f-notes">Какие сорта Efes или крафта уже есть на кранах?</label>
+          <input type="text" id="f-notes" class="form-control" placeholder="Efes Pilsener, Kozel Dark, крафтовые позиции...">
+        </div>
+
+        <button type="submit" class="primary block" style="padding:14px; font-size:15px; font-weight:700; margin-top:10px;">
+          Отправить заявку на бесплатный пилот (30 дней)
+        </button>
+        <p style="font-size:11.5px; color:var(--h-text2); text-align:center; margin:10px 0 0;">
+          Отправляя заявку, вы соглашаетесь с условиями пилота OneIdea 2026 Efes Kazakhstan. Никаких скрытых платежей.
+        </p>
+      </form>
+    </div>
+  </section>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODALS & POPUPS                                                           -->
+<!-- ========================================================================= -->
+
+<!-- Rating Modal -->
+<div class="modal-overlay" id="modal-rating">
+  <div class="modal-box">
+    <div style="font-size:36px; margin-bottom:8px;">⭐️</div>
+    <h3 style="font-family:'Cormorant Garamond',serif; font-size:26px; margin:0 0 6px;">Оцените дегустацию</h3>
+    <p style="font-size:13px; color:var(--h-text2); margin:0 0 16px;">Ваша оценка обучает сомелье Макса и пополняет вашу Вкусовую ДНК (+25 XP).</p>
+    
+    <div style="display:flex; justify-content:center; gap:8px; margin-bottom:16px;" id="star-rating-row">
+      <button class="star on" style="font-size:36px; cursor:pointer;" onclick="setRating(1)">★</button>
+      <button class="star on" style="font-size:36px; cursor:pointer;" onclick="setRating(2)">★</button>
+      <button class="star on" style="font-size:36px; cursor:pointer;" onclick="setRating(3)">★</button>
+      <button class="star on" style="font-size:36px; cursor:pointer;" onclick="setRating(4)">★</button>
+      <button class="star on" style="font-size:36px; cursor:pointer;" onclick="setRating(5)">★</button>
+    </div>
+
+    <input type="text" id="rating-comment" class="form-control" placeholder="Пара слов о сочетании (напр. отличная горечь!)" style="margin-bottom:16px;">
+    
+    <div style="display:flex; gap:10px;">
+      <button class="primary" style="flex:1;" onclick="submitRating()">Сохранить заметку</button>
+      <button class="ghost" onclick="closeModal('modal-rating')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- QR Direct Enter Modal -->
+<div class="modal-overlay" id="modal-qr">
+  <div class="modal-box">
+    <div style="font-size:36px; margin-bottom:8px;">📱</div>
+    <h3 style="font-family:'Cormorant Garamond',serif; font-size:24px; margin:0 0 6px;">Вход по номеру стола</h3>
+    <p style="font-size:13px; color:var(--h-text2); margin:0 0 16px;">Введите 6-значный код с тейбл-тента заведения или выберите тестовый стол.</p>
+    
+    <input type="text" id="qr-direct-code" class="form-control" placeholder="напр. DEMO-TABLE-04" value="DEMO-TABLE-04" style="text-align:center; font-family:monospace; font-size:16px; margin-bottom:16px;">
+    
+    <div style="display:flex; gap:10px;">
+      <button class="primary" style="flex:1;" onclick="jumpToQrTable()">Перейти к столу</button>
+      <button class="ghost" onclick="closeModal('modal-qr')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lead Submission Success Modal -->
+<div class="modal-overlay" id="modal-success">
+  <div class="modal-box">
+    <div style="font-size:40px; margin-bottom:8px;">🎉</div>
+    <h3 style="font-family:'Cormorant Garamond',serif; font-size:26px; margin:0 0 6px;">Заявка принята!</h3>
+    <p style="font-size:14px; color:var(--h-text2); line-height:1.5; margin:0 0 18px;" id="success-modal-msg">
+      Мы свяжемся с вами в течение 2 часов в WhatsApp для согласования меню и отправки комплекта тейбл-тентов.
+    </p>
+    <div style="background:var(--surface-2); border:1px solid var(--gold-border); border-radius:12px; padding:12px; margin-bottom:18px;">
+      <small style="font-size:11px; text-transform:uppercase; letter-spacing:0.12em; color:var(--gold-soft); font-weight:700;">Ваш промокод на бесплатный пилот</small>
+      <div style="font-family:monospace; font-size:18px; font-weight:700; color:var(--gold-deep); margin-top:4px;">ONEIDEA-EFES-2026</div>
+    </div>
+    <button class="primary block" onclick="closeModal('modal-success')">Отлично, жду звонка</button>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="h-footer">
+  <div class="h-footer-inner">
+    <div>
+      <b style="font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--h-text); display:block; margin-bottom:4px;">Flavor Tree x HoReCa</b>
+      <span>Сенсорная платформа Efes Kazakhstan · OneIdea Championship 2026</span>
+    </div>
+
+    <div class="h-footer-links">
+      <a href="table.html?t=DEMO-TABLE-04">Экран гостя</a>
+      <a href="dashboard.html">B2B Дашборд</a>
+      <a href="train.html">Школа сомелье</a>
+      <a href="index.html">Каталог сортов</a>
+      <a href="presentation.html">Презентация</a>
+    </div>
+  </div>
+  <div style="max-width:1140px; margin:24px auto 0; text-align:center; font-size:11px; color:var(--muted-2); border-top:1px solid var(--hair-soft); padding-top:16px;">
+    Пиво — для лиц старше 21 года. Пейте осознанно. Разработано в рамках буткемпа Efes OneIdea 2026.
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script src="horeca.js"></script>
+<script src="scanner.js"></script>
+<script src="story_generator.js"></script>
+</body>
+</html>

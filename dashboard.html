@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#faf8f5">
+<meta name="robots" content="noindex">
+<title>Кабинет заведения — Flavor Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+<style>
+/* Легаси-имена переменных этой страницы → токены theme.css.
+   Так рабочие экраны получают премиальную базу, не переписывая свою вёрстку. */
+:root {
+  --bg: var(--ink); --bg-2: var(--ink-2); --card: var(--surface); --card-2: var(--surface-2);
+  --line: var(--hair); --line-strong: rgba(44,36,23,.24);
+  --gold-2: var(--gold-soft); --gold-dim: rgba(155,107,61,.12);
+  --text: var(--foam); --err: var(--danger); --warn: #e0894a;
+  --radius: var(--r-lg); --radius-sm: var(--r);
+  --head: var(--display); --body: var(--ui);
+}
+body { padding: 0 20px 60px; }
+header.top select, header.top input { width: auto; min-height: 42px; padding: 9px 14px; }
+.wrap { max-width: 1080px; margin: 0 auto; }
+.hidden { display: none !important; }
+.muted { color: var(--muted); font-size: 14px; }
+
+/* Топбар */
+header.top {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 24px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 24px;
+}
+.brand { font-family: var(--head); font-size: 26px; font-weight: 600; }
+.brand em { color: var(--gold); font-style: normal; }
+.venue-chip {
+  font-size: 13px; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+}
+.plan { background: var(--gold-dim); color: var(--gold); border-color: transparent; }
+header.top .right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.full { width: 100%; }
+
+/* Логин */
+.login { max-width: 380px; margin: 12vh auto; }
+.login h1 { font-family: var(--head); font-size: 30px; font-weight: 600; margin-bottom: 6px; }
+.login .card { padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+.login-err { color: var(--err); font-size: 13.5px; }
+
+/* Карточки */
+.card { padding: 18px; }
+.grid { display: grid; gap: 14px; }
+.kpis { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-bottom: 14px; }
+.kpi .label { font-size: 11px; letter-spacing: .11em; text-transform: uppercase; color: var(--muted-2); }
+.kpi .value { font-family: var(--head); font-size: 34px; font-weight: 600; line-height: 1.1; margin-top: 6px; }
+.kpi .value.gold { color: var(--gold); }
+.kpi .sub { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+.two { grid-template-columns: 1fr 1fr; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+
+h2.section {
+  font-family: var(--head); font-size: 22px; font-weight: 600;
+  margin: 26px 0 12px; display: flex; align-items: baseline; gap: 10px;
+}
+h2.section small { font-family: var(--body); font-size: 12px; color: var(--muted-2); font-weight: 400; }
+h2.section small a { color: var(--gold); text-decoration: none; border-bottom: 1px dashed rgba(155,107,61,.4); }
+h2.section small a:hover { border-bottom-style: solid; }
+
+/* Воронка */
+.funnel { display: flex; flex-direction: column; gap: 10px; }
+.stage .row { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 5px; }
+.stage .row b { font-family: var(--head); font-size: 17px; }
+.bar { height: 9px; background: rgba(44,36,23,.08); border-radius: 999px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), #b98c22); border-radius: 999px; }
+.conv { font-size: 12px; color: var(--muted-2); margin-top: 3px; }
+
+/* Таблицы */
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th {
+  text-align: left; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted-2); font-weight: 600; padding: 0 10px 9px 0; border-bottom: 1px solid var(--line);
+}
+td { padding: 10px 10px 10px 0; border-bottom: 1px solid rgba(44,36,23,.09); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+td.num, th.num { text-align: right; padding-right: 0; font-variant-numeric: tabular-nums; }
+.empty { color: var(--muted-2); font-size: 13.5px; padding: 14px 0; }
+
+/* График сканов */
+.chart { display: flex; align-items: flex-end; gap: 3px; height: 110px; margin-top: 6px; }
+.chart .col { flex: 1; border-radius: 3px 3px 0 0; min-height: 2px; position: relative;
+  /* на кремовом фоне 12% акцента не видно — берём плотнее */
+  background: linear-gradient(180deg, rgba(155,107,61,.24), rgba(155,107,61,.46)); }
+.chart .col:hover { background: var(--gold); }
+.chart-x { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted-2); margin-top: 6px; }
+
+/* Стоп-лист */
+.beer-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(44,36,23,.09); }
+.beer-row:last-child { border-bottom: none; }
+.beer-row .info { flex: 1; min-width: 0; }
+.beer-row .bname { font-size: 14.5px; font-weight: 600; }
+.beer-row .bmeta { font-size: 12px; color: var(--muted); }
+.beer-row.off .bname { color: var(--muted-2); text-decoration: line-through; }
+.toggle {
+  border: 1px solid var(--line-strong); background: transparent; cursor: pointer;
+  border-radius: 999px; padding: 6px 13px; font: inherit; font-size: 12px; color: var(--muted);
+}
+.toggle.on { background: rgba(110,193,138,.12); border-color: rgba(110,193,138,.4); color: var(--ok); }
+.toggle.off { background: rgba(224,137,74,.12); border-color: rgba(224,137,74,.4); color: var(--warn); }
+
+/* Столы */
+.tables { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.table-card {
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: 12px; text-align: center;
+}
+.table-card .n { font-family: var(--head); font-size: 24px; color: var(--gold); }
+.table-card .z { font-size: 11.5px; color: var(--muted); }
+.table-card a { display: inline-block; margin-top: 8px; font-size: 11.5px; color: var(--muted); text-decoration: none; border-bottom: 1px dashed var(--line-strong); }
+.table-card a:hover { color: var(--gold); }
+.table-card.off { opacity: .45; }
+
+.toast {
+  position: fixed; right: 20px; bottom: 20px; left: auto; transform: none; z-index: 60;
+  background: var(--card-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  padding: 12px 16px; font-size: 14px; box-shadow: 0 12px 36px -14px rgba(44,36,23,.28);
+}
+.toast.err { border-color: rgba(194,79,56,.5); }
+.spinner {
+  width: 24px; height: 24px; margin: 60px auto;
+  border: 2px solid var(--line-strong); border-top-color: var(--gold);
+  border-radius: 50%; animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+footer.tiny { text-align: center; padding: 34px 0 6px; font-size: 11.5px; color: var(--muted-2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Вход -->
+  <section id="login" class="login hidden">
+    <h1>Кабинет заведения</h1>
+    <p class="muted" style="margin-bottom:16px">Flavor Tree · вход для управляющего и бар-менеджера</p>
+    <div class="card">
+      <input type="text" id="username" placeholder="Логин" autocomplete="username">
+      <input type="password" id="password" placeholder="Пароль" autocomplete="current-password">
+      <div class="login-err hidden" id="login-err"></div>
+      <button class="primary full" id="login-go">Войти</button>
+    </div>
+  </section>
+
+  <div id="loading" class="spinner"></div>
+
+  <!-- Дашборд -->
+  <main id="app" class="hidden">
+    <header class="top">
+      <div class="brand">Flavor<em>Tree</em></div>
+      <span class="venue-chip" id="venue-chip"></span>
+      <span class="venue-chip plan" id="plan-chip"></span>
+      <div class="right">
+        <select id="period">
+          <option value="7">7 дней</option>
+          <option value="30" selected>30 дней</option>
+          <option value="90">90 дней</option>
+        </select>
+        <button class="ghost" id="refresh">Обновить</button>
+        <button class="ghost" id="logout">Выйти</button>
+      </div>
+    </header>
+
+    <div class="grid kpis" id="kpis"></div>
+
+    <div class="grid two">
+      <div>
+        <h2 class="section">Воронка <small id="funnel-period"></small></h2>
+        <div class="card funnel" id="funnel"></div>
+      </div>
+      <div>
+        <h2 class="section">Сканы по дням</h2>
+        <div class="card" id="chart-card"></div>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div>
+        <h2 class="section">Связки блюдо → пиво <small>что реально заказывают</small></h2>
+        <div class="card" id="pairs"></div>
+      </div>
+      <div>
+        <h2 class="section">Топ пива <small>по заказам и выручке</small></h2>
+        <div class="card" id="beers"></div>
+      </div>
+    </div>
+
+    <h2 class="section">Пивная карта и стоп-лист <small>выключите — Макс перестанет советовать</small></h2>
+    <div class="card" id="beer-card"></div>
+
+    <div class="grid two">
+      <div>
+        <h2 class="section">Обучение персонала
+          <small><a href="train.html" target="_blank" rel="noopener">школа сомелье →</a></small>
+        </h2>
+        <div class="card" id="staff"></div>
+      </div>
+      <div>
+        <h2 class="section"><span id="points-title">Столы и QR</span> <small id="points-hint">ссылки для печати тейбл-тентов</small></h2>
+        <div class="card"><div class="tables" id="tables"></div></div>
+      </div>
+    </div>
+
+    <footer class="tiny">Flavor Tree · сенсорная платформа Efes Kazakhstan</footer>
+  </main>
+</div>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

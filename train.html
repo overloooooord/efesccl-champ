@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#faf8f5">
+<title>Школа сомелье — Flavor Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+<style>
+/* Легаси-имена переменных этой страницы → токены theme.css.
+   Так рабочие экраны получают премиальную базу, не переписывая свою вёрстку. */
+:root {
+  --bg: var(--ink); --bg-2: var(--ink-2); --card: var(--surface); --card-2: var(--surface-2);
+  --line: var(--hair); --line-strong: rgba(44,36,23,.24);
+  --gold-2: var(--gold-soft); --gold-dim: rgba(155,107,61,.12);
+  --text: var(--foam); --err: var(--danger); --warn: #e0894a;
+  --radius: var(--r-lg); --radius-sm: var(--r);
+  --head: var(--display); --body: var(--ui);
+}
+body { padding: 0 20px 60px; }
+.wrap { max-width: 1060px; margin: 0 auto; }
+.hidden { display: none !important; }
+.muted { color: var(--muted); font-size: 14px; }
+.tiny { font-size: 12px; color: var(--muted-2); }
+
+header.top {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 24px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 22px;
+}
+.brand { font-family: var(--head); font-size: 26px; font-weight: 600; }
+.brand em { color: var(--gold); font-style: normal; }
+.chip {
+  font-size: 13px; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+}
+.chip.gold { background: var(--gold-dim); color: var(--gold); border-color: transparent; }
+header.top .right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+.full { width: 100%; }
+.card { padding: 20px; }
+
+/* Вход */
+.login { max-width: 380px; margin: 11vh auto; }
+.login h1 { font-family: var(--head); font-size: 30px; font-weight: 600; margin-bottom: 6px; }
+.login .card { display: flex; flex-direction: column; gap: 12px; }
+.login-err { color: var(--err); font-size: 13.5px; }
+.login .switch { text-align: center; font-size: 13px; color: var(--muted); }
+.login .switch a { color: var(--gold); text-decoration: none; border-bottom: 1px dashed; cursor: pointer; }
+
+/* Полоса уровня */
+.levelbar { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 22px; }
+.levelbar .now { font-family: var(--head); font-size: 28px; font-weight: 600; }
+.levelbar .track { flex: 1; min-width: 220px; }
+.bar { height: 9px; background: rgba(44,36,23,.08); border-radius: 999px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), #b98c22); border-radius: 999px; }
+.levelbar .row { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
+
+/* Две колонки */
+.cols { display: grid; grid-template-columns: 320px 1fr; gap: 18px; align-items: start; }
+@media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+
+/* Программа */
+.level-block { margin-bottom: 18px; }
+.level-head { display: flex; align-items: baseline; gap: 8px; margin: 0 0 8px 2px; }
+.level-head .name { font-family: var(--head); font-size: 19px; font-weight: 600; }
+.level-head .req { font-size: 11px; color: var(--muted-2); }
+.lesson-btn {
+  width: 100%; text-align: left; display: flex; align-items: center; gap: 11px;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm);
+  color: var(--text); font: inherit; padding: 12px 13px; margin-bottom: 7px; cursor: pointer;
+}
+.lesson-btn:hover { border-color: var(--line-strong); }
+.lesson-btn.active { border-color: var(--gold); background: var(--card-2); }
+.lesson-btn .tick {
+  width: 22px; height: 22px; flex: none; border-radius: 50%; font-size: 12px;
+  border: 1px solid var(--line-strong); display: flex; align-items: center; justify-content: center;
+  color: var(--muted-2);
+}
+.lesson-btn.done .tick { background: rgba(110,193,138,.14); border-color: rgba(110,193,138,.4); color: var(--ok); }
+.lesson-btn .t { flex: 1; min-width: 0; font-size: 14px; font-weight: 500; }
+.lesson-btn .xp { font-size: 11.5px; color: var(--muted-2); font-variant-numeric: tabular-nums; }
+.lesson-btn.done .xp { color: var(--ok); }
+
+/* Урок */
+.lesson-body h1 { font-family: var(--head); font-size: 27px; font-weight: 600; margin: 0 0 12px; }
+.lesson-body h2 { font-family: var(--head); font-size: 20px; font-weight: 600; margin: 22px 0 7px; color: var(--gold); }
+.lesson-body p { font-size: 15px; margin-bottom: 11px; }
+.lesson-body ul { margin: 0 0 12px 20px; }
+.lesson-body li { font-size: 15px; margin-bottom: 5px; }
+.lesson-body strong { color: var(--text); font-weight: 700; }
+.lesson-meta { font-size: 12px; color: var(--muted-2); margin-bottom: 16px; }
+
+/* Квиз */
+.quiz { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 20px; }
+.quiz h3 { font-family: var(--head); font-size: 21px; font-weight: 600; margin-bottom: 4px; }
+.q { margin: 18px 0; }
+.q .qt { font-size: 15px; font-weight: 600; margin-bottom: 9px; }
+.opt {
+  display: flex; align-items: flex-start; gap: 10px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: 11px 13px; margin-bottom: 7px; font-size: 14.5px;
+}
+.opt:hover { border-color: var(--line-strong); }
+.opt input { accent-color: var(--gold); margin-top: 2px; }
+.opt.picked { border-color: var(--gold); background: var(--gold-dim); }
+.opt.right { border-color: rgba(61,139,92,.5); background: rgba(61,139,92,.10); }
+.opt.wrong { border-color: rgba(194,79,56,.5); background: rgba(194,79,56,.10); }
+.expl { font-size: 13px; color: var(--muted); margin-top: 6px; padding-left: 2px; }
+.expl b { color: var(--text); }
+
+.result { margin-top: 18px; padding: 16px; border-radius: var(--radius-sm); background: var(--card-2); border: 1px solid var(--line-strong); }
+.result .score { font-family: var(--head); font-size: 26px; font-weight: 600; }
+.result .score.good { color: var(--ok); }
+.placeholder { color: var(--muted-2); font-size: 14.5px; padding: 30px 0; text-align: center; }
+
+.toast {
+  position: fixed; right: 20px; bottom: 20px; left: auto; transform: none; z-index: 60;
+  background: var(--card-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  padding: 12px 16px; font-size: 14px; box-shadow: 0 12px 36px -14px rgba(44,36,23,.28);
+}
+.toast.err { border-color: rgba(194,79,56,.5); }
+.spinner {
+  width: 24px; height: 24px; margin: 60px auto;
+  border: 2px solid var(--line-strong); border-top-color: var(--gold);
+  border-radius: 50%; animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+footer.tiny { text-align: center; padding: 34px 0 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Вход -->
+  <section id="login" class="login hidden">
+    <h1>Школа сомелье</h1>
+    <p class="muted" style="margin-bottom:16px" id="login-lead">Flavor Tree · курс для персонала и гостей</p>
+    <div class="card">
+      <input type="text" id="username" placeholder="Логин" autocomplete="username">
+      <input type="password" id="password" placeholder="Пароль" autocomplete="current-password">
+      <div class="login-err hidden" id="login-err"></div>
+      <button class="primary full" id="login-go">Войти</button>
+      <div class="switch">
+        <span id="switch-text">Ещё нет профиля?</span>
+        <a id="switch-mode">Создать</a>
+      </div>
+    </div>
+  </section>
+
+  <div id="loading" class="spinner"></div>
+
+  <main id="app" class="hidden">
+    <header class="top">
+      <div class="brand">Flavor<em>Tree</em></div>
+      <span class="chip" id="user-chip"></span>
+      <span class="chip gold" id="level-chip"></span>
+      <div class="right">
+        <button class="ghost" id="btn-efes-cert" style="font-size:12.5px; padding:6px 12px; border-color:var(--gold); color:var(--gold);" onclick="openEfesCertificate(document.getElementById('user-chip').textContent)">🎓 Сертификат Efes</button>
+        <span class="tiny" id="streak-chip"></span>
+        <button class="ghost" id="logout">Выйти</button>
+      </div>
+    </header>
+
+    <div class="levelbar card">
+      <div>
+        <div class="tiny">Текущий уровень</div>
+        <div class="now" id="level-name">Новичок</div>
+      </div>
+      <div class="track">
+        <div class="row"><span id="xp-now">0 XP</span><span id="xp-next"></span></div>
+        <div class="bar"><i id="xp-fill" style="width:0%"></i></div>
+        <div class="tiny" style="margin-top:6px" id="xp-hint"></div>
+      </div>
+      <div>
+        <div class="tiny">Уроков пройдено</div>
+        <div class="now" id="lessons-done">0</div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <aside id="curriculum"></aside>
+      <section class="card" id="lesson">
+        <div class="placeholder">Выберите урок слева — начните с «Новичка».</div>
+      </section>
+    </div>
+
+    <footer class="tiny">Flavor Tree · сенсорная платформа Efes Kazakhstan</footer>
+  </main>
+</div>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script src="story_generator.js"></script>
+<script src="train.js"></script>
+</body>
+</html>
